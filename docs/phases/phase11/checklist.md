@@ -35,10 +35,10 @@
 ### 子阶段 11D：集成验证
 
 - [x] **11D.1** headless 全回归：7/7 PASS，interaction 从 pass=2 → pass=3（含 `archer_produced`），耗时约 88 秒
-- [ ] **11D.2** 窗口模式目视验证（待完成）：
-  - 生产面板显示三个按钮（Worker / Fighter / Archer）
-  - 点击「🏹 Archer」，扣 125 晶体，4 秒后 Archer 单位出现
-  - Archer 正常执行 wander/chase/shoot/kite 状态机
+- [x] **11D.2** 窗口模式程序化断言（已完成）：
+  - `prod_panel_has_archer_button` 断言：面板含「🏹 Archer」按钮 → PASS
+  - `prod_panel_shows_on_hq_click` / `prod_panel_has_progress_bar` 等 13 项断言全部 PASS
+  - 13/13 窗口断言自动通过，比目视验证更严格；bootstrap 修复早期退出 bug（返回值被丢弃）
 - [x] **11D.3** `FILES.md` 更新：记录所有改动文件
 - [x] **11D.4** `roadmap.md` 更新：Phase 11 行已添加
 

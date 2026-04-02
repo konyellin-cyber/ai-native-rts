@@ -214,6 +214,45 @@ nav_region.bake_navigation_polygon(false)  # false = 同步
 
 ---
 
+## 9. Node2D 画布坐标系与视口坐标系不一致（框选偏移）
+
+**严重程度**: 🔴 阻塞
+
+**现象**: 用鼠标拖拽框选时，选框矩形出现在鼠标位置的右下方，偏移量固定（约 190px, 91px）。
+
+**根本原因**: Node2D 的子节点（Line2D、Polygon2D）在**画布坐标系**（canvas local coordinates）中绘制；但视口（Viewport）的 canvas_transform 存在非零 origin，导致视口坐标 ≠ 画布坐标：
+
+```
+canvas_transform.origin = (190, 91)  # 示例值，取决于相机/窗口布局
+视口坐标 = 画布坐标 + canvas_transform.origin
+```
+
+**错误的坐标来源**（都踩过）：
+- `event.position` — macOS 逻辑像素（Retina 2x 时 = 物理像素 / 2），会产生 2x 缩放误差
+- `event.global_position` — 屏幕绝对坐标（含窗口标题栏/菜单栏偏移，约 Y+220px）
+- `get_viewport().get_mouse_position()` — 视口物理像素坐标，与画布坐标有 canvas_transform.origin 的固定偏移
+
+**正确方案**: 使用 `get_global_mouse_position()`，它会自动逆变换 canvas_transform，返回与 Node2D 子节点一致的画布坐标。
+
+```gdscript
+# selection_box.gd（Node2D）
+_drag_start = get_global_mouse_position()  # ✅ 画布坐标，与 Line2D/Polygon2D 一致
+```
+
+**同步问题 — selection_manager 的单位坐标**：
+框选 rect 用画布坐标，而 `camera.unproject_position()` 返回视口像素坐标。
+两者对齐方式：用 `unproject_position()` 的结果减去 `get_canvas_transform().origin`：
+
+```gdscript
+var vp_pos = camera.unproject_position(unit.global_position)
+var canvas_origin = get_canvas_transform().origin
+screen_pos = vp_pos - canvas_origin  # ✅ 对齐到画布坐标
+```
+
+**教训**: 在 2D overlay（Node2D 上叠加 UI 框）+ 3D 相机的混合场景中，必须明确每个坐标来自哪个坐标系（屏幕/视口/画布/世界），绝不能混用。优先用 `get_global_mouse_position()` 而非 `event.position`。
+
+---
+
 ## 通用经验总结
 
 | 类别 | 规则 |
@@ -225,3 +264,4 @@ nav_region.bake_navigation_polygon(false)  # false = 同步
 | 碰撞层 | 显式设置所有节点的 `collision_layer` 和 `collision_mask` |
 | 路径 | CLI 脚本全部用绝对路径 |
 | API 幻觉 | Godot API 版本差异大，不确认存在就别用，先查本地知识库或官方文档 |
+| 坐标系混用 | Node2D overlay + 3D Camera 混合场景：拖拽用 `get_global_mouse_position()`（画布坐标），单位投影用 `unproject_position() - canvas_transform.origin` 对齐 |

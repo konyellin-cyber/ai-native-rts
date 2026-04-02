@@ -171,6 +171,7 @@
   "window": {
     "fullscreen": true
   },
+  "window_scenario_file": "res://tests/scenarios/window_interaction.json",
   "worker": {
     "carry_capacity": 10.0,
     "harvest_time": 1.5,

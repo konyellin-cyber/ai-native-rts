@@ -130,10 +130,14 @@ func _physics_process(_delta: float) -> void:
 			_world.ux_observer.tick(_window_frame_count, _delta)
 		if renderer and config.get("renderer", {}).get("mode", "off") != "off":
 			renderer.set_extra(_build_extra())
-			renderer.tick()
-		# 窗口模式也按 total_frames 自动结束：输出断言结果后退出
-		if _window_frame_count >= total_frames:
-			renderer.print_results()
+			var all_done = renderer.tick()
+			# 窗口模式：所有断言完成或达到 total_frames 时自动退出（与 headless 行为一致）
+			if all_done or _window_frame_count >= total_frames:
+				renderer.print_results()
+				_perf_report()
+				_finish()
+				return
+		elif _window_frame_count >= total_frames:
 			_perf_report()
 			_finish()
 	else:
@@ -310,7 +314,12 @@ func _setup_simulated_player() -> void:
 	var SimPlayerScript = load("res://tools/ai-renderer/simulated_player.gd")
 	_sim_player = SimPlayerScript.new()
 
-	var scenario_path = config.get("scenario_file", "")
+	# 窗口模式优先使用 window_scenario_file，headless 使用 scenario_file
+	var scenario_path: String
+	if not is_headless and config.has("window_scenario_file"):
+		scenario_path = config.get("window_scenario_file", "")
+	else:
+		scenario_path = config.get("scenario_file", "")
 	if scenario_path != "":
 		var loaded = _sim_player.load_scenario(scenario_path)
 		if not loaded:
@@ -325,12 +334,14 @@ func _setup_simulated_player() -> void:
 			actions, _world.selection_box, _world.selection_manager,
 			float(config.map.width), float(config.map.height),
 			_on_produce_requested, "xz",
+			get_viewport() if not is_headless else null,
 		)
 	else:
 		_sim_player.setup(
 			[], _world.selection_box, _world.selection_manager,
 			float(config.map.width), float(config.map.height),
 			_on_produce_requested, "xz",
+			get_viewport() if not is_headless else null,
 		)
 
 	var action_count = _sim_player._actions.size()
@@ -356,7 +367,13 @@ func _load_config() -> Dictionary:
 
 	# 若 scenario_file 中包含 config_overrides，浅合并覆盖对应字段
 	# 为什么在这里合并：config 在 _ready 最早读取，覆盖必须在任何子系统初始化前生效
-	var scenario_path = cfg.get("scenario_file", "")
+	# 窗口模式（非 headless）优先使用 window_scenario_file，否则回退到 scenario_file
+	var _headless_now = DisplayServer.get_name() == "headless"
+	var scenario_path: String
+	if not _headless_now and cfg.has("window_scenario_file"):
+		scenario_path = cfg.get("window_scenario_file", "")
+	else:
+		scenario_path = cfg.get("scenario_file", "")
 	if scenario_path != "":
 		var sf = FileAccess.open(scenario_path, FileAccess.READ)
 		if sf:
@@ -446,7 +463,11 @@ func _setup_window_screenshot_signals() -> void:
 	## headless 模式在 _setup_assertions() 里处理同一字段。
 	if not (_world.ux_observer and _world.ux_observer.is_enabled()):
 		return
-	var scenario_path = config.get("scenario_file", "")
+	var scenario_path: String
+	if config.has("window_scenario_file"):
+		scenario_path = config.get("window_scenario_file", "")
+	else:
+		scenario_path = config.get("scenario_file", "")
 	if scenario_path == "":
 		return
 	var f = FileAccess.open(scenario_path, FileAccess.READ)
@@ -465,5 +486,30 @@ func _setup_window_assertions() -> void:
 	## 为什么单独一个函数：与 headless 的 _setup_assertions 完全分离，互不干扰。
 	var WinAssertScript = load("res://scripts/window_assertion_setup.gd")
 	_window_assertions = WinAssertScript.new()
-	_window_assertions.setup(renderer, _world, self, float(config.map.width), float(config.map.height))
+	# expected_drag_count 从 scenario 的 config_overrides.window_test.expected_drag_count 读取；
+	# 若未配置（-1），real_drag_selects_correct_count 断言自动跳过精确验证
+	var expected_drag_count: int = -1
+	var scenario_path: String
+	if config.has("window_scenario_file"):
+		scenario_path = config.get("window_scenario_file", "")
+	else:
+		scenario_path = config.get("scenario_file", "")
+	if scenario_path != "":
+		var f = FileAccess.open(scenario_path, FileAccess.READ)
+		if f:
+			var scenario = JSON.parse_string(f.get_as_text())
+			f.close()
+			if scenario and scenario.has("config_overrides"):
+				var wt = scenario["config_overrides"].get("window_test", {})
+				if wt.has("expected_drag_count"):
+					expected_drag_count = int(wt["expected_drag_count"])
+	_window_assertions.setup(renderer, _world, self, float(config.map.width), float(config.map.height), expected_drag_count)
 	_window_assertions.register_all()
+	## 注意：窗口模式不调用 set_run_only，全部 16 条断言均需通过。
+	## window_interaction.json 的 assertions 字段仅供未来 headless 窗口场景使用，此处不适用。
+
+	# 连接 action_executor 的 real_click 前置回调：注入点击前通知 window_assertions 设置 _expecting_real_click，
+	# 确保 units_selected 信号触发时能正确区分 box_select 引发的选中和 real_click 引发的点选。
+	# 为什么在 register_all 之后：两端均已初始化，回调引用安全。
+	if _sim_player and _window_assertions:
+		_sim_player._executor.set_pre_real_click_cb(func(): _window_assertions.notify_real_click_starting())

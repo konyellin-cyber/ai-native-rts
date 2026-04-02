@@ -2,7 +2,7 @@ extends RefCounted
 class_name WindowAssertionSetup
 
 ## WindowAssertionSetup — 窗口模式专属断言集合
-## 职责：注册只有窗口才能初始化的 9 个断言（Camera3D / Mesh / UI）。
+## 职责：注册只有窗口才能初始化的断言（Camera3D / Mesh / UI / 鼠标交互）。
 ## 所有断言均为结构/属性检查，不依赖渲染画面，Phase 9 可迁移到 headless。
 ## 参考：assertion_setup.gd 的写法风格。
 
@@ -22,19 +22,34 @@ var _hq_clicked: bool = false
 var _prod_panel_ever_shown: bool = false  # 框选 HQ 或左键点击 HQ 均可触发
 var _click_missed_after_shown: bool = false  # 面板曾显示后是否发生过 click_missed
 
+# 鼠标交互断言状态
+# _real_drag_frame：selection_rect_drawn 信号触发时记录帧，-1 表示未触发
+# _real_click_frame：units_selected 信号触发（且含 ≥1 个单位）时记录帧，-1 表示未触发
+# _expected_drag_count：real_drag_selects_correct_count 的期望值，-1 表示不检查精确数量
+# _expecting_real_click：action_executor 在注入 real_click 前设置，避免 box_select 产生的
+#   units_selected 被误记录为 real_click（信号连接顺序决定 dedup 帧号无效）
+var _real_drag_frame: int = -1
+var _real_drag_count: int = 0      # selection_rect_drawn 时选中数量快照
+var _real_click_frame: int = -1
+var _real_click_count: int = 0     # units_selected 时选中数量快照
+var _expected_drag_count: int = -1
+var _expecting_real_click: bool = false
+
 
 func setup(
 	renderer: RefCounted,
 	world: RefCounted,
 	bootstrap_node: Node,
 	map_width: float,
-	map_height: float
+	map_height: float,
+	expected_drag_count: int = -1
 ) -> void:
 	_renderer = renderer
 	_world = world
 	_bootstrap = bootstrap_node
 	_map_width = map_width
 	_map_height = map_height
+	_expected_drag_count = expected_drag_count
 
 	# 连接 world.hq_selected 信号：任意 HQ 被点击时设置 _hq_clicked = true
 	# 为什么在 setup 里连接：register_all 只注册断言函数引用，无法访问 _world
@@ -44,6 +59,13 @@ func setup(
 		_world.click_missed.connect(_on_click_missed)
 	if _world.has_signal("move_command_issued"):
 		_world.move_command_issued.connect(_on_move_command_issued)
+	# 连接鼠标交互信号：real_drag 触发 selection_rect_drawn，real_click 触发 units_selected
+	# 为什么用 selection_rect_drawn：selection_box.gd 框选完成时发出该信号，与 real_drag 完全对应
+	# 为什么 units_selected 兼顾 real_click：real_click 命中单位时 sel_mgr 发出该信号
+	if _world.has_signal("selection_rect_drawn"):
+		_world.selection_rect_drawn.connect(_on_selection_rect_drawn_for_drag)
+	if _world.has_signal("units_selected"):
+		_world.units_selected.connect(_on_units_selected_for_click)
 
 func _on_hq_selected(_hq: Node) -> void:
 	_hq_clicked = true
@@ -58,6 +80,35 @@ func _on_move_command_issued(_target, _units) -> void:
 	## 发出移动命令时也视为"点击了面板外部"，与 click_missed 等效
 	if _prod_panel_ever_shown:
 		_click_missed_after_shown = true
+
+
+func _on_selection_rect_drawn_for_drag(_rect: Rect2) -> void:
+	## selection_rect_drawn：框选完成（real_drag 或 box_select 均触发）
+	## 用 _frame_counter 记录"触发时的断言帧"，断言函数再加 2 帧等待后检查选中数量
+	_real_drag_frame = _frame_counter
+	var sm = _world.selection_manager
+	if is_instance_valid(sm):
+		_real_drag_count = sm.selected_units.size()
+
+
+func notify_real_click_starting() -> void:
+	## action_executor 在注入 real_click 事件前调用，告知断言层"下一个 units_selected 是 real_click"
+	## 为什么需要显式通知：信号连接顺序导致 units_selected 先于 selection_rect_drawn 触发，
+	## 帧号 dedup 无效；改用显式 flag 精确区分 box_select 触发的 units_selected 和 real_click 触发的
+	_expecting_real_click = true
+
+
+func _on_units_selected_for_click(selected: Array) -> void:
+	## units_selected：selection_manager 发出选中列表（real_click 命中单位时触发）
+	## 只记录含 ≥1 个单位的事件（空选中不算有效 real_click）
+	## 只在 _expecting_real_click == true 时才记录（action_executor 在注入 click 前设置），
+	## 避免 box_select 产生的 units_selected 被误记录为 real_click
+	if not _expecting_real_click:
+		return
+	_expecting_real_click = false
+	if selected.size() >= 1:
+		_real_click_frame = _frame_counter
+		_real_click_count = selected.size()  # 记录点击时的选中数快照，避免后续帧状态变化干扰
 
 
 func register_all() -> void:
@@ -75,6 +126,9 @@ func register_all() -> void:
 	_renderer.add_assertion("prod_panel_position_near_hq",  _assert_prod_panel_position_near_hq)
 	_renderer.add_assertion("prod_panel_hides_on_click_outside", _assert_prod_panel_hides_on_click_outside)
 	_renderer.add_assertion("prod_panel_has_archer_button",  _assert_prod_panel_has_archer_button)
+	_renderer.add_assertion("real_drag_selects_units",         _assert_real_drag_selects_units)
+	_renderer.add_assertion("real_drag_selects_correct_count", _assert_real_drag_selects_correct_count)
+	_renderer.add_assertion("real_click_selects_unit",         _assert_real_click_selects_unit)
 
 
 # ─── 工具：获取 Camera3D ────────────────────────────────────────────
@@ -315,3 +369,52 @@ func _assert_prod_panel_has_archer_button() -> Dictionary:
 		if (btn as Button).text.contains("Archer"):
 			return {"status": "pass", "detail": "found Archer button: '%s'" % (btn as Button).text}
 	return {"status": "fail", "detail": "no Button with text containing 'Archer' found in prod_panel"}
+
+
+# ─── 断言：鼠标交互（Phase 12） ────────────────────────────────────
+
+func _assert_real_drag_selects_units() -> Dictionary:
+	## real_drag 执行后 2 帧内，selection_manager.selected_units.size() > 0
+	## 触发条件：selection_rect_drawn 信号（_on_selection_rect_drawn_for_drag 记录帧号和数量快照）
+	## 为什么等 2 帧：_input 事件在同帧内处理，选中状态更新在 physics_process 完成，
+	##   断言轮询在下一帧才读到，+2 帧确保状态已稳定
+	_tick_frame()
+	if _real_drag_frame < 0:
+		return {"status": "pending", "detail": "waiting for real_drag (selection_rect_drawn not yet triggered)"}
+	if _frame_counter < _real_drag_frame + 2:
+		return {"status": "pending", "detail": "waiting 2 frames after drag (frame=%d drag_frame=%d)" % [_frame_counter, _real_drag_frame]}
+	if _real_drag_count > 0:
+		return {"status": "pass", "detail": "real_drag selected %d units" % _real_drag_count}
+	return {"status": "fail", "detail": "real_drag completed but selected_units was empty at drag time"}
+
+
+func _assert_real_drag_selects_correct_count() -> Dictionary:
+	## real_drag 后选中数量 == expected_drag_count（从 config 或 scenario 传入）
+	## 若 _expected_drag_count == -1（未配置），跳过精确验证（直接 pass）
+	## 为什么提供此断言：覆盖范围精度测试，防止 selection_box 范围算法偏移
+	## 使用信号快照 _real_drag_count，避免后续操作覆盖 selected_units
+	_tick_frame()
+	if _expected_drag_count < 0:
+		return {"status": "pass", "detail": "expected_drag_count not configured, skipped"}
+	if _real_drag_frame < 0:
+		return {"status": "pending", "detail": "waiting for real_drag (selection_rect_drawn not yet triggered)"}
+	if _frame_counter < _real_drag_frame + 2:
+		return {"status": "pending", "detail": "waiting 2 frames after drag (frame=%d drag_frame=%d)" % [_frame_counter, _real_drag_frame]}
+	if _real_drag_count == _expected_drag_count:
+		return {"status": "pass", "detail": "real_drag selected %d units (expected %d)" % [_real_drag_count, _expected_drag_count]}
+	return {"status": "fail", "detail": "real_drag selected %d units (expected %d)" % [_real_drag_count, _expected_drag_count]}
+
+
+func _assert_real_click_selects_unit() -> Dictionary:
+	## real_click 命中单位后 2 帧内，selected_units.size() == 1
+	## 触发条件：units_selected 信号（_on_units_selected_for_click 过滤空选中后记录帧号）
+	## 为什么 == 1：单击语义是点选单个单位，多选应用框选
+	## 使用信号快照 _real_click_count，避免后续帧的框选/拖拽操作覆盖 selected_units
+	_tick_frame()
+	if _real_click_frame < 0:
+		return {"status": "pending", "detail": "waiting for real_click (units_selected with ≥1 unit not yet triggered)"}
+	if _frame_counter < _real_click_frame + 2:
+		return {"status": "pending", "detail": "waiting 2 frames after click (frame=%d click_frame=%d)" % [_frame_counter, _real_click_frame]}
+	if _real_click_count == 1:
+		return {"status": "pass", "detail": "real_click selected exactly 1 unit"}
+	return {"status": "fail", "detail": "real_click selected %d units at click time (expected 1)" % _real_click_count}

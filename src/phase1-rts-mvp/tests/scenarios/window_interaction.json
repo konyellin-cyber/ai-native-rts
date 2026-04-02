@@ -1,0 +1,39 @@
+{
+  "name": "window_interaction",
+  "description": "窗口模式鼠标交互验证：通过 Input.parse_input_event() 注入真实鼠标事件，走完完整输入管线。验证 real_drag 框选和 real_click 点选的断言路径（Phase 12）。同时包含 box_select HQ → 生产面板显示/隐藏的完整窗口断言链路。",
+  "assertions": [
+    "real_drag_selects_units",
+    "real_drag_selects_correct_count",
+    "real_click_selects_unit"
+  ],
+  "config_overrides": {
+    "ai_opponent": {
+      "attack_threshold": 99
+    },
+    "physics": {
+      "total_frames": 1800
+    },
+    "window_test": {
+      "expected_drag_count": -1
+    }
+  },
+  "actions": [
+    {"action": "wait_frames", "params": {"n": 60}},
+    {"action": "real_drag", "params": {
+      "from": {"x": 50, "y": 50},
+      "to":   {"x": 1200, "y": 1600}
+    }},
+    {"action": "wait_frames", "params": {"n": 5}},
+    {"action": "box_select", "params": {"rect": "red_hq_area"}},
+    {"action": "wait_frames", "params": {"n": 5}},
+    {"action": "click_button", "params": {"label": "Worker"}},
+    {"action": "wait_frames", "params": {"n": 5}},
+    {"action": "real_click", "params": {
+      "unit_type": "worker",
+      "team": "red"
+    }},
+    {"action": "wait_frames", "params": {"n": 5}},
+    {"action": "right_click", "params": {"target": "map_center"}},
+    {"action": "wait_frames", "params": {"n": 5}}
+  ]
+}

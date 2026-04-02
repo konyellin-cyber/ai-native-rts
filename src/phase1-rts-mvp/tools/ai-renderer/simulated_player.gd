@@ -41,14 +41,14 @@ var _interaction_summary: Dictionary = {
 }
 
 
-func setup(actions: Array, sel_box: Node, sel_mgr: Node, map_w: float, map_h: float, produce_cb: Callable = Callable(), coord_mode: String = "2d") -> void:
+func setup(actions: Array, sel_box: Node, sel_mgr: Node, map_w: float, map_h: float, produce_cb: Callable = Callable(), coord_mode: String = "2d", viewport: Viewport = null) -> void:
 	if not actions.is_empty():
 		_actions = actions
 		_actions.sort_custom(func(a, b): return a.get("frame", 0) < b.get("frame", 0))
 
 	var ExecutorScript = load("res://tools/ai-renderer/action_executor.gd")
 	_executor = ExecutorScript.new()
-	_executor.setup(sel_box, sel_mgr, map_w, map_h, produce_cb, coord_mode)
+	_executor.setup(sel_box, sel_mgr, map_w, map_h, produce_cb, coord_mode, viewport)
 
 	var TracerScript = load("res://tools/ai-renderer/signal_tracer.gd")
 	_tracer = TracerScript.new()

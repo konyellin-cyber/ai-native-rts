@@ -37,10 +37,11 @@
 - **注意**: 4 条断言（hq_exists / mineral_exists / worker_exists / economy_positive）改为读 snapshot 字典，彻底与 Formatter 文本格式解耦；fault_state 是 Dictionary 引用，由 bootstrap 的故障注入逻辑在运行时更新
 
 ### window_assertion_setup.gd
-- **职责**: 窗口模式专属断言集合（Phase 8A 新增）。注册 13 个不依赖渲染画面的结构/属性断言
+- **职责**: 窗口模式专属断言集合（Phase 8A 新增）。注册 16 个不依赖渲染画面的结构/属性/交互断言
 - **依赖**: 被 bootstrap.gd 在非 headless 分支创建；依赖 renderer / GameWorld / Bootstrap Node
-- **关键接口**: `setup(renderer, world, bootstrap_node, map_width, map_height)`, `register_all()`
-- **断言清单**: `camera_orthographic`, `camera_covers_map`, `camera_isometric`, `units_have_mesh`, `hq_has_mesh`, `no_initial_selection`, `prod_panel_hidden_at_start`, `prod_panel_shows_on_hq_click`, `bottom_bar_visible`, `prod_panel_has_progress_bar`, `prod_panel_position_near_hq`, `prod_panel_hides_on_click_outside`, `prod_panel_has_archer_button`
+- **关键接口**: `setup(renderer, world, bootstrap_node, map_width, map_height, expected_drag_count)`, `register_all()`
+- **断言清单**: `camera_orthographic`, `camera_covers_map`, `camera_isometric`, `units_have_mesh`, `hq_has_mesh`, `no_initial_selection`, `prod_panel_hidden_at_start`, `prod_panel_shows_on_hq_click`, `bottom_bar_visible`, `prod_panel_has_progress_bar`, `prod_panel_position_near_hq`, `prod_panel_hides_on_click_outside`, `prod_panel_has_archer_button`, `real_drag_selects_units`, `real_drag_selects_correct_count`, `real_click_selects_unit`
+- **Phase 12 改动**: 新增 3 条鼠标交互断言（`real_drag_selects_units` / `real_drag_selects_correct_count` / `real_click_selects_unit`）；`setup()` 增加 `expected_drag_count: int = -1` 参数；连接 `world.selection_rect_drawn` / `world.units_selected` 信号追踪 drag/click 帧；guard 防止 drag 触发 units_selected 误设 click 帧
 - **Phase 11 改动**: 新增 `prod_panel_has_archer_button`（检查 prod_panel 含"Archer"文本的 Button）
 - **Phase 9 改动**: `camera_centered` → `camera_isometric`（检查 position.x 居中 ±300 + rotation_degrees.y 在 -45°±5°）
 - **注意**: `prod_panel_shows_on_hq_click` 通过连接 `world.hq_selected` 信号追踪点击事件；`prod_panel` 的面板可见性用 `visible_state` 属性（非 `.visible`）
@@ -263,4 +264,10 @@
 
 ## config.json
 - **职责**: 所有游戏参数（地图、单位、物理、渲染器、测试剧本）
+- **Phase 12 改动**: 新增 `window_scenario_file`（`"res://tests/scenarios/window_interaction.json"`），窗口模式用此 scenario，headless 继续用 `scenario_file`
 - **修改频率**: 中（调参时）
+
+## tests/scenarios/window_interaction.json（Phase 12 新增）
+- **职责**: 窗口模式鼠标交互测试剧本。wait → real_drag → wait → real_click → wait 动作序列
+- **断言**: `real_drag_selects_units`, `real_drag_selects_correct_count`, `real_click_selects_unit`
+- **config_overrides**: `ai_opponent.attack_threshold=99`（防止战斗干扰），`physics.total_frames=1800`，`window_test.expected_drag_count=-1`（跳过精确计数）

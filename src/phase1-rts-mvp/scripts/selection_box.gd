@@ -43,12 +43,16 @@ func _input(event: InputEvent) -> void:
 		return
 	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT:
 		if event.pressed:
-			_drag_start = event.global_position
+			## 用 get_global_mouse_position() 而非 event.position / get_viewport().get_mouse_position()：
+			## Node2D 的 Line2D / Polygon2D 在画布本地坐标系绘制；
+			## canvas_transform 存在偏移（origin≈(190,91)），视口坐标需减去该偏移才匹配画布坐标。
+			## get_global_mouse_position() 已自动逆变换 canvas_transform，直接给出画布坐标，与子节点绘制一致。
+			_drag_start = get_global_mouse_position()
 			_is_dragging = true
 			_show_rect(_drag_start, _drag_start)
 		else:
 			if _is_dragging:
-				var drag_end = event.global_position
+				var drag_end = get_global_mouse_position()
 				_hide_rect()
 				_is_dragging = false
 				var rect = _make_rect(_drag_start, drag_end)
@@ -57,7 +61,7 @@ func _input(event: InputEvent) -> void:
 					selection_rect_drawn.emit(rect)
 	elif event is InputEventMouseMotion:
 		if _is_dragging:
-			_show_rect(_drag_start, event.global_position)
+			_show_rect(_drag_start, get_global_mouse_position())
 
 
 func _show_rect(start: Vector2, end: Vector2) -> void:

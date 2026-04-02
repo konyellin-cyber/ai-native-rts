@@ -159,10 +159,22 @@ func _on_selection_rect(rect: Rect2) -> void:
 	var before_count = _all_units.size()
 	_all_units = _all_units.filter(func(u): return is_instance_valid(u))
 	last_invalid_refs = before_count - _all_units.size()
+	## 3D：将单位世界坐标投影到屏幕坐标再与拖拽矩形比对
+	## 为什么改：rect 来自鼠标拖拽，是屏幕像素坐标（0~2560）；
+	## 原先用 flat_pos = XZ 世界坐标（-50~+50），两套坐标系根本对不上。
+	var camera = get_viewport().get_camera_3d()
 	for unit in _all_units:
-		## 3D：用 XZ 投影坐标做框选判断
-		var flat_pos = Vector2(unit.global_position.x, unit.global_position.z)
-		if rect.has_point(flat_pos):
+		var screen_pos: Vector2
+		if camera:
+			## 窗口模式：将单位3D世界坐标投影到视口像素坐标，与框选rect（画布坐标+canvas_transform偏移）对齐。
+			## 注意：rect 来自 selection_box，使用 get_global_mouse_position()（画布坐标）；
+			## camera.unproject_position() 返回视口物理像素坐标，需减去 canvas_transform.origin 对齐。
+			var vp_pos = camera.unproject_position(unit.global_position)
+			var canvas_origin = get_canvas_transform().origin
+			screen_pos = vp_pos - canvas_origin
+		else:
+			screen_pos = Vector2(unit.global_position.x, unit.global_position.z)
+		if rect.has_point(screen_pos):
 			_select_unit(unit)
 	last_select_count = selected_units.size()
 	if selected_units.size() > 0:
