@@ -1,0 +1,10 @@
+{
+  "name": "fighter_right_click_move",
+  "description": "验证战士生产后可被框选并右键移动",
+  "actions": [
+    {"frame": 60, "action": "select_hq", "params": {"rect": "red_hq_area"}},
+    {"frame": 62, "action": "select_produce", "params": {"unit_type": "fighter"}},
+    {"frame": 500, "action": "box_select", "params": {"rect": "full_screen"}},
+    {"frame": 502, "action": "right_click", "params": {"target": "map_center"}}
+  ]
+}

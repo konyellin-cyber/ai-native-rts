@@ -1,0 +1,105 @@
+# AI Native RTS 开发规范
+
+> 本文件是项目级规则，CodeBuddy / Claude Code 进入本项目目录时自动加载。
+> 完整规范原文：`docs/rules/dev-rules.md`
+
+---
+
+## 1. 开发流程（硬约束）
+
+- **设计 → checklist → 代码**：非 trivial 改动（新模块、架构调整）必须先写设计文档到 `docs/design/`，更新 `docs/phases/roadmap.md` 对应 Phase 的 checklist，再编码
+- **设计文档用抽象描述**：流程图、架构图、接口定义，不写代码/伪代码
+- **trivial 改动可跳过设计**：bug 修复、小参数调整、格式修正直接改
+- **完成即更新 checklist**：每完成一个步骤，立即在 `docs/phases/<phaseN>/checklist.md` 中勾选 `[x]`，不积攒
+- **AI 生成的代码必须逐行 review**，不盲信；不接受 AI 重构建议，除非有明确痛点
+- **一个对话只解决一个问题**；复杂功能先讨论方案确认后再实现
+
+---
+
+## 2. 代码规范
+
+### GDScript 风格
+- 类名用 PascalCase：`BallController`、`StateExporter`
+- 变量/函数用 snake_case：`frame_count`、`export_state()`
+- 常量用 UPPER_SNAKE_CASE：`MAX_BALLS`、`EXPORT_INTERVAL`
+- 信号用过去式：`ball_collided`、`state_changed`
+- 每个脚本文件一个类，文件名 = 类名（小写）：`ball_controller.gd` → `class_name BallController`
+- 函数超过 20 行必须拆分
+- 不写注释解释"做了什么"，写注释解释"为什么这样做"
+
+### 项目结构约定
+- 配置文件用 JSON，不放硬编码
+- GDScript 脚本放 `scripts/`，测试脚本放 `tests/`
+- 运行时输出（frames/、screenshots/）永远不提交
+- 每个 Phase 的代码独立目录，不互相引用
+
+### FILES.md 维护规则
+每个 Phase 目录下维护一个 `FILES.md`：
+- **新增文件** → 立即在 FILES.md 中添加条目（完成代码后、提交前）
+- **删除/重命名文件** → 立即同步 FILES.md
+- **新增公开接口/信号** → 更新对应文件的"关键接口"段落
+- **修复 bug** → 在对应文件条目中记录问题和修复方式
+
+---
+
+## 3. Git 习惯
+
+- **小步提交**：每个独立功能/修复一个 commit，不要攒大 commit
+- **commit message 格式**：`类型: 简短描述`（feat / fix / refactor / test / chore）
+- **不提交运行时产物**：frames/、screenshots/、*.import
+- **不提交 IDE 配置**：.godot/ 目录
+
+---
+
+## 4. 验证习惯（硬约束）
+
+- **程序化验证为默认方式**：优先用 headless 自动化测试，不依赖截图
+- **每次代码变更后必须跑 headless 回归**：`godot --headless --path ./src/phase1-rts-mvp`
+- **11/11 PASS 才算完成**，有 FAIL 必须修复，不得带 FAIL 进入下一步
+- **headless 自动闭环**：验证结果可判定时直接运行（无需确认）→ 分析输出 → 有 FAIL 自动修复重验（最多 3 轮）→ 全部通过后汇报
+- **窗口模式也要程序化**：窗口验证通过 SimulatedPlayer 自动走剧本 + WindowAssertionSetup 断言，输出 PASS/FAIL；不依赖手动操作
+- **截图是过渡手段**：事件驱动截图只用于"暂时无法程序化"的视觉检查，每张截图背后需标注"何时可转为断言"；能程序化就不截图
+- **验证分级**：能读属性得出 yes/no → 写断言；只能靠渲染结果判断 → 截图留证；最终目标是全部可程序化甚至迁移到 headless
+
+### Headless 验证三档入口
+
+| 入口 | 命令 | 适用场景 | 速度 |
+|------|------|---------|------|
+| 单次全场景（推荐） | `godot --headless --path . --scene res://tests/test_runner.tscn` | 日常回归，1 次冷启动跑全部 | 最快 |
+| 并行多进程 | `bash tests/run_scenarios_parallel.sh` | CI / 场景间完全隔离时 | 快（N 进程并行） |
+| 串行兼容 | `bash tests/run_scenarios.sh` | 调试单场景 / 排查干扰 | 慢（N 次冷启动） |
+
+**日常优先用 test_runner.tscn**；只有怀疑场景间状态互相干扰时才退回串行。
+
+**AI 可自行执行（无需确认）**：headless 验证、测试脚本、项目目录内文件修改、checklist/知识库更新
+
+**需用户确认**：窗口模式运行、git commit/push、修改项目目录外文件、删除非临时文件、运行时间 > 60 秒的任务
+
+---
+
+## 5. 子任务使用规范
+
+子任务是**加速工具，不是默认模式**。按需使用，不强制。
+
+**推荐使用的情形**：
+- 3 个以上独立模块需要同时探索或修改（天然无依赖）
+- 跑 headless 验证的同时继续其他开发（后台运行）
+- 文档更新、checklist 更新等与主线代码无关的并行任务
+
+**不推荐使用的情形**：
+- 单文件改动（开销大于收益）
+- 需要上下文连续推理的架构设计（信息断层风险）
+- 依赖链超过 2 步的任务（协调复杂度上升）
+
+**使用要点**：
+- 子任务 prompt 必须写清楚背景，不继承对话上下文
+- 优先用 `Explore` agent 做探索，`general-purpose` 做执行
+- 独立文件修改可加 `isolation: "worktree"` 隔离风险
+
+---
+
+## 6. 知识库查阅规则（防 API 幻觉）
+
+- **写 GDScript 前必须查阅本地知识库**：先读 `docs/knowledge-base/godot-api/` 下对应文件确认 API 签名
+- **不确认就不写**：不确定时用 web_fetch 查 Godot 官方文档
+- **遇坑即记录**：新踩的坑更新到 `docs/rules/pitfalls.md`

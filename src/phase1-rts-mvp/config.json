@@ -1,0 +1,181 @@
+{
+  "ai_opponent": {
+    "attack_threshold": 2.0,
+    "decision_interval": 120.0,
+    "enabled": true,
+    "headless_fighter_time": 2.0,
+    "max_workers": 3.0
+  },
+  "archer": {
+    "arrow_speed": 600.0,
+    "attack_cooldown": 1.2,
+    "attack_damage": 15.0,
+    "flee_range": 80.0,
+    "hp": 60.0,
+    "radius": 7.0,
+    "shoot_range": 160.0,
+    "sight_range": 220.0,
+    "speed": 120.0
+  },
+  "fault_injection": [
+    {
+      "action": "freeze_nav",
+      "frame": 300.0,
+      "unit_id": 0.0
+    },
+    {
+      "action": "restore_all",
+      "frame": 500.0
+    }
+  ],
+  "fighter": {
+    "attack_cooldown": 0.5,
+    "attack_damage": 10.0,
+    "attack_range": 30.0,
+    "hp": 100.0,
+    "radius": 8.0,
+    "sight_range": 200.0,
+    "speed": 150.0
+  },
+  "hq": {
+    "hp": 500.0,
+    "radius": 40.0,
+    "spawn_blue": {
+      "x": 2048.0,
+      "y": 832.0
+    },
+    "spawn_red": {
+      "x": 512.0,
+      "y": 832.0
+    }
+  },
+  "map": {
+    "height": 1664.0,
+    "width": 2560.0
+  },
+  "mineral_nodes": [
+    {
+      "amount": 5000.0,
+      "x": 700.0,
+      "y": 800.0
+    },
+    {
+      "amount": 5000.0,
+      "x": 1280.0,
+      "y": 832.0
+    },
+    {
+      "amount": 5000.0,
+      "x": 1900.0,
+      "y": 800.0
+    }
+  ],
+  "obstacles": [
+    {
+      "h": 89.0,
+      "w": 512.0,
+      "x": 1024.0,
+      "y": 554.0
+    },
+    {
+      "h": 333.0,
+      "w": 128.0,
+      "x": 384.0,
+      "y": 998.0
+    },
+    {
+      "h": 222.0,
+      "w": 256.0,
+      "x": 1536.0,
+      "y": 777.0
+    },
+    {
+      "h": 166.0,
+      "w": 192.0,
+      "x": 768.0,
+      "y": 222.0
+    },
+    {
+      "h": 111.0,
+      "w": 384.0,
+      "x": 1792.0,
+      "y": 1110.0
+    }
+  ],
+  "physics": {
+    "fps": 60.0,
+    "total_frames": 5400.0
+  },
+  "production": {
+    "archer_cost": 125.0,
+    "archer_time": 4.0,
+    "fighter_cost": 100.0,
+    "fighter_time": 5.0,
+    "worker_cost": 50.0,
+    "worker_time": 3.0
+  },
+  "renderer": {
+    "calibrate": true,
+    "mode": "ai_debug",
+    "sample_rate": 10.0,
+    "sensors": {
+      "economy": 10.0,
+      "units": 10.0
+    }
+  },
+  "scenario_file": "res://tests/scenarios/interaction.json",
+  "test_actions": [
+    {
+      "action": "box_select",
+      "frame": 60.0,
+      "params": {
+        "rect": "full_screen"
+      }
+    },
+    {
+      "action": "right_click",
+      "frame": 62.0,
+      "params": {
+        "target": "map_center"
+      }
+    },
+    {
+      "action": "box_select",
+      "frame": 600.0,
+      "params": {
+        "rect": "full_screen"
+      }
+    },
+    {
+      "action": "right_click",
+      "frame": 602.0,
+      "params": {
+        "target": "blue_spawn"
+      }
+    },
+    {
+      "action": "select_hq",
+      "frame": 1200.0,
+      "params": {
+        "rect": "red_hq_area"
+      }
+    },
+    {
+      "action": "select_produce",
+      "frame": 1202.0,
+      "params": {
+        "unit_type": "fighter"
+      }
+    }
+  ],
+  "window": {
+    "fullscreen": true
+  },
+  "worker": {
+    "carry_capacity": 10.0,
+    "harvest_time": 1.5,
+    "hp": 30.0,
+    "radius": 6.0,
+    "speed": 120.0
+  }
+}

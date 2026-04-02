@@ -1,0 +1,21 @@
+{
+  "name": "combat",
+  "description": "验证蓝方 AI 能完成经济→军事→进攻的完整循环，触发战斗击杀。",
+  "assertions": [
+    "ai_economy",
+    "ai_produces",
+    "battle_resolution"
+  ],
+  "screenshot_on_signals": ["battle_first_kill", "game_over"],
+  "config_overrides": {
+    "ai_opponent": {
+      "max_workers": 2,
+      "attack_threshold": 2,
+      "headless_fighter_time": 2.0
+    },
+    "physics": {
+      "total_frames": 7200
+    }
+  },
+  "actions": []
+}

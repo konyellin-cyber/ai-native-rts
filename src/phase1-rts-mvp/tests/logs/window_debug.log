@@ -1,0 +1,1269 @@
+  behavior:
+    red_w0: idle dist=518 dir=not moving eff=79% spd=0
+    red_w1: idle dist=518 dir=not moving eff=79% spd=0
+    red_w2: idle dist=518 dir=not moving eff=67% spd=0
+    blue_w3: →hq dist=68 dir=→target eff=100% spd=120
+    blue_w4: →hq dist=68 dir=→target eff=100% spd=120
+    blue_w5: →hq dist=68 dir=→target eff=100% spd=120
+    blue_f6: wander dist=67 dir=not moving eff=1% ⚠️ spd=0 nav=Y
+    blue_f7: wander dist=22 dir=not moving eff=1% ⚠️ spd=0 nav=Y
+    red_w8: →hq dist=106 dir=→target eff=100% spd=118 nav=Y
+    blue_f10: wander dist=48 dir=not moving eff=13% ⚠️ spd=0 nav=Y
+    blue_f11: wander dist=44 dir=not moving eff=33% ⚠️ spd=0 nav=Y
+    blue_f12: wander dist=30 dir=not moving eff=9% ⚠️ spd=0 nav=Y
+    blue_f13: wander dist=27 dir=not moving eff=1% ⚠️ spd=0 nav=Y
+    blue_f14: wander dist=75 dir=not moving eff=100% spd=0 nav=Y
+    blue_f15: wander dist=42 dir=not moving eff=7% ⚠️ spd=0 nav=Y
+    blue_f16: wander dist=134 dir=→target eff=7% ⚠️ spd=150 nav=Y
+  ux_viewport: camera=(1280,832) zoom=1.0 visible=(-190,-91)-(2750,1755)
+  ux_signals:
+    #60 selection_rect_drawn([P: (0.0, 0.0), S: (2560.0, 1664.0)])
+    #60 prod_panel_shown(HQ_red)
+    #662 selection_rect_drawn([P: (0.0, 0.0), S: (2560.0, 1664.0)])
+    #662 prod_panel_shown(HQ_red)
+    #1264 selection_rect_drawn([P: (432.0, 752.0), S: (160.0, 160.0)])
+    #1264 prod_panel_shown(HQ_red)
+    #1269 produce_requested(worker)
+    #1269 enqueue_result(worker, true)
+    #1569 selection_rect_drawn([P: (432.0, 752.0), S: (160.0, 160.0)])
+    #1569 prod_panel_shown(HQ_red)
+    #1574 produce_requested(archer)
+    #1574 enqueue_result(archer, true)
+[TICK 6870] 17 alive (5R / 12B) kills=0 total=(5R/12B)
+  states: ?:6 idle:3 returning:4 wander:10
+  economy: red_crystal=225 blue_crystal=10 mines=13917/15000
+  ai_opponent: blue w=3 f=9
+  interaction: select=0 invalid=0 move=7 errors=0
+  behavior:
+    red_w0: idle dist=518 dir=not moving eff=79% spd=0
+    red_w1: idle dist=518 dir=not moving eff=79% spd=0
+    red_w2: idle dist=518 dir=not moving eff=67% spd=0
+    blue_w3: →hq dist=48 dir=→target eff=100% spd=120
+    blue_w4: →hq dist=48 dir=→target eff=100% spd=120
+    blue_w5: →hq dist=48 dir=→target eff=100% spd=120
+    blue_f6: wander dist=67 dir=not moving eff=1% ⚠️ spd=0 nav=Y
+    blue_f7: wander dist=22 dir=not moving eff=1% ⚠️ spd=0 nav=Y
+    red_w8: →hq dist=86 dir=→target eff=100% spd=113 nav=Y
+    blue_f10: wander dist=48 dir=not moving eff=13% ⚠️ spd=0 nav=Y
+    blue_f11: wander dist=44 dir=not moving eff=33% ⚠️ spd=0 nav=Y
+    blue_f12: wander dist=30 dir=not moving eff=9% ⚠️ spd=0 nav=Y
+    blue_f13: wander dist=27 dir=not moving eff=1% ⚠️ spd=0 nav=Y
+    blue_f14: wander dist=75 dir=not moving eff=100% spd=0 nav=Y
+    blue_f15: wander dist=42 dir=not moving eff=7% ⚠️ spd=0 nav=Y
+    blue_f16: wander dist=109 dir=→target eff=7% ⚠️ spd=150 nav=Y
+  ux_viewport: camera=(1280,832) zoom=1.0 visible=(-190,-91)-(2750,1755)
+  ux_signals:
+    #60 selection_rect_drawn([P: (0.0, 0.0), S: (2560.0, 1664.0)])
+    #60 prod_panel_shown(HQ_red)
+    #662 selection_rect_drawn([P: (0.0, 0.0), S: (2560.0, 1664.0)])
+    #662 prod_panel_shown(HQ_red)
+    #1264 selection_rect_drawn([P: (432.0, 752.0), S: (160.0, 160.0)])
+    #1264 prod_panel_shown(HQ_red)
+    #1269 produce_requested(worker)
+    #1269 enqueue_result(worker, true)
+    #1569 selection_rect_drawn([P: (432.0, 752.0), S: (160.0, 160.0)])
+    #1569 prod_panel_shown(HQ_red)
+    #1574 produce_requested(archer)
+    #1574 enqueue_result(archer, true)
+[TICK 6880] 17 alive (5R / 12B) kills=0 total=(5R/12B)
+  states: ?:6 idle:3 returning:4 wander:10
+  economy: red_crystal=225 blue_crystal=10 mines=13917/15000
+  ai_opponent: blue w=3 f=9
+  interaction: select=0 invalid=0 move=7 errors=0
+  behavior:
+    red_w0: idle dist=518 dir=not moving eff=79% spd=0
+    red_w1: idle dist=518 dir=not moving eff=79% spd=0
+    red_w2: idle dist=518 dir=not moving eff=67% spd=0
+    blue_w3: →hq dist=28 dir=→target eff=100% spd=120
+    blue_w4: →hq dist=28 dir=→target eff=100% spd=120
+    blue_w5: →hq dist=28 dir=→target eff=100% spd=120
+    blue_f6: wander dist=67 dir=not moving eff=1% ⚠️ spd=0 nav=Y
+    blue_f7: wander dist=22 dir=not moving eff=1% ⚠️ spd=0 nav=Y
+    red_w8: →hq dist=67 dir=→target eff=100% spd=120 nav=Y
+    blue_f10: wander dist=48 dir=not moving eff=13% ⚠️ spd=0 nav=Y
+    blue_f11: wander dist=44 dir=not moving eff=33% ⚠️ spd=0 nav=Y
+    blue_f12: wander dist=30 dir=not moving eff=9% ⚠️ spd=0 nav=Y
+    blue_f13: wander dist=27 dir=not moving eff=1% ⚠️ spd=0 nav=Y
+    blue_f14: wander dist=75 dir=not moving eff=100% spd=0 nav=Y
+    blue_f15: wander dist=42 dir=not moving eff=7% ⚠️ spd=0 nav=Y
+    blue_f16: wander dist=84 dir=→target eff=7% ⚠️ spd=150 nav=Y
+  ux_viewport: camera=(1280,832) zoom=1.0 visible=(-190,-91)-(2750,1755)
+  ux_signals:
+    #60 selection_rect_drawn([P: (0.0, 0.0), S: (2560.0, 1664.0)])
+    #60 prod_panel_shown(HQ_red)
+    #662 selection_rect_drawn([P: (0.0, 0.0), S: (2560.0, 1664.0)])
+    #662 prod_panel_shown(HQ_red)
+    #1264 selection_rect_drawn([P: (432.0, 752.0), S: (160.0, 160.0)])
+    #1264 prod_panel_shown(HQ_red)
+    #1269 produce_requested(worker)
+    #1269 enqueue_result(worker, true)
+    #1569 selection_rect_drawn([P: (432.0, 752.0), S: (160.0, 160.0)])
+    #1569 prod_panel_shown(HQ_red)
+    #1574 produce_requested(archer)
+    #1574 enqueue_result(archer, true)
+[TICK 6890] 17 alive (5R / 12B) kills=0 total=(5R/12B)
+  states: ?:6 idle:3 move_to_mine:3 wander:10 returning:1
+  economy: red_crystal=225 blue_crystal=40 mines=13917/15000
+  ai_opponent: blue w=3 f=9
+  interaction: select=0 invalid=0 move=7 errors=0
+  behavior:
+    red_w0: idle dist=518 dir=not moving eff=79% spd=0
+    red_w1: idle dist=518 dir=not moving eff=79% spd=0
+    red_w2: idle dist=518 dir=not moving eff=67% spd=0
+    blue_w3: →mine dist=136 dir=←away eff=100% spd=120 DIVERGING
+    blue_w4: →mine dist=136 dir=←away eff=100% spd=120 DIVERGING
+    blue_w5: →mine dist=136 dir=←away eff=100% spd=120 DIVERGING
+    blue_f6: wander dist=67 dir=not moving eff=1% ⚠️ spd=0 nav=Y
+    blue_f7: wander dist=22 dir=not moving eff=1% ⚠️ spd=0 nav=Y
+    red_w8: →hq dist=47 dir=→target eff=100% spd=119 nav=Y
+    blue_f10: wander dist=48 dir=not moving eff=13% ⚠️ spd=0 nav=Y
+    blue_f11: wander dist=44 dir=not moving eff=33% ⚠️ spd=0 nav=Y
+    blue_f12: wander dist=30 dir=not moving eff=9% ⚠️ spd=0 nav=Y
+    blue_f13: wander dist=27 dir=not moving eff=1% ⚠️ spd=0 nav=Y
+    blue_f14: wander dist=75 dir=not moving eff=100% spd=0 nav=Y
+    blue_f15: wander dist=42 dir=not moving eff=7% ⚠️ spd=0 nav=Y
+    blue_f16: wander dist=59 dir=→target eff=7% ⚠️ spd=149 nav=Y
+  ux_viewport: camera=(1280,832) zoom=1.0 visible=(-190,-91)-(2750,1755)
+  ux_signals:
+    #60 selection_rect_drawn([P: (0.0, 0.0), S: (2560.0, 1664.0)])
+    #60 prod_panel_shown(HQ_red)
+    #662 selection_rect_drawn([P: (0.0, 0.0), S: (2560.0, 1664.0)])
+    #662 prod_panel_shown(HQ_red)
+    #1264 selection_rect_drawn([P: (432.0, 752.0), S: (160.0, 160.0)])
+    #1264 prod_panel_shown(HQ_red)
+    #1269 produce_requested(worker)
+    #1269 enqueue_result(worker, true)
+    #1569 selection_rect_drawn([P: (432.0, 752.0), S: (160.0, 160.0)])
+    #1569 prod_panel_shown(HQ_red)
+    #1574 produce_requested(archer)
+    #1574 enqueue_result(archer, true)
+[TICK 6900] 17 alive (5R / 12B) kills=0 total=(5R/12B)
+  states: ?:6 idle:3 move_to_mine:3 wander:10 returning:1
+  economy: red_crystal=225 blue_crystal=40 mines=13917/15000
+  ai_opponent: blue w=3 f=9
+  interaction: select=0 invalid=0 move=7 errors=0
+  behavior:
+    red_w0: idle dist=518 dir=not moving eff=79% spd=0
+    red_w1: idle dist=518 dir=not moving eff=79% spd=0
+    red_w2: idle dist=518 dir=not moving eff=67% spd=0
+    blue_w3: →mine dist=116 dir=→target eff=90% spd=120
+    blue_w4: →mine dist=116 dir=→target eff=90% spd=120
+    blue_w5: →mine dist=116 dir=→target eff=90% spd=120
+    blue_f6: wander dist=67 dir=not moving eff=1% ⚠️ spd=0 nav=Y
+    blue_f7: wander dist=22 dir=not moving eff=1% ⚠️ spd=0 nav=Y
+    red_w8: →hq dist=27 dir=→target eff=100% spd=117 nav=Y
+    blue_f10: wander dist=48 dir=not moving eff=13% ⚠️ spd=0 nav=Y
+    blue_f11: wander dist=44 dir=not moving eff=33% ⚠️ spd=0 nav=Y
+    blue_f12: wander dist=30 dir=not moving eff=9% ⚠️ spd=0 nav=Y
+    blue_f13: wander dist=27 dir=not moving eff=1% ⚠️ spd=0 nav=Y
+    blue_f14: wander dist=75 dir=not moving eff=100% spd=0 nav=Y
+    blue_f15: wander dist=42 dir=not moving eff=7% ⚠️ spd=0 nav=Y
+    blue_f16: wander dist=34 dir=→target eff=6% ⚠️ spd=148 nav=Y
+  ux_viewport: camera=(1280,832) zoom=1.0 visible=(-190,-91)-(2750,1755)
+  ux_signals:
+    #60 selection_rect_drawn([P: (0.0, 0.0), S: (2560.0, 1664.0)])
+    #60 prod_panel_shown(HQ_red)
+    #662 selection_rect_drawn([P: (0.0, 0.0), S: (2560.0, 1664.0)])
+    #662 prod_panel_shown(HQ_red)
+    #1264 selection_rect_drawn([P: (432.0, 752.0), S: (160.0, 160.0)])
+    #1264 prod_panel_shown(HQ_red)
+    #1269 produce_requested(worker)
+    #1269 enqueue_result(worker, true)
+    #1569 selection_rect_drawn([P: (432.0, 752.0), S: (160.0, 160.0)])
+    #1569 prod_panel_shown(HQ_red)
+    #1574 produce_requested(archer)
+    #1574 enqueue_result(archer, true)
+[TICK 6910] 17 alive (5R / 12B) kills=0 total=(5R/12B)
+  states: ?:6 idle:3 move_to_mine:4 wander:10
+  economy: red_crystal=235 blue_crystal=40 mines=13917/15000
+  ai_opponent: blue w=3 f=9
+  interaction: select=0 invalid=0 move=7 errors=0
+  behavior:
+    red_w0: idle dist=518 dir=not moving eff=79% spd=0
+    red_w1: idle dist=518 dir=not moving eff=79% spd=0
+    red_w2: idle dist=518 dir=not moving eff=67% spd=0
+    blue_w3: →mine dist=96 dir=→target eff=79% spd=120
+    blue_w4: →mine dist=96 dir=→target eff=79% spd=120
+    blue_w5: →mine dist=96 dir=→target eff=79% spd=120
+    blue_f6: wander dist=67 dir=not moving eff=1% ⚠️ spd=0 nav=Y
+    blue_f7: wander dist=22 dir=not moving eff=1% ⚠️ spd=0 nav=Y
+    red_w8: →mine dist=175 dir=←away eff=100% spd=119 nav=Y DIVERGING
+    blue_f10: wander dist=48 dir=not moving eff=13% ⚠️ spd=0 nav=Y
+    blue_f11: wander dist=44 dir=not moving eff=33% ⚠️ spd=0 nav=Y
+    blue_f12: wander dist=30 dir=not moving eff=9% ⚠️ spd=0 nav=Y
+    blue_f13: wander dist=27 dir=not moving eff=1% ⚠️ spd=0 nav=Y
+    blue_f14: wander dist=75 dir=not moving eff=100% spd=0 nav=Y
+    blue_f15: wander dist=42 dir=not moving eff=7% ⚠️ spd=0 nav=Y
+    blue_f16: wander dist=63 dir=⊥perp eff=6% ⚠️ spd=149 nav=Y ~indirect
+  ux_viewport: camera=(1280,832) zoom=1.0 visible=(-190,-91)-(2750,1755)
+  ux_signals:
+    #60 selection_rect_drawn([P: (0.0, 0.0), S: (2560.0, 1664.0)])
+    #60 prod_panel_shown(HQ_red)
+    #662 selection_rect_drawn([P: (0.0, 0.0), S: (2560.0, 1664.0)])
+    #662 prod_panel_shown(HQ_red)
+    #1264 selection_rect_drawn([P: (432.0, 752.0), S: (160.0, 160.0)])
+    #1264 prod_panel_shown(HQ_red)
+    #1269 produce_requested(worker)
+    #1269 enqueue_result(worker, true)
+    #1569 selection_rect_drawn([P: (432.0, 752.0), S: (160.0, 160.0)])
+    #1569 prod_panel_shown(HQ_red)
+    #1574 produce_requested(archer)
+    #1574 enqueue_result(archer, true)
+[TICK 6920] 17 alive (5R / 12B) kills=0 total=(5R/12B)
+  states: ?:6 idle:3 move_to_mine:4 wander:10
+  economy: red_crystal=235 blue_crystal=40 mines=13917/15000
+  ai_opponent: blue w=3 f=9
+  interaction: select=0 invalid=0 move=7 errors=0
+  behavior:
+    red_w0: idle dist=518 dir=not moving eff=79% spd=0
+    red_w1: idle dist=518 dir=not moving eff=79% spd=0
+    red_w2: idle dist=518 dir=not moving eff=67% spd=0
+    blue_w3: →mine dist=76 dir=→target eff=70% spd=120
+    blue_w4: →mine dist=76 dir=→target eff=70% spd=120
+    blue_w5: →mine dist=76 dir=→target eff=70% spd=120
+    blue_f6: wander dist=67 dir=not moving eff=1% ⚠️ spd=0 nav=Y
+    blue_f7: wander dist=22 dir=not moving eff=1% ⚠️ spd=0 nav=Y
+    red_w8: →mine dist=155 dir=→target eff=91% spd=119 nav=Y
+    blue_f10: wander dist=48 dir=not moving eff=13% ⚠️ spd=0 nav=Y
+    blue_f11: wander dist=44 dir=not moving eff=33% ⚠️ spd=0 nav=Y
+    blue_f12: wander dist=30 dir=not moving eff=9% ⚠️ spd=0 nav=Y
+    blue_f13: wander dist=27 dir=not moving eff=1% ⚠️ spd=0 nav=Y
+    blue_f14: wander dist=75 dir=not moving eff=100% spd=0 nav=Y
+    blue_f15: wander dist=42 dir=not moving eff=7% ⚠️ spd=0 nav=Y
+    blue_f16: wander dist=38 dir=→target eff=6% ⚠️ spd=148 nav=Y
+  ux_viewport: camera=(1280,832) zoom=1.0 visible=(-190,-91)-(2750,1755)
+  ux_signals:
+    #60 selection_rect_drawn([P: (0.0, 0.0), S: (2560.0, 1664.0)])
+    #60 prod_panel_shown(HQ_red)
+    #662 selection_rect_drawn([P: (0.0, 0.0), S: (2560.0, 1664.0)])
+    #662 prod_panel_shown(HQ_red)
+    #1264 selection_rect_drawn([P: (432.0, 752.0), S: (160.0, 160.0)])
+    #1264 prod_panel_shown(HQ_red)
+    #1269 produce_requested(worker)
+    #1269 enqueue_result(worker, true)
+    #1569 selection_rect_drawn([P: (432.0, 752.0), S: (160.0, 160.0)])
+    #1569 prod_panel_shown(HQ_red)
+    #1574 produce_requested(archer)
+    #1574 enqueue_result(archer, true)
+[TICK 6930] 17 alive (5R / 12B) kills=0 total=(5R/12B)
+  states: ?:6 idle:3 move_to_mine:4 wander:10
+  economy: red_crystal=235 blue_crystal=40 mines=13917/15000
+  ai_opponent: blue w=3 f=9
+  interaction: select=0 invalid=0 move=7 errors=0
+  behavior:
+    red_w0: idle dist=518 dir=not moving eff=79% spd=0
+    red_w1: idle dist=518 dir=not moving eff=79% spd=0
+    red_w2: idle dist=518 dir=not moving eff=67% spd=0
+    blue_w3: →mine dist=56 dir=→target eff=63% spd=120
+    blue_w4: →mine dist=56 dir=→target eff=63% spd=120
+    blue_w5: →mine dist=56 dir=→target eff=63% spd=120
+    blue_f6: wander dist=67 dir=not moving eff=1% ⚠️ spd=0 nav=Y
+    blue_f7: wander dist=22 dir=not moving eff=1% ⚠️ spd=0 nav=Y
+    red_w8: →mine dist=136 dir=→target eff=82% spd=114 nav=Y
+    blue_f10: wander dist=48 dir=not moving eff=13% ⚠️ spd=0 nav=Y
+    blue_f11: wander dist=44 dir=not moving eff=33% ⚠️ spd=0 nav=Y
+    blue_f12: wander dist=30 dir=not moving eff=9% ⚠️ spd=0 nav=Y
+    blue_f13: wander dist=27 dir=not moving eff=1% ⚠️ spd=0 nav=Y
+    blue_f14: wander dist=75 dir=not moving eff=100% spd=0 nav=Y
+    blue_f15: wander dist=42 dir=not moving eff=7% ⚠️ spd=0 nav=Y
+    blue_f16: wander dist=156 dir=→near eff=6% ⚠️ spd=150 nav=Y
+  ux_viewport: camera=(1280,832) zoom=1.0 visible=(-190,-91)-(2750,1755)
+  ux_signals:
+    #60 selection_rect_drawn([P: (0.0, 0.0), S: (2560.0, 1664.0)])
+    #60 prod_panel_shown(HQ_red)
+    #662 selection_rect_drawn([P: (0.0, 0.0), S: (2560.0, 1664.0)])
+    #662 prod_panel_shown(HQ_red)
+    #1264 selection_rect_drawn([P: (432.0, 752.0), S: (160.0, 160.0)])
+    #1264 prod_panel_shown(HQ_red)
+    #1269 produce_requested(worker)
+    #1269 enqueue_result(worker, true)
+    #1569 selection_rect_drawn([P: (432.0, 752.0), S: (160.0, 160.0)])
+    #1569 prod_panel_shown(HQ_red)
+    #1574 produce_requested(archer)
+    #1574 enqueue_result(archer, true)
+[TICK 6940] 17 alive (5R / 12B) kills=0 total=(5R/12B)
+  states: ?:6 idle:3 move_to_mine:4 wander:10
+  economy: red_crystal=235 blue_crystal=40 mines=13917/15000
+  ai_opponent: blue w=3 f=9
+  interaction: select=0 invalid=0 move=7 errors=0
+  behavior:
+    red_w0: idle dist=518 dir=not moving eff=79% spd=0
+    red_w1: idle dist=518 dir=not moving eff=79% spd=0
+    red_w2: idle dist=518 dir=not moving eff=67% spd=0
+    blue_w3: →mine dist=36 dir=→target eff=58% spd=120
+    blue_w4: →mine dist=36 dir=→target eff=58% spd=120
+    blue_w5: →mine dist=36 dir=→target eff=58% spd=120
+    blue_f6: wander dist=67 dir=not moving eff=1% ⚠️ spd=0 nav=Y
+    blue_f7: wander dist=22 dir=not moving eff=1% ⚠️ spd=0 nav=Y
+    red_w8: →mine dist=116 dir=→target eff=75% spd=120 nav=Y
+    blue_f10: wander dist=48 dir=not moving eff=13% ⚠️ spd=0 nav=Y
+    blue_f11: wander dist=44 dir=not moving eff=33% ⚠️ spd=0 nav=Y
+    blue_f12: wander dist=30 dir=not moving eff=9% ⚠️ spd=0 nav=Y
+    blue_f13: wander dist=27 dir=not moving eff=1% ⚠️ spd=0 nav=Y
+    blue_f14: wander dist=75 dir=not moving eff=100% spd=0 nav=Y
+    blue_f15: wander dist=42 dir=not moving eff=7% ⚠️ spd=0 nav=Y
+    blue_f16: wander dist=131 dir=→target eff=6% ⚠️ spd=150 nav=Y
+  ux_viewport: camera=(1280,832) zoom=1.0 visible=(-190,-91)-(2750,1755)
+  ux_signals:
+    #60 selection_rect_drawn([P: (0.0, 0.0), S: (2560.0, 1664.0)])
+    #60 prod_panel_shown(HQ_red)
+    #662 selection_rect_drawn([P: (0.0, 0.0), S: (2560.0, 1664.0)])
+    #662 prod_panel_shown(HQ_red)
+    #1264 selection_rect_drawn([P: (432.0, 752.0), S: (160.0, 160.0)])
+    #1264 prod_panel_shown(HQ_red)
+    #1269 produce_requested(worker)
+    #1269 enqueue_result(worker, true)
+    #1569 selection_rect_drawn([P: (432.0, 752.0), S: (160.0, 160.0)])
+    #1569 prod_panel_shown(HQ_red)
+    #1574 produce_requested(archer)
+    #1574 enqueue_result(archer, true)
+[TICK 6950] 17 alive (5R / 12B) kills=0 total=(5R/12B)
+  states: ?:6 idle:3 move_to_mine:4 wander:10
+  economy: red_crystal=235 blue_crystal=40 mines=13917/15000
+  ai_opponent: blue w=3 f=9
+  interaction: select=0 invalid=0 move=7 errors=0
+  behavior:
+    red_w0: idle dist=518 dir=not moving eff=79% spd=0
+    red_w1: idle dist=518 dir=not moving eff=79% spd=0
+    red_w2: idle dist=518 dir=not moving eff=67% spd=0
+    blue_w3: →mine dist=16 dir=→target eff=53% spd=120
+    blue_w4: →mine dist=16 dir=→target eff=53% spd=120
+    blue_w5: →mine dist=16 dir=→target eff=53% spd=120
+    blue_f6: wander dist=67 dir=not moving eff=1% ⚠️ spd=0 nav=Y
+    blue_f7: wander dist=22 dir=not moving eff=1% ⚠️ spd=0 nav=Y
+    red_w8: →mine dist=97 dir=→target eff=69% spd=120 nav=Y
+    blue_f10: wander dist=48 dir=not moving eff=13% ⚠️ spd=0 nav=Y
+    blue_f11: wander dist=44 dir=not moving eff=33% ⚠️ spd=0 nav=Y
+    blue_f12: wander dist=30 dir=not moving eff=9% ⚠️ spd=0 nav=Y
+    blue_f13: wander dist=27 dir=not moving eff=1% ⚠️ spd=0 nav=Y
+    blue_f14: wander dist=75 dir=not moving eff=100% spd=0 nav=Y
+    blue_f15: wander dist=42 dir=not moving eff=7% ⚠️ spd=0 nav=Y
+    blue_f16: wander dist=106 dir=→target eff=6% ⚠️ spd=150 nav=Y
+  ux_viewport: camera=(1280,832) zoom=1.0 visible=(-190,-91)-(2750,1755)
+  ux_signals:
+    #60 selection_rect_drawn([P: (0.0, 0.0), S: (2560.0, 1664.0)])
+    #60 prod_panel_shown(HQ_red)
+    #662 selection_rect_drawn([P: (0.0, 0.0), S: (2560.0, 1664.0)])
+    #662 prod_panel_shown(HQ_red)
+    #1264 selection_rect_drawn([P: (432.0, 752.0), S: (160.0, 160.0)])
+    #1264 prod_panel_shown(HQ_red)
+    #1269 produce_requested(worker)
+    #1269 enqueue_result(worker, true)
+    #1569 selection_rect_drawn([P: (432.0, 752.0), S: (160.0, 160.0)])
+    #1569 prod_panel_shown(HQ_red)
+    #1574 produce_requested(archer)
+    #1574 enqueue_result(archer, true)
+[TICK 6960] 17 alive (5R / 12B) kills=0 total=(5R/12B)
+  states: ?:6 idle:3 harvesting:3 wander:10 move_to_mine:1
+  economy: red_crystal=235 blue_crystal=40 mines=13915/15000
+  ai_opponent: blue w=3 f=9
+  interaction: select=0 invalid=0 move=7 errors=0
+  behavior:
+    red_w0: idle dist=518 dir=not moving eff=79% spd=0
+    red_w1: idle dist=518 dir=not moving eff=79% spd=0
+    red_w2: idle dist=518 dir=not moving eff=67% spd=0
+    blue_w3: harvesting
+    blue_w4: harvesting
+    blue_w5: harvesting
+    blue_f6: wander dist=67 dir=not moving eff=1% ⚠️ spd=0 nav=Y
+    blue_f7: wander dist=22 dir=not moving eff=1% ⚠️ spd=0 nav=Y
+    red_w8: →mine dist=77 dir=→target eff=63% spd=120 nav=Y
+    blue_f10: wander dist=48 dir=not moving eff=13% ⚠️ spd=0 nav=Y
+    blue_f11: wander dist=44 dir=not moving eff=33% ⚠️ spd=0 nav=Y
+    blue_f12: wander dist=30 dir=not moving eff=9% ⚠️ spd=0 nav=Y
+    blue_f13: wander dist=27 dir=not moving eff=1% ⚠️ spd=0 nav=Y
+    blue_f14: wander dist=75 dir=not moving eff=100% spd=0 nav=Y
+    blue_f15: wander dist=42 dir=not moving eff=7% ⚠️ spd=0 nav=Y
+    blue_f16: wander dist=81 dir=→target eff=6% ⚠️ spd=150 nav=Y
+  ux_viewport: camera=(1280,832) zoom=1.0 visible=(-190,-91)-(2750,1755)
+  ux_signals:
+    #60 selection_rect_drawn([P: (0.0, 0.0), S: (2560.0, 1664.0)])
+    #60 prod_panel_shown(HQ_red)
+    #662 selection_rect_drawn([P: (0.0, 0.0), S: (2560.0, 1664.0)])
+    #662 prod_panel_shown(HQ_red)
+    #1264 selection_rect_drawn([P: (432.0, 752.0), S: (160.0, 160.0)])
+    #1264 prod_panel_shown(HQ_red)
+    #1269 produce_requested(worker)
+    #1269 enqueue_result(worker, true)
+    #1569 selection_rect_drawn([P: (432.0, 752.0), S: (160.0, 160.0)])
+    #1569 prod_panel_shown(HQ_red)
+    #1574 produce_requested(archer)
+    #1574 enqueue_result(archer, true)
+[TICK 6970] 17 alive (5R / 12B) kills=0 total=(5R/12B)
+  states: ?:6 idle:3 harvesting:3 wander:10 move_to_mine:1
+  economy: red_crystal=235 blue_crystal=40 mines=13911/15000
+  ai_opponent: blue w=3 f=9
+  interaction: select=0 invalid=0 move=7 errors=0
+  behavior:
+    red_w0: idle dist=518 dir=not moving eff=79% spd=0
+    red_w1: idle dist=518 dir=not moving eff=79% spd=0
+    red_w2: idle dist=518 dir=not moving eff=67% spd=0
+    blue_w3: harvesting
+    blue_w4: harvesting
+    blue_w5: harvesting
+    blue_f6: wander dist=67 dir=not moving eff=1% ⚠️ spd=0 nav=Y
+    blue_f7: wander dist=22 dir=not moving eff=1% ⚠️ spd=0 nav=Y
+    red_w8: →mine dist=57 dir=→target eff=59% spd=119 nav=Y
+    blue_f10: wander dist=48 dir=not moving eff=13% ⚠️ spd=0 nav=Y
+    blue_f11: wander dist=44 dir=not moving eff=33% ⚠️ spd=0 nav=Y
+    blue_f12: wander dist=30 dir=not moving eff=9% ⚠️ spd=0 nav=Y
+    blue_f13: wander dist=27 dir=not moving eff=1% ⚠️ spd=0 nav=Y
+    blue_f14: wander dist=75 dir=not moving eff=100% spd=0 nav=Y
+    blue_f15: wander dist=42 dir=not moving eff=7% ⚠️ spd=0 nav=Y
+    blue_f16: wander dist=56 dir=→target eff=6% ⚠️ spd=149 nav=Y
+  ux_viewport: camera=(1280,832) zoom=1.0 visible=(-190,-91)-(2750,1755)
+  ux_signals:
+    #60 selection_rect_drawn([P: (0.0, 0.0), S: (2560.0, 1664.0)])
+    #60 prod_panel_shown(HQ_red)
+    #662 selection_rect_drawn([P: (0.0, 0.0), S: (2560.0, 1664.0)])
+    #662 prod_panel_shown(HQ_red)
+    #1264 selection_rect_drawn([P: (432.0, 752.0), S: (160.0, 160.0)])
+    #1264 prod_panel_shown(HQ_red)
+    #1269 produce_requested(worker)
+    #1269 enqueue_result(worker, true)
+    #1569 selection_rect_drawn([P: (432.0, 752.0), S: (160.0, 160.0)])
+    #1569 prod_panel_shown(HQ_red)
+    #1574 produce_requested(archer)
+    #1574 enqueue_result(archer, true)
+[TICK 6980] 17 alive (5R / 12B) kills=0 total=(5R/12B)
+  states: ?:6 idle:3 harvesting:3 wander:10 move_to_mine:1
+  economy: red_crystal=235 blue_crystal=40 mines=13908/15000
+  ai_opponent: blue w=3 f=9
+  interaction: select=0 invalid=0 move=7 errors=0
+  behavior:
+    red_w0: idle dist=518 dir=not moving eff=79% spd=0
+    red_w1: idle dist=518 dir=not moving eff=79% spd=0
+    red_w2: idle dist=518 dir=not moving eff=67% spd=0
+    blue_w3: harvesting
+    blue_w4: harvesting
+    blue_w5: harvesting
+    blue_f6: wander dist=67 dir=not moving eff=1% ⚠️ spd=0 nav=Y
+    blue_f7: wander dist=22 dir=not moving eff=1% ⚠️ spd=0 nav=Y
+    red_w8: →mine dist=37 dir=→target eff=55% spd=119 nav=Y
+    blue_f10: wander dist=48 dir=not moving eff=13% ⚠️ spd=0 nav=Y
+    blue_f11: wander dist=44 dir=not moving eff=33% ⚠️ spd=0 nav=Y
+    blue_f12: wander dist=30 dir=not moving eff=9% ⚠️ spd=0 nav=Y
+    blue_f13: wander dist=27 dir=not moving eff=1% ⚠️ spd=0 nav=Y
+    blue_f14: wander dist=75 dir=not moving eff=100% spd=0 nav=Y
+    blue_f15: wander dist=42 dir=not moving eff=7% ⚠️ spd=0 nav=Y
+    blue_f16: wander dist=31 dir=→target eff=6% ⚠️ spd=148 nav=Y
+  ux_viewport: camera=(1280,832) zoom=1.0 visible=(-190,-91)-(2750,1755)
+  ux_signals:
+    #60 selection_rect_drawn([P: (0.0, 0.0), S: (2560.0, 1664.0)])
+    #60 prod_panel_shown(HQ_red)
+    #662 selection_rect_drawn([P: (0.0, 0.0), S: (2560.0, 1664.0)])
+    #662 prod_panel_shown(HQ_red)
+    #1264 selection_rect_drawn([P: (432.0, 752.0), S: (160.0, 160.0)])
+    #1264 prod_panel_shown(HQ_red)
+    #1269 produce_requested(worker)
+    #1269 enqueue_result(worker, true)
+    #1569 selection_rect_drawn([P: (432.0, 752.0), S: (160.0, 160.0)])
+    #1569 prod_panel_shown(HQ_red)
+    #1574 produce_requested(archer)
+    #1574 enqueue_result(archer, true)
+[TICK 6990] 17 alive (5R / 12B) kills=0 total=(5R/12B)
+  states: ?:6 idle:3 harvesting:3 wander:10 move_to_mine:1
+  economy: red_crystal=235 blue_crystal=40 mines=13905/15000
+  ai_opponent: blue w=3 f=9
+  interaction: select=0 invalid=0 move=7 errors=0
+  behavior:
+    red_w0: idle dist=518 dir=not moving eff=79% spd=0
+    red_w1: idle dist=518 dir=not moving eff=79% spd=0
+    red_w2: idle dist=518 dir=not moving eff=67% spd=0
+    blue_w3: harvesting
+    blue_w4: harvesting
+    blue_w5: harvesting
+    blue_f6: wander dist=67 dir=not moving eff=1% ⚠️ spd=0 nav=Y
+    blue_f7: wander dist=22 dir=not moving eff=1% ⚠️ spd=0 nav=Y
+    red_w8: →mine dist=17 dir=→target eff=52% spd=115 nav=Y
+    blue_f10: wander dist=48 dir=not moving eff=13% ⚠️ spd=0 nav=Y
+    blue_f11: wander dist=44 dir=not moving eff=33% ⚠️ spd=0 nav=Y
+    blue_f12: wander dist=30 dir=not moving eff=9% ⚠️ spd=0 nav=Y
+    blue_f13: wander dist=27 dir=not moving eff=1% ⚠️ spd=0 nav=Y
+    blue_f14: wander dist=75 dir=not moving eff=100% spd=0 nav=Y
+    blue_f15: wander dist=42 dir=not moving eff=7% ⚠️ spd=0 nav=Y
+    blue_f16: wander dist=146 dir=→near eff=6% ⚠️ spd=147 nav=Y
+  ux_viewport: camera=(1280,832) zoom=1.0 visible=(-190,-91)-(2750,1755)
+  ux_signals:
+    #60 selection_rect_drawn([P: (0.0, 0.0), S: (2560.0, 1664.0)])
+    #60 prod_panel_shown(HQ_red)
+    #662 selection_rect_drawn([P: (0.0, 0.0), S: (2560.0, 1664.0)])
+    #662 prod_panel_shown(HQ_red)
+    #1264 selection_rect_drawn([P: (432.0, 752.0), S: (160.0, 160.0)])
+    #1264 prod_panel_shown(HQ_red)
+    #1269 produce_requested(worker)
+    #1269 enqueue_result(worker, true)
+    #1569 selection_rect_drawn([P: (432.0, 752.0), S: (160.0, 160.0)])
+    #1569 prod_panel_shown(HQ_red)
+    #1574 produce_requested(archer)
+    #1574 enqueue_result(archer, true)
+
+[TICK 7000] 17 alive (5R / 12B) kills=0 total=(5R/12B)
+  states: ?:6 idle:3 harvesting:4 wander:10
+  economy: red_crystal=235 blue_crystal=40 mines=13901/15000
+  ai_opponent: blue w=3 f=9
+  interaction: select=0 invalid=0 move=7 errors=0
+  behavior:
+    red_w0: idle dist=518 dir=not moving eff=79% spd=0
+    red_w1: idle dist=518 dir=not moving eff=79% spd=0
+    red_w2: idle dist=518 dir=not moving eff=67% spd=0
+    blue_w3: harvesting
+    blue_w4: harvesting
+    blue_w5: harvesting
+    blue_f6: wander dist=67 dir=not moving eff=1% ⚠️ spd=0 nav=Y
+    blue_f7: wander dist=22 dir=not moving eff=1% ⚠️ spd=0 nav=Y
+    red_w8: harvesting
+    blue_f10: wander dist=48 dir=not moving eff=13% ⚠️ spd=0 nav=Y
+    blue_f11: wander dist=44 dir=not moving eff=33% ⚠️ spd=0 nav=Y
+    blue_f12: wander dist=30 dir=not moving eff=9% ⚠️ spd=0 nav=Y
+    blue_f13: wander dist=27 dir=not moving eff=1% ⚠️ spd=0 nav=Y
+    blue_f14: wander dist=75 dir=not moving eff=100% spd=0 nav=Y
+    blue_f15: wander dist=42 dir=not moving eff=7% ⚠️ spd=0 nav=Y
+    blue_f16: wander dist=121 dir=→target eff=5% ⚠️ spd=150 nav=Y
+  ux_viewport: camera=(1280,832) zoom=1.0 visible=(-190,-91)-(2750,1755)
+  ux_signals:
+    #60 selection_rect_drawn([P: (0.0, 0.0), S: (2560.0, 1664.0)])
+    #60 prod_panel_shown(HQ_red)
+    #662 selection_rect_drawn([P: (0.0, 0.0), S: (2560.0, 1664.0)])
+    #662 prod_panel_shown(HQ_red)
+    #1264 selection_rect_drawn([P: (432.0, 752.0), S: (160.0, 160.0)])
+    #1264 prod_panel_shown(HQ_red)
+    #1269 produce_requested(worker)
+    #1269 enqueue_result(worker, true)
+    #1569 selection_rect_drawn([P: (432.0, 752.0), S: (160.0, 160.0)])
+    #1569 prod_panel_shown(HQ_red)
+    #1574 produce_requested(archer)
+    #1574 enqueue_result(archer, true)
+[TICK 7010] 17 alive (5R / 12B) kills=0 total=(5R/12B)
+  states: ?:6 idle:3 harvesting:4 wander:10
+  economy: red_crystal=235 blue_crystal=40 mines=13897/15000
+  ai_opponent: blue w=3 f=9
+  interaction: select=0 invalid=0 move=7 errors=0
+  behavior:
+    red_w0: idle dist=518 dir=not moving eff=79% spd=0
+    red_w1: idle dist=518 dir=not moving eff=79% spd=0
+    red_w2: idle dist=518 dir=not moving eff=67% spd=0
+    blue_w3: harvesting
+    blue_w4: harvesting
+    blue_w5: harvesting
+    blue_f6: wander dist=67 dir=not moving eff=1% ⚠️ spd=0 nav=Y
+    blue_f7: wander dist=22 dir=not moving eff=1% ⚠️ spd=0 nav=Y
+    red_w8: harvesting
+    blue_f10: wander dist=48 dir=not moving eff=13% ⚠️ spd=0 nav=Y
+    blue_f11: wander dist=44 dir=not moving eff=33% ⚠️ spd=0 nav=Y
+    blue_f12: wander dist=30 dir=not moving eff=9% ⚠️ spd=0 nav=Y
+    blue_f13: wander dist=27 dir=not moving eff=1% ⚠️ spd=0 nav=Y
+    blue_f14: wander dist=75 dir=not moving eff=100% spd=0 nav=Y
+    blue_f15: wander dist=42 dir=not moving eff=7% ⚠️ spd=0 nav=Y
+    blue_f16: wander dist=96 dir=→target eff=5% ⚠️ spd=150 nav=Y
+  ux_viewport: camera=(1280,832) zoom=1.0 visible=(-190,-91)-(2750,1755)
+  ux_signals:
+    #60 selection_rect_drawn([P: (0.0, 0.0), S: (2560.0, 1664.0)])
+    #60 prod_panel_shown(HQ_red)
+    #662 selection_rect_drawn([P: (0.0, 0.0), S: (2560.0, 1664.0)])
+    #662 prod_panel_shown(HQ_red)
+    #1264 selection_rect_drawn([P: (432.0, 752.0), S: (160.0, 160.0)])
+    #1264 prod_panel_shown(HQ_red)
+    #1269 produce_requested(worker)
+    #1269 enqueue_result(worker, true)
+    #1569 selection_rect_drawn([P: (432.0, 752.0), S: (160.0, 160.0)])
+    #1569 prod_panel_shown(HQ_red)
+    #1574 produce_requested(archer)
+    #1574 enqueue_result(archer, true)
+[TICK 7020] 17 alive (5R / 12B) kills=0 total=(5R/12B)
+  states: ?:6 idle:3 harvesting:4 wander:10
+  economy: red_crystal=235 blue_crystal=40 mines=13892/15000
+  ai_opponent: blue w=3 f=9
+  interaction: select=0 invalid=0 move=7 errors=0
+  behavior:
+    red_w0: idle dist=518 dir=not moving eff=79% spd=0
+    red_w1: idle dist=518 dir=not moving eff=79% spd=0
+    red_w2: idle dist=518 dir=not moving eff=67% spd=0
+    blue_w3: harvesting
+    blue_w4: harvesting
+    blue_w5: harvesting
+    blue_f6: wander dist=67 dir=not moving eff=1% ⚠️ spd=0 nav=Y
+    blue_f7: wander dist=22 dir=not moving eff=1% ⚠️ spd=0 nav=Y
+    red_w8: harvesting
+    blue_f10: wander dist=48 dir=not moving eff=13% ⚠️ spd=0 nav=Y
+    blue_f11: wander dist=44 dir=not moving eff=33% ⚠️ spd=0 nav=Y
+    blue_f12: wander dist=30 dir=not moving eff=9% ⚠️ spd=0 nav=Y
+    blue_f13: wander dist=27 dir=not moving eff=1% ⚠️ spd=0 nav=Y
+    blue_f14: wander dist=75 dir=not moving eff=100% spd=0 nav=Y
+    blue_f15: wander dist=42 dir=not moving eff=7% ⚠️ spd=0 nav=Y
+    blue_f16: wander dist=71 dir=→target eff=5% ⚠️ spd=150 nav=Y
+  ux_viewport: camera=(1280,832) zoom=1.0 visible=(-190,-91)-(2750,1755)
+  ux_signals:
+    #60 selection_rect_drawn([P: (0.0, 0.0), S: (2560.0, 1664.0)])
+    #60 prod_panel_shown(HQ_red)
+    #662 selection_rect_drawn([P: (0.0, 0.0), S: (2560.0, 1664.0)])
+    #662 prod_panel_shown(HQ_red)
+    #1264 selection_rect_drawn([P: (432.0, 752.0), S: (160.0, 160.0)])
+    #1264 prod_panel_shown(HQ_red)
+    #1269 produce_requested(worker)
+    #1269 enqueue_result(worker, true)
+    #1569 selection_rect_drawn([P: (432.0, 752.0), S: (160.0, 160.0)])
+    #1569 prod_panel_shown(HQ_red)
+    #1574 produce_requested(archer)
+    #1574 enqueue_result(archer, true)
+[TICK 7030] 17 alive (5R / 12B) kills=0 total=(5R/12B)
+  states: ?:6 idle:3 harvesting:4 wander:10
+  economy: red_crystal=235 blue_crystal=40 mines=13887/15000
+  ai_opponent: blue w=3 f=9
+  interaction: select=0 invalid=0 move=7 errors=0
+  behavior:
+    red_w0: idle dist=518 dir=not moving eff=79% spd=0
+    red_w1: idle dist=518 dir=not moving eff=79% spd=0
+    red_w2: idle dist=518 dir=not moving eff=67% spd=0
+    blue_w3: harvesting
+    blue_w4: harvesting
+    blue_w5: harvesting
+    blue_f6: wander dist=67 dir=not moving eff=1% ⚠️ spd=0 nav=Y
+    blue_f7: wander dist=22 dir=not moving eff=1% ⚠️ spd=0 nav=Y
+    red_w8: harvesting
+    blue_f10: wander dist=48 dir=not moving eff=13% ⚠️ spd=0 nav=Y
+    blue_f11: wander dist=44 dir=not moving eff=33% ⚠️ spd=0 nav=Y
+    blue_f12: wander dist=30 dir=not moving eff=9% ⚠️ spd=0 nav=Y
+    blue_f13: wander dist=27 dir=not moving eff=1% ⚠️ spd=0 nav=Y
+    blue_f14: wander dist=75 dir=not moving eff=100% spd=0 nav=Y
+    blue_f15: wander dist=42 dir=not moving eff=7% ⚠️ spd=0 nav=Y
+    blue_f16: wander dist=46 dir=→target eff=5% ⚠️ spd=149 nav=Y
+  ux_viewport: camera=(1280,832) zoom=1.0 visible=(-190,-91)-(2750,1755)
+  ux_signals:
+    #60 selection_rect_drawn([P: (0.0, 0.0), S: (2560.0, 1664.0)])
+    #60 prod_panel_shown(HQ_red)
+    #662 selection_rect_drawn([P: (0.0, 0.0), S: (2560.0, 1664.0)])
+    #662 prod_panel_shown(HQ_red)
+    #1264 selection_rect_drawn([P: (432.0, 752.0), S: (160.0, 160.0)])
+    #1264 prod_panel_shown(HQ_red)
+    #1269 produce_requested(worker)
+    #1269 enqueue_result(worker, true)
+    #1569 selection_rect_drawn([P: (432.0, 752.0), S: (160.0, 160.0)])
+    #1569 prod_panel_shown(HQ_red)
+    #1574 produce_requested(archer)
+    #1574 enqueue_result(archer, true)
+[TICK 7040] 17 alive (5R / 12B) kills=0 total=(5R/12B)
+  states: ?:6 idle:3 harvesting:4 wander:10
+  economy: red_crystal=235 blue_crystal=40 mines=13883/15000
+  ai_opponent: blue w=3 f=9
+  interaction: select=0 invalid=0 move=7 errors=0
+  behavior:
+    red_w0: idle dist=518 dir=not moving eff=79% spd=0
+    red_w1: idle dist=518 dir=not moving eff=79% spd=0
+    red_w2: idle dist=518 dir=not moving eff=67% spd=0
+    blue_w3: harvesting
+    blue_w4: harvesting
+    blue_w5: harvesting
+    blue_f6: wander dist=67 dir=not moving eff=1% ⚠️ spd=0 nav=Y
+    blue_f7: wander dist=22 dir=not moving eff=1% ⚠️ spd=0 nav=Y
+    red_w8: harvesting
+    blue_f10: wander dist=48 dir=not moving eff=13% ⚠️ spd=0 nav=Y
+    blue_f11: wander dist=44 dir=not moving eff=33% ⚠️ spd=0 nav=Y
+    blue_f12: wander dist=30 dir=not moving eff=9% ⚠️ spd=0 nav=Y
+    blue_f13: wander dist=27 dir=not moving eff=1% ⚠️ spd=0 nav=Y
+    blue_f14: wander dist=75 dir=not moving eff=100% spd=0 nav=Y
+    blue_f15: wander dist=42 dir=not moving eff=7% ⚠️ spd=0 nav=Y
+    blue_f16: wander dist=22 dir=→target eff=5% ⚠️ spd=146 nav=Y
+  ux_viewport: camera=(1280,832) zoom=1.0 visible=(-190,-91)-(2750,1755)
+  ux_signals:
+    #60 selection_rect_drawn([P: (0.0, 0.0), S: (2560.0, 1664.0)])
+    #60 prod_panel_shown(HQ_red)
+    #662 selection_rect_drawn([P: (0.0, 0.0), S: (2560.0, 1664.0)])
+    #662 prod_panel_shown(HQ_red)
+    #1264 selection_rect_drawn([P: (432.0, 752.0), S: (160.0, 160.0)])
+    #1264 prod_panel_shown(HQ_red)
+    #1269 produce_requested(worker)
+    #1269 enqueue_result(worker, true)
+    #1569 selection_rect_drawn([P: (432.0, 752.0), S: (160.0, 160.0)])
+    #1569 prod_panel_shown(HQ_red)
+    #1574 produce_requested(archer)
+    #1574 enqueue_result(archer, true)
+[TICK 7050] 17 alive (5R / 12B) kills=0 total=(5R/12B)
+  states: ?:6 idle:3 returning:3 wander:10 harvesting:1
+  economy: red_crystal=235 blue_crystal=40 mines=13881/15000
+  ai_opponent: blue w=3 f=9
+  interaction: select=0 invalid=0 move=7 errors=0
+  behavior:
+    red_w0: idle dist=518 dir=not moving eff=79% spd=0
+    red_w1: idle dist=518 dir=not moving eff=79% spd=0
+    red_w2: idle dist=518 dir=not moving eff=67% spd=0
+    blue_w3: →hq dist=124 dir=→target eff=100% spd=120
+    blue_w4: →hq dist=124 dir=→target eff=100% spd=120
+    blue_w5: →hq dist=124 dir=→target eff=100% spd=120
+    blue_f6: wander dist=67 dir=not moving eff=1% ⚠️ spd=0 nav=Y
+    blue_f7: wander dist=22 dir=not moving eff=1% ⚠️ spd=0 nav=Y
+    red_w8: harvesting
+    blue_f10: wander dist=48 dir=not moving eff=13% ⚠️ spd=0 nav=Y
+    blue_f11: wander dist=44 dir=not moving eff=33% ⚠️ spd=0 nav=Y
+    blue_f12: wander dist=30 dir=not moving eff=9% ⚠️ spd=0 nav=Y
+    blue_f13: wander dist=27 dir=not moving eff=1% ⚠️ spd=0 nav=Y
+    blue_f14: wander dist=75 dir=not moving eff=100% spd=0 nav=Y
+    blue_f15: wander dist=42 dir=not moving eff=7% ⚠️ spd=0 nav=Y
+    blue_f16: wander dist=159 dir=→target eff=5% ⚠️ spd=150 nav=Y
+  ux_viewport: camera=(1280,832) zoom=1.0 visible=(-190,-91)-(2750,1755)
+  ux_signals:
+    #60 selection_rect_drawn([P: (0.0, 0.0), S: (2560.0, 1664.0)])
+    #60 prod_panel_shown(HQ_red)
+    #662 selection_rect_drawn([P: (0.0, 0.0), S: (2560.0, 1664.0)])
+    #662 prod_panel_shown(HQ_red)
+    #1264 selection_rect_drawn([P: (432.0, 752.0), S: (160.0, 160.0)])
+    #1264 prod_panel_shown(HQ_red)
+    #1269 produce_requested(worker)
+    #1269 enqueue_result(worker, true)
+    #1569 selection_rect_drawn([P: (432.0, 752.0), S: (160.0, 160.0)])
+    #1569 prod_panel_shown(HQ_red)
+    #1574 produce_requested(archer)
+    #1574 enqueue_result(archer, true)
+[TICK 7060] 17 alive (5R / 12B) kills=0 total=(5R/12B)
+  states: ?:6 idle:3 returning:3 wander:10 harvesting:1
+  economy: red_crystal=235 blue_crystal=40 mines=13880/15000
+  ai_opponent: blue w=3 f=9
+  interaction: select=0 invalid=0 move=7 errors=0
+  behavior:
+    red_w0: idle dist=518 dir=not moving eff=79% spd=0
+    red_w1: idle dist=518 dir=not moving eff=79% spd=0
+    red_w2: idle dist=518 dir=not moving eff=67% spd=0
+    blue_w3: →hq dist=104 dir=→target eff=100% spd=120
+    blue_w4: →hq dist=104 dir=→target eff=100% spd=120
+    blue_w5: →hq dist=104 dir=→target eff=100% spd=120
+    blue_f6: wander dist=67 dir=not moving eff=1% ⚠️ spd=0 nav=Y
+    blue_f7: wander dist=22 dir=not moving eff=1% ⚠️ spd=0 nav=Y
+    red_w8: harvesting
+    blue_f10: wander dist=48 dir=not moving eff=13% ⚠️ spd=0 nav=Y
+    blue_f11: wander dist=44 dir=not moving eff=33% ⚠️ spd=0 nav=Y
+    blue_f12: wander dist=30 dir=not moving eff=9% ⚠️ spd=0 nav=Y
+    blue_f13: wander dist=27 dir=not moving eff=1% ⚠️ spd=0 nav=Y
+    blue_f14: wander dist=75 dir=not moving eff=100% spd=0 nav=Y
+    blue_f15: wander dist=42 dir=not moving eff=7% ⚠️ spd=0 nav=Y
+    blue_f16: wander dist=134 dir=→target eff=5% ⚠️ spd=150 nav=Y
+  ux_viewport: camera=(1280,832) zoom=1.0 visible=(-190,-91)-(2750,1755)
+  ux_signals:
+    #60 selection_rect_drawn([P: (0.0, 0.0), S: (2560.0, 1664.0)])
+    #60 prod_panel_shown(HQ_red)
+    #662 selection_rect_drawn([P: (0.0, 0.0), S: (2560.0, 1664.0)])
+    #662 prod_panel_shown(HQ_red)
+    #1264 selection_rect_drawn([P: (432.0, 752.0), S: (160.0, 160.0)])
+    #1264 prod_panel_shown(HQ_red)
+    #1269 produce_requested(worker)
+    #1269 enqueue_result(worker, true)
+    #1569 selection_rect_drawn([P: (432.0, 752.0), S: (160.0, 160.0)])
+    #1569 prod_panel_shown(HQ_red)
+    #1574 produce_requested(archer)
+    #1574 enqueue_result(archer, true)
+[TICK 7070] 17 alive (5R / 12B) kills=0 total=(5R/12B)
+  states: ?:6 idle:3 returning:3 wander:10 harvesting:1
+  economy: red_crystal=235 blue_crystal=40 mines=13879/15000
+  ai_opponent: blue w=3 f=9
+  interaction: select=0 invalid=0 move=7 errors=0
+  behavior:
+    red_w0: idle dist=518 dir=not moving eff=79% spd=0
+    red_w1: idle dist=518 dir=not moving eff=79% spd=0
+    red_w2: idle dist=518 dir=not moving eff=67% spd=0
+    blue_w3: →hq dist=84 dir=→target eff=100% spd=120
+    blue_w4: →hq dist=84 dir=→target eff=100% spd=120
+    blue_w5: →hq dist=84 dir=→target eff=100% spd=120
+    blue_f6: wander dist=67 dir=not moving eff=1% ⚠️ spd=0 nav=Y
+    blue_f7: wander dist=22 dir=not moving eff=1% ⚠️ spd=0 nav=Y
+    red_w8: harvesting
+    blue_f10: wander dist=48 dir=not moving eff=13% ⚠️ spd=0 nav=Y
+    blue_f11: wander dist=44 dir=not moving eff=33% ⚠️ spd=0 nav=Y
+    blue_f12: wander dist=30 dir=not moving eff=9% ⚠️ spd=0 nav=Y
+    blue_f13: wander dist=27 dir=not moving eff=1% ⚠️ spd=0 nav=Y
+    blue_f14: wander dist=75 dir=not moving eff=100% spd=0 nav=Y
+    blue_f15: wander dist=42 dir=not moving eff=7% ⚠️ spd=0 nav=Y
+    blue_f16: wander dist=109 dir=→target eff=5% ⚠️ spd=150 nav=Y
+  ux_viewport: camera=(1280,832) zoom=1.0 visible=(-190,-91)-(2750,1755)
+  ux_signals:
+    #60 selection_rect_drawn([P: (0.0, 0.0), S: (2560.0, 1664.0)])
+    #60 prod_panel_shown(HQ_red)
+    #662 selection_rect_drawn([P: (0.0, 0.0), S: (2560.0, 1664.0)])
+    #662 prod_panel_shown(HQ_red)
+    #1264 selection_rect_drawn([P: (432.0, 752.0), S: (160.0, 160.0)])
+    #1264 prod_panel_shown(HQ_red)
+    #1269 produce_requested(worker)
+    #1269 enqueue_result(worker, true)
+    #1569 selection_rect_drawn([P: (432.0, 752.0), S: (160.0, 160.0)])
+    #1569 prod_panel_shown(HQ_red)
+    #1574 produce_requested(archer)
+    #1574 enqueue_result(archer, true)
+[TICK 7080] 18 alive (5R / 13B) kills=0 total=(5R/13B)
+  states: ?:6 idle:3 returning:3 wander:11 harvesting:1
+  economy: red_crystal=235 blue_crystal=40 mines=13878/15000
+  ai_opponent: blue w=3 f=10
+  interaction: select=0 invalid=0 move=7 errors=0
+  behavior:
+    red_w0: idle dist=518 dir=not moving eff=79% spd=0
+    red_w1: idle dist=518 dir=not moving eff=79% spd=0
+    red_w2: idle dist=518 dir=not moving eff=67% spd=0
+    blue_w3: →hq dist=64 dir=→target eff=100% spd=120
+    blue_w4: →hq dist=64 dir=→target eff=100% spd=120
+    blue_w5: →hq dist=64 dir=→target eff=100% spd=120
+    blue_f6: wander dist=67 dir=not moving eff=1% ⚠️ spd=0 nav=Y
+    blue_f7: wander dist=22 dir=not moving eff=1% ⚠️ spd=0 nav=Y
+    red_w8: harvesting
+    blue_f10: wander dist=48 dir=not moving eff=13% ⚠️ spd=0 nav=Y
+    blue_f11: wander dist=44 dir=not moving eff=33% ⚠️ spd=0 nav=Y
+    blue_f12: wander dist=30 dir=not moving eff=9% ⚠️ spd=0 nav=Y
+    blue_f13: wander dist=27 dir=not moving eff=1% ⚠️ spd=0 nav=Y
+    blue_f14: wander dist=75 dir=not moving eff=100% spd=0 nav=Y
+    blue_f15: wander dist=42 dir=not moving eff=7% ⚠️ spd=0 nav=Y
+    blue_f16: wander dist=85 dir=→target eff=5% ⚠️ spd=150 nav=Y
+    blue_f17: wander dist=97 dir= spd=148 nav=Y
+  ux_viewport: camera=(1280,832) zoom=1.0 visible=(-190,-91)-(2750,1755)
+  ux_signals:
+    #60 selection_rect_drawn([P: (0.0, 0.0), S: (2560.0, 1664.0)])
+    #60 prod_panel_shown(HQ_red)
+    #662 selection_rect_drawn([P: (0.0, 0.0), S: (2560.0, 1664.0)])
+    #662 prod_panel_shown(HQ_red)
+    #1264 selection_rect_drawn([P: (432.0, 752.0), S: (160.0, 160.0)])
+    #1264 prod_panel_shown(HQ_red)
+    #1269 produce_requested(worker)
+    #1269 enqueue_result(worker, true)
+    #1569 selection_rect_drawn([P: (432.0, 752.0), S: (160.0, 160.0)])
+    #1569 prod_panel_shown(HQ_red)
+    #1574 produce_requested(archer)
+    #1574 enqueue_result(archer, true)
+[TICK 7090] 18 alive (5R / 13B) kills=0 total=(5R/13B)
+  states: ?:6 idle:3 returning:4 wander:11
+  economy: red_crystal=235 blue_crystal=40 mines=13877/15000
+  ai_opponent: blue w=3 f=10
+  interaction: select=0 invalid=0 move=7 errors=0
+  behavior:
+    red_w0: idle dist=518 dir=not moving eff=79% spd=0
+    red_w1: idle dist=518 dir=not moving eff=79% spd=0
+    red_w2: idle dist=518 dir=not moving eff=67% spd=0
+    blue_w3: →hq dist=44 dir=→target eff=100% spd=120
+    blue_w4: →hq dist=44 dir=→target eff=100% spd=120
+    blue_w5: →hq dist=44 dir=→target eff=100% spd=120
+    blue_f6: wander dist=67 dir=not moving eff=1% ⚠️ spd=0 nav=Y
+    blue_f7: wander dist=22 dir=not moving eff=1% ⚠️ spd=0 nav=Y
+    red_w8: →hq dist=165 dir=→target eff=100% spd=120 nav=Y
+    blue_f10: wander dist=48 dir=not moving eff=13% ⚠️ spd=0 nav=Y
+    blue_f11: wander dist=44 dir=not moving eff=33% ⚠️ spd=0 nav=Y
+    blue_f12: wander dist=30 dir=not moving eff=9% ⚠️ spd=0 nav=Y
+    blue_f13: wander dist=27 dir=not moving eff=1% ⚠️ spd=0 nav=Y
+    blue_f14: wander dist=75 dir=not moving eff=100% spd=0 nav=Y
+    blue_f15: wander dist=42 dir=not moving eff=7% ⚠️ spd=0 nav=Y
+    blue_f16: wander dist=60 dir=→target eff=5% ⚠️ spd=149 nav=Y
+    blue_f17: wander dist=73 dir=→target eff=100% spd=150 nav=Y
+  ux_viewport: camera=(1280,832) zoom=1.0 visible=(-190,-91)-(2750,1755)
+  ux_signals:
+    #60 selection_rect_drawn([P: (0.0, 0.0), S: (2560.0, 1664.0)])
+    #60 prod_panel_shown(HQ_red)
+    #662 selection_rect_drawn([P: (0.0, 0.0), S: (2560.0, 1664.0)])
+    #662 prod_panel_shown(HQ_red)
+    #1264 selection_rect_drawn([P: (432.0, 752.0), S: (160.0, 160.0)])
+    #1264 prod_panel_shown(HQ_red)
+    #1269 produce_requested(worker)
+    #1269 enqueue_result(worker, true)
+    #1569 selection_rect_drawn([P: (432.0, 752.0), S: (160.0, 160.0)])
+    #1569 prod_panel_shown(HQ_red)
+    #1574 produce_requested(archer)
+    #1574 enqueue_result(archer, true)
+[TICK 7100] 18 alive (5R / 13B) kills=0 total=(5R/13B)
+  states: ?:6 idle:3 returning:4 wander:11
+  economy: red_crystal=235 blue_crystal=40 mines=13877/15000
+  ai_opponent: blue w=3 f=10
+  interaction: select=0 invalid=0 move=7 errors=0
+  behavior:
+    red_w0: idle dist=518 dir=not moving eff=79% spd=0
+    red_w1: idle dist=518 dir=not moving eff=79% spd=0
+    red_w2: idle dist=518 dir=not moving eff=67% spd=0
+    blue_w3: →hq dist=24 dir=→target eff=100% spd=120
+    blue_w4: →hq dist=24 dir=→target eff=100% spd=120
+    blue_w5: →hq dist=24 dir=→target eff=100% spd=120
+    blue_f6: wander dist=67 dir=not moving eff=1% ⚠️ spd=0 nav=Y
+    blue_f7: wander dist=22 dir=not moving eff=1% ⚠️ spd=0 nav=Y
+    red_w8: →hq dist=145 dir=→target eff=100% spd=120 nav=Y
+    blue_f10: wander dist=48 dir=not moving eff=13% ⚠️ spd=0 nav=Y
+    blue_f11: wander dist=44 dir=not moving eff=33% ⚠️ spd=0 nav=Y
+    blue_f12: wander dist=30 dir=not moving eff=9% ⚠️ spd=0 nav=Y
+    blue_f13: wander dist=27 dir=not moving eff=1% ⚠️ spd=0 nav=Y
+    blue_f14: wander dist=75 dir=not moving eff=100% spd=0 nav=Y
+    blue_f15: wander dist=42 dir=not moving eff=7% ⚠️ spd=0 nav=Y
+    blue_f16: wander dist=35 dir=→target eff=5% ⚠️ spd=148 nav=Y
+    blue_f17: wander dist=48 dir=→target eff=100% spd=149 nav=Y
+  ux_viewport: camera=(1280,832) zoom=1.0 visible=(-190,-91)-(2750,1755)
+  ux_signals:
+    #60 selection_rect_drawn([P: (0.0, 0.0), S: (2560.0, 1664.0)])
+    #60 prod_panel_shown(HQ_red)
+    #662 selection_rect_drawn([P: (0.0, 0.0), S: (2560.0, 1664.0)])
+    #662 prod_panel_shown(HQ_red)
+    #1264 selection_rect_drawn([P: (432.0, 752.0), S: (160.0, 160.0)])
+    #1264 prod_panel_shown(HQ_red)
+    #1269 produce_requested(worker)
+    #1269 enqueue_result(worker, true)
+    #1569 selection_rect_drawn([P: (432.0, 752.0), S: (160.0, 160.0)])
+    #1569 prod_panel_shown(HQ_red)
+    #1574 produce_requested(archer)
+    #1574 enqueue_result(archer, true)
+[TICK 7110] 18 alive (5R / 13B) kills=0 total=(5R/13B)
+  states: ?:6 idle:3 move_to_mine:3 wander:11 returning:1
+  economy: red_crystal=235 blue_crystal=70 mines=13877/15000
+  ai_opponent: blue w=3 f=10
+  interaction: select=0 invalid=0 move=7 errors=0
+  behavior:
+    red_w0: idle dist=518 dir=not moving eff=79% spd=0
+    red_w1: idle dist=518 dir=not moving eff=79% spd=0
+    red_w2: idle dist=518 dir=not moving eff=67% spd=0
+    blue_w3: →mine dist=132 dir=←away eff=100% spd=120 DIVERGING
+    blue_w4: →mine dist=132 dir=←away eff=100% spd=120 DIVERGING
+    blue_w5: →mine dist=132 dir=←away eff=100% spd=120 DIVERGING
+    blue_f6: wander dist=67 dir=not moving eff=1% ⚠️ spd=0 nav=Y
+    blue_f7: wander dist=22 dir=not moving eff=1% ⚠️ spd=0 nav=Y
+    red_w8: →hq dist=125 dir=→target eff=100% spd=119 nav=Y
+    blue_f10: wander dist=48 dir=not moving eff=13% ⚠️ spd=0 nav=Y
+    blue_f11: wander dist=44 dir=not moving eff=33% ⚠️ spd=0 nav=Y
+    blue_f12: wander dist=30 dir=not moving eff=9% ⚠️ spd=0 nav=Y
+    blue_f13: wander dist=27 dir=not moving eff=1% ⚠️ spd=0 nav=Y
+    blue_f14: wander dist=75 dir=not moving eff=100% spd=0 nav=Y
+    blue_f15: wander dist=42 dir=not moving eff=7% ⚠️ spd=0 nav=Y
+    blue_f16: wander dist=50 dir=←away eff=5% ⚠️ spd=149 nav=Y DIVERGING
+    blue_f17: wander dist=23 dir=→target eff=100% spd=146 nav=Y
+  ux_viewport: camera=(1280,832) zoom=1.0 visible=(-190,-91)-(2750,1755)
+  ux_signals:
+    #60 selection_rect_drawn([P: (0.0, 0.0), S: (2560.0, 1664.0)])
+    #60 prod_panel_shown(HQ_red)
+    #662 selection_rect_drawn([P: (0.0, 0.0), S: (2560.0, 1664.0)])
+    #662 prod_panel_shown(HQ_red)
+    #1264 selection_rect_drawn([P: (432.0, 752.0), S: (160.0, 160.0)])
+    #1264 prod_panel_shown(HQ_red)
+    #1269 produce_requested(worker)
+    #1269 enqueue_result(worker, true)
+    #1569 selection_rect_drawn([P: (432.0, 752.0), S: (160.0, 160.0)])
+    #1569 prod_panel_shown(HQ_red)
+    #1574 produce_requested(archer)
+    #1574 enqueue_result(archer, true)
+[TICK 7120] 18 alive (5R / 13B) kills=0 total=(5R/13B)
+  states: ?:6 idle:3 move_to_mine:3 wander:11 returning:1
+  economy: red_crystal=235 blue_crystal=70 mines=13877/15000
+  ai_opponent: blue w=3 f=10
+  interaction: select=0 invalid=0 move=7 errors=0
+  behavior:
+    red_w0: idle dist=518 dir=not moving eff=79% spd=0
+    red_w1: idle dist=518 dir=not moving eff=79% spd=0
+    red_w2: idle dist=518 dir=not moving eff=67% spd=0
+    blue_w3: →mine dist=112 dir=→target eff=90% spd=120
+    blue_w4: →mine dist=112 dir=→target eff=90% spd=120
+    blue_w5: →mine dist=112 dir=→target eff=90% spd=120
+    blue_f6: wander dist=67 dir=not moving eff=1% ⚠️ spd=0 nav=Y
+    blue_f7: wander dist=22 dir=not moving eff=1% ⚠️ spd=0 nav=Y
+    red_w8: →hq dist=106 dir=→target eff=100% spd=118 nav=Y
+    blue_f10: wander dist=48 dir=not moving eff=13% ⚠️ spd=0 nav=Y
+    blue_f11: wander dist=44 dir=not moving eff=33% ⚠️ spd=0 nav=Y
+    blue_f12: wander dist=30 dir=not moving eff=9% ⚠️ spd=0 nav=Y
+    blue_f13: wander dist=27 dir=not moving eff=1% ⚠️ spd=0 nav=Y
+    blue_f14: wander dist=75 dir=not moving eff=100% spd=0 nav=Y
+    blue_f15: wander dist=42 dir=not moving eff=7% ⚠️ spd=0 nav=Y
+    blue_f16: wander dist=25 dir=→target eff=5% ⚠️ spd=147 nav=Y
+    blue_f17: wander dist=91 dir=→target eff=100% spd=148 nav=Y
+  ux_viewport: camera=(1280,832) zoom=1.0 visible=(-190,-91)-(2750,1755)
+  ux_signals:
+    #60 selection_rect_drawn([P: (0.0, 0.0), S: (2560.0, 1664.0)])
+    #60 prod_panel_shown(HQ_red)
+    #662 selection_rect_drawn([P: (0.0, 0.0), S: (2560.0, 1664.0)])
+    #662 prod_panel_shown(HQ_red)
+    #1264 selection_rect_drawn([P: (432.0, 752.0), S: (160.0, 160.0)])
+    #1264 prod_panel_shown(HQ_red)
+    #1269 produce_requested(worker)
+    #1269 enqueue_result(worker, true)
+    #1569 selection_rect_drawn([P: (432.0, 752.0), S: (160.0, 160.0)])
+    #1569 prod_panel_shown(HQ_red)
+    #1574 produce_requested(archer)
+    #1574 enqueue_result(archer, true)
+[TICK 7130] 18 alive (5R / 13B) kills=0 total=(5R/13B)
+  states: ?:6 idle:3 move_to_mine:3 wander:11 returning:1
+  economy: red_crystal=235 blue_crystal=70 mines=13877/15000
+  ai_opponent: blue w=3 f=10
+  interaction: select=0 invalid=0 move=7 errors=0
+  behavior:
+    red_w0: idle dist=518 dir=not moving eff=79% spd=0
+    red_w1: idle dist=518 dir=not moving eff=79% spd=0
+    red_w2: idle dist=518 dir=not moving eff=67% spd=0
+    blue_w3: →mine dist=92 dir=→target eff=78% spd=120
+    blue_w4: →mine dist=92 dir=→target eff=78% spd=120
+    blue_w5: →mine dist=92 dir=→target eff=78% spd=120
+    blue_f6: wander dist=67 dir=not moving eff=1% ⚠️ spd=0 nav=Y
+    blue_f7: wander dist=22 dir=not moving eff=1% ⚠️ spd=0 nav=Y
+    red_w8: →hq dist=86 dir=→target eff=100% spd=113 nav=Y
+    blue_f10: wander dist=48 dir=not moving eff=13% ⚠️ spd=0 nav=Y
+    blue_f11: wander dist=44 dir=not moving eff=33% ⚠️ spd=0 nav=Y
+    blue_f12: wander dist=30 dir=not moving eff=9% ⚠️ spd=0 nav=Y
+    blue_f13: wander dist=27 dir=not moving eff=1% ⚠️ spd=0 nav=Y
+    blue_f14: wander dist=75 dir=not moving eff=100% spd=0 nav=Y
+    blue_f15: wander dist=42 dir=not moving eff=7% ⚠️ spd=0 nav=Y
+    blue_f16: wander dist=100 dir=→target eff=5% ⚠️ spd=150 nav=Y
+    blue_f17: wander dist=66 dir=→target eff=83% spd=149 nav=Y
+  ux_viewport: camera=(1280,832) zoom=1.0 visible=(-190,-91)-(2750,1755)
+  ux_signals:
+    #60 selection_rect_drawn([P: (0.0, 0.0), S: (2560.0, 1664.0)])
+    #60 prod_panel_shown(HQ_red)
+    #662 selection_rect_drawn([P: (0.0, 0.0), S: (2560.0, 1664.0)])
+    #662 prod_panel_shown(HQ_red)
+    #1264 selection_rect_drawn([P: (432.0, 752.0), S: (160.0, 160.0)])
+    #1264 prod_panel_shown(HQ_red)
+    #1269 produce_requested(worker)
+    #1269 enqueue_result(worker, true)
+    #1569 selection_rect_drawn([P: (432.0, 752.0), S: (160.0, 160.0)])
+    #1569 prod_panel_shown(HQ_red)
+    #1574 produce_requested(archer)
+    #1574 enqueue_result(archer, true)
+[TICK 7140] 18 alive (5R / 13B) kills=0 total=(5R/13B)
+  states: ?:6 idle:3 move_to_mine:3 wander:11 returning:1
+  economy: red_crystal=235 blue_crystal=70 mines=13877/15000
+  ai_opponent: blue w=3 f=10
+  interaction: select=0 invalid=0 move=7 errors=0
+  behavior:
+    red_w0: idle dist=518 dir=not moving eff=79% spd=0
+    red_w1: idle dist=518 dir=not moving eff=79% spd=0
+    red_w2: idle dist=518 dir=not moving eff=67% spd=0
+    blue_w3: →mine dist=72 dir=→target eff=70% spd=120
+    blue_w4: →mine dist=72 dir=→target eff=70% spd=120
+    blue_w5: →mine dist=72 dir=→target eff=69% spd=120
+    blue_f6: wander dist=67 dir=not moving eff=1% ⚠️ spd=0 nav=Y
+    blue_f7: wander dist=22 dir=not moving eff=1% ⚠️ spd=0 nav=Y
+    red_w8: →hq dist=67 dir=→target eff=100% spd=120 nav=Y
+    blue_f10: wander dist=48 dir=not moving eff=13% ⚠️ spd=0 nav=Y
+    blue_f11: wander dist=44 dir=not moving eff=33% ⚠️ spd=0 nav=Y
+    blue_f12: wander dist=30 dir=not moving eff=9% ⚠️ spd=0 nav=Y
+    blue_f13: wander dist=27 dir=not moving eff=1% ⚠️ spd=0 nav=Y
+    blue_f14: wander dist=75 dir=not moving eff=100% spd=0 nav=Y
+    blue_f15: wander dist=42 dir=not moving eff=7% ⚠️ spd=0 nav=Y
+    blue_f16: wander dist=75 dir=→target eff=4% ⚠️ spd=150 nav=Y
+    blue_f17: wander dist=41 dir=→target eff=69% spd=149 nav=Y
+  ux_viewport: camera=(1280,832) zoom=1.0 visible=(-190,-91)-(2750,1755)
+  ux_signals:
+    #60 selection_rect_drawn([P: (0.0, 0.0), S: (2560.0, 1664.0)])
+    #60 prod_panel_shown(HQ_red)
+    #662 selection_rect_drawn([P: (0.0, 0.0), S: (2560.0, 1664.0)])
+    #662 prod_panel_shown(HQ_red)
+    #1264 selection_rect_drawn([P: (432.0, 752.0), S: (160.0, 160.0)])
+    #1264 prod_panel_shown(HQ_red)
+    #1269 produce_requested(worker)
+    #1269 enqueue_result(worker, true)
+    #1569 selection_rect_drawn([P: (432.0, 752.0), S: (160.0, 160.0)])
+    #1569 prod_panel_shown(HQ_red)
+    #1574 produce_requested(archer)
+    #1574 enqueue_result(archer, true)
+[TICK 7150] 18 alive (5R / 13B) kills=0 total=(5R/13B)
+  states: ?:6 idle:3 move_to_mine:3 wander:11 returning:1
+  economy: red_crystal=235 blue_crystal=70 mines=13877/15000
+  ai_opponent: blue w=3 f=10
+  interaction: select=0 invalid=0 move=7 errors=0
+  behavior:
+    red_w0: idle dist=518 dir=not moving eff=79% spd=0
+    red_w1: idle dist=518 dir=not moving eff=79% spd=0
+    red_w2: idle dist=518 dir=not moving eff=67% spd=0
+    blue_w3: →mine dist=52 dir=→target eff=62% spd=120
+    blue_w4: →mine dist=52 dir=→target eff=62% spd=120
+    blue_w5: →mine dist=52 dir=→target eff=62% spd=120
+    blue_f6: wander dist=67 dir=not moving eff=1% ⚠️ spd=0 nav=Y
+    blue_f7: wander dist=22 dir=not moving eff=1% ⚠️ spd=0 nav=Y
+    red_w8: →hq dist=47 dir=→target eff=100% spd=119 nav=Y
+    blue_f10: wander dist=48 dir=not moving eff=13% ⚠️ spd=0 nav=Y
+    blue_f11: wander dist=44 dir=not moving eff=33% ⚠️ spd=0 nav=Y
+    blue_f12: wander dist=30 dir=not moving eff=9% ⚠️ spd=0 nav=Y
+    blue_f13: wander dist=27 dir=not moving eff=1% ⚠️ spd=0 nav=Y
+    blue_f14: wander dist=75 dir=not moving eff=100% spd=0 nav=Y
+    blue_f15: wander dist=42 dir=not moving eff=7% ⚠️ spd=0 nav=Y
+    blue_f16: wander dist=50 dir=→target eff=4% ⚠️ spd=149 nav=Y
+    blue_f17: wander dist=120 dir=→target eff=59% spd=145 nav=Y
+  ux_viewport: camera=(1280,832) zoom=1.0 visible=(-190,-91)-(2750,1755)
+  ux_signals:
+    #60 selection_rect_drawn([P: (0.0, 0.0), S: (2560.0, 1664.0)])
+    #60 prod_panel_shown(HQ_red)
+    #662 selection_rect_drawn([P: (0.0, 0.0), S: (2560.0, 1664.0)])
+    #662 prod_panel_shown(HQ_red)
+    #1264 selection_rect_drawn([P: (432.0, 752.0), S: (160.0, 160.0)])
+    #1264 prod_panel_shown(HQ_red)
+    #1269 produce_requested(worker)
+    #1269 enqueue_result(worker, true)
+    #1569 selection_rect_drawn([P: (432.0, 752.0), S: (160.0, 160.0)])
+    #1569 prod_panel_shown(HQ_red)
+    #1574 produce_requested(archer)
+    #1574 enqueue_result(archer, true)
+[TICK 7160] 18 alive (5R / 13B) kills=0 total=(5R/13B)
+  states: ?:6 idle:3 move_to_mine:3 wander:11 returning:1
+  economy: red_crystal=235 blue_crystal=70 mines=13877/15000
+  ai_opponent: blue w=3 f=10
+  interaction: select=0 invalid=0 move=7 errors=0
+  behavior:
+    red_w0: idle dist=518 dir=not moving eff=79% spd=0
+    red_w1: idle dist=518 dir=not moving eff=79% spd=0
+    red_w2: idle dist=518 dir=not moving eff=67% spd=0
+    blue_w3: →mine dist=32 dir=→target eff=57% spd=120
+    blue_w4: →mine dist=32 dir=→target eff=57% spd=120
+    blue_w5: →mine dist=32 dir=→target eff=57% spd=120
+    blue_f6: wander dist=67 dir=not moving eff=1% ⚠️ spd=0 nav=Y
+    blue_f7: wander dist=22 dir=not moving eff=1% ⚠️ spd=0 nav=Y
+    red_w8: →hq dist=27 dir=→target eff=100% spd=117 nav=Y
+    blue_f10: wander dist=48 dir=not moving eff=13% ⚠️ spd=0 nav=Y
+    blue_f11: wander dist=44 dir=not moving eff=33% ⚠️ spd=0 nav=Y
+    blue_f12: wander dist=30 dir=not moving eff=9% ⚠️ spd=0 nav=Y
+    blue_f13: wander dist=27 dir=not moving eff=1% ⚠️ spd=0 nav=Y
+    blue_f14: wander dist=75 dir=not moving eff=100% spd=0 nav=Y
+    blue_f15: wander dist=42 dir=not moving eff=7% ⚠️ spd=0 nav=Y
+    blue_f16: wander dist=25 dir=→target eff=4% ⚠️ spd=147 nav=Y
+    blue_f17: wander dist=95 dir=→target eff=52% spd=150 nav=Y
+  ux_viewport: camera=(1280,832) zoom=1.0 visible=(-190,-91)-(2750,1755)
+  ux_signals:
+    #60 selection_rect_drawn([P: (0.0, 0.0), S: (2560.0, 1664.0)])
+    #60 prod_panel_shown(HQ_red)
+    #662 selection_rect_drawn([P: (0.0, 0.0), S: (2560.0, 1664.0)])
+    #662 prod_panel_shown(HQ_red)
+    #1264 selection_rect_drawn([P: (432.0, 752.0), S: (160.0, 160.0)])
+    #1264 prod_panel_shown(HQ_red)
+    #1269 produce_requested(worker)
+    #1269 enqueue_result(worker, true)
+    #1569 selection_rect_drawn([P: (432.0, 752.0), S: (160.0, 160.0)])
+    #1569 prod_panel_shown(HQ_red)
+    #1574 produce_requested(archer)
+    #1574 enqueue_result(archer, true)
+[TICK 7170] 18 alive (5R / 13B) kills=0 total=(5R/13B)
+  states: ?:6 idle:3 harvesting:3 wander:11 move_to_mine:1
+  economy: red_crystal=245 blue_crystal=70 mines=13877/15000
+  ai_opponent: blue w=3 f=10
+  interaction: select=0 invalid=0 move=7 errors=0
+  behavior:
+    red_w0: idle dist=518 dir=not moving eff=79% spd=0
+    red_w1: idle dist=518 dir=not moving eff=79% spd=0
+    red_w2: idle dist=518 dir=not moving eff=67% spd=0
+    blue_w3: harvesting
+    blue_w4: harvesting
+    blue_w5: harvesting
+    blue_f6: wander dist=67 dir=not moving eff=1% ⚠️ spd=0 nav=Y
+    blue_f7: wander dist=22 dir=not moving eff=1% ⚠️ spd=0 nav=Y
+    red_w8: →mine dist=175 dir=←away eff=100% spd=119 nav=Y DIVERGING
+    blue_f10: wander dist=48 dir=not moving eff=13% ⚠️ spd=0 nav=Y
+    blue_f11: wander dist=44 dir=not moving eff=33% ⚠️ spd=0 nav=Y
+    blue_f12: wander dist=30 dir=not moving eff=9% ⚠️ spd=0 nav=Y
+    blue_f13: wander dist=27 dir=not moving eff=1% ⚠️ spd=0 nav=Y
+    blue_f14: wander dist=75 dir=not moving eff=100% spd=0 nav=Y
+    blue_f15: wander dist=42 dir=not moving eff=7% ⚠️ spd=0 nav=Y
+    blue_f16: wander dist=76 dir=→target eff=4% ⚠️ spd=150 nav=Y
+    blue_f17: wander dist=70 dir=→target eff=46% ⚠️ spd=149 nav=Y
+  ux_viewport: camera=(1280,832) zoom=1.0 visible=(-190,-91)-(2750,1755)
+  ux_signals:
+    #60 selection_rect_drawn([P: (0.0, 0.0), S: (2560.0, 1664.0)])
+    #60 prod_panel_shown(HQ_red)
+    #662 selection_rect_drawn([P: (0.0, 0.0), S: (2560.0, 1664.0)])
+    #662 prod_panel_shown(HQ_red)
+    #1264 selection_rect_drawn([P: (432.0, 752.0), S: (160.0, 160.0)])
+    #1264 prod_panel_shown(HQ_red)
+    #1269 produce_requested(worker)
+    #1269 enqueue_result(worker, true)
+    #1569 selection_rect_drawn([P: (432.0, 752.0), S: (160.0, 160.0)])
+    #1569 prod_panel_shown(HQ_red)
+    #1574 produce_requested(archer)
+    #1574 enqueue_result(archer, true)
+[TICK 7180] 18 alive (5R / 13B) kills=0 total=(5R/13B)
+  states: ?:6 idle:3 harvesting:3 wander:11 move_to_mine:1
+  economy: red_crystal=245 blue_crystal=70 mines=13874/15000
+  ai_opponent: blue w=3 f=10
+  interaction: select=0 invalid=0 move=7 errors=0
+  behavior:
+    red_w0: idle dist=518 dir=not moving eff=79% spd=0
+    red_w1: idle dist=518 dir=not moving eff=79% spd=0
+    red_w2: idle dist=518 dir=not moving eff=67% spd=0
+    blue_w3: harvesting
+    blue_w4: harvesting
+    blue_w5: harvesting
+    blue_f6: wander dist=67 dir=not moving eff=1% ⚠️ spd=0 nav=Y
+    blue_f7: wander dist=22 dir=not moving eff=1% ⚠️ spd=0 nav=Y
+    red_w8: →mine dist=155 dir=→target eff=91% spd=119 nav=Y
+    blue_f10: wander dist=48 dir=not moving eff=13% ⚠️ spd=0 nav=Y
+    blue_f11: wander dist=44 dir=not moving eff=33% ⚠️ spd=0 nav=Y
+    blue_f12: wander dist=30 dir=not moving eff=9% ⚠️ spd=0 nav=Y
+    blue_f13: wander dist=27 dir=not moving eff=1% ⚠️ spd=0 nav=Y
+    blue_f14: wander dist=75 dir=not moving eff=100% spd=0 nav=Y
+    blue_f15: wander dist=42 dir=not moving eff=7% ⚠️ spd=0 nav=Y
+    blue_f16: wander dist=52 dir=→target eff=4% ⚠️ spd=149 nav=Y
+    blue_f17: wander dist=46 dir=→target eff=41% ⚠️ spd=148 nav=Y
+  ux_viewport: camera=(1280,832) zoom=1.0 visible=(-190,-91)-(2750,1755)
+  ux_signals:
+    #60 selection_rect_drawn([P: (0.0, 0.0), S: (2560.0, 1664.0)])
+    #60 prod_panel_shown(HQ_red)
+    #662 selection_rect_drawn([P: (0.0, 0.0), S: (2560.0, 1664.0)])
+    #662 prod_panel_shown(HQ_red)
+    #1264 selection_rect_drawn([P: (432.0, 752.0), S: (160.0, 160.0)])
+    #1264 prod_panel_shown(HQ_red)
+    #1269 produce_requested(worker)
+    #1269 enqueue_result(worker, true)
+    #1569 selection_rect_drawn([P: (432.0, 752.0), S: (160.0, 160.0)])
+    #1569 prod_panel_shown(HQ_red)
+    #1574 produce_requested(archer)
+    #1574 enqueue_result(archer, true)
+[TICK 7190] 18 alive (5R / 13B) kills=0 total=(5R/13B)
+  states: ?:6 idle:3 harvesting:3 wander:11 move_to_mine:1
+  economy: red_crystal=245 blue_crystal=70 mines=13871/15000
+  ai_opponent: blue w=3 f=10
+  interaction: select=0 invalid=0 move=7 errors=0
+  behavior:
+    red_w0: idle dist=518 dir=not moving eff=79% spd=0
+    red_w1: idle dist=518 dir=not moving eff=79% spd=0
+    red_w2: idle dist=518 dir=not moving eff=67% spd=0
+    blue_w3: harvesting
+    blue_w4: harvesting
+    blue_w5: harvesting
+    blue_f6: wander dist=67 dir=not moving eff=1% ⚠️ spd=0 nav=Y
+    blue_f7: wander dist=22 dir=not moving eff=1% ⚠️ spd=0 nav=Y
+    red_w8: →mine dist=136 dir=→target eff=82% spd=114 nav=Y
+    blue_f10: wander dist=48 dir=not moving eff=13% ⚠️ spd=0 nav=Y
+    blue_f11: wander dist=44 dir=not moving eff=33% ⚠️ spd=0 nav=Y
+    blue_f12: wander dist=30 dir=not moving eff=9% ⚠️ spd=0 nav=Y
+    blue_f13: wander dist=27 dir=not moving eff=1% ⚠️ spd=0 nav=Y
+    blue_f14: wander dist=75 dir=not moving eff=100% spd=0 nav=Y
+    blue_f15: wander dist=42 dir=not moving eff=7% ⚠️ spd=0 nav=Y
+    blue_f16: wander dist=27 dir=→target eff=4% ⚠️ spd=147 nav=Y
+    blue_f17: wander dist=21 dir=→target eff=37% ⚠️ spd=145 nav=Y
+  ux_viewport: camera=(1280,832) zoom=1.0 visible=(-190,-91)-(2750,1755)
+  ux_signals:
+    #60 selection_rect_drawn([P: (0.0, 0.0), S: (2560.0, 1664.0)])
+    #60 prod_panel_shown(HQ_red)
+    #662 selection_rect_drawn([P: (0.0, 0.0), S: (2560.0, 1664.0)])
+    #662 prod_panel_shown(HQ_red)
+    #1264 selection_rect_drawn([P: (432.0, 752.0), S: (160.0, 160.0)])
+    #1264 prod_panel_shown(HQ_red)
+    #1269 produce_requested(worker)
+    #1269 enqueue_result(worker, true)
+    #1569 selection_rect_drawn([P: (432.0, 752.0), S: (160.0, 160.0)])
+    #1569 prod_panel_shown(HQ_red)
+    #1574 produce_requested(archer)
+    #1574 enqueue_result(archer, true)
+[TICK 7200] 18 alive (5R / 13B) kills=0 total=(5R/13B)
+  states: ?:6 idle:3 harvesting:3 wander:11 move_to_mine:1
+  economy: red_crystal=245 blue_crystal=70 mines=13867/15000
+  ai_opponent: blue w=3 f=10
+  interaction: select=0 invalid=0 move=7 errors=0
+  behavior:
+    red_w0: idle dist=518 dir=not moving eff=79% spd=0
+    red_w1: idle dist=518 dir=not moving eff=79% spd=0
+    red_w2: idle dist=518 dir=not moving eff=67% spd=0
+    blue_w3: harvesting
+    blue_w4: harvesting
+    blue_w5: harvesting
+    blue_f6: wander dist=67 dir=not moving eff=1% ⚠️ spd=0 nav=Y
+    blue_f7: wander dist=22 dir=not moving eff=1% ⚠️ spd=0 nav=Y
+    red_w8: →mine dist=116 dir=→target eff=75% spd=120 nav=Y
+    blue_f10: wander dist=48 dir=not moving eff=13% ⚠️ spd=0 nav=Y
+    blue_f11: wander dist=44 dir=not moving eff=33% ⚠️ spd=0 nav=Y
+    blue_f12: wander dist=30 dir=not moving eff=9% ⚠️ spd=0 nav=Y
+    blue_f13: wander dist=27 dir=not moving eff=1% ⚠️ spd=0 nav=Y
+    blue_f14: wander dist=75 dir=not moving eff=100% spd=0 nav=Y
+    blue_f15: wander dist=42 dir=not moving eff=7% ⚠️ spd=0 nav=Y
+    blue_f16: wander dist=51 dir=→target eff=4% ⚠️ spd=149 nav=Y
+    blue_f17: wander dist=129 dir=→target eff=35% ⚠️ spd=150 nav=Y
+  ux_viewport: camera=(1280,832) zoom=1.0 visible=(-190,-91)-(2750,1755)
+  ux_signals:
+    #60 selection_rect_drawn([P: (0.0, 0.0), S: (2560.0, 1664.0)])
+    #60 prod_panel_shown(HQ_red)
+    #662 selection_rect_drawn([P: (0.0, 0.0), S: (2560.0, 1664.0)])
+    #662 prod_panel_shown(HQ_red)
+    #1264 selection_rect_drawn([P: (432.0, 752.0), S: (160.0, 160.0)])
+    #1264 prod_panel_shown(HQ_red)
+    #1269 produce_requested(worker)
+    #1269 enqueue_result(worker, true)
+    #1569 selection_rect_drawn([P: (432.0, 752.0), S: (160.0, 160.0)])
+    #1569 prod_panel_shown(HQ_red)
+    #1574 produce_requested(archer)
+    #1574 enqueue_result(archer, true)

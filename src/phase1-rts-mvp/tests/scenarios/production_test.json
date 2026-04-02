@@ -1,0 +1,18 @@
+{
+  "name": "production_test",
+  "description": "验证框选 HQ → 生产 Worker 的完整链路",
+  "actions": [
+    {"action": "wait_frames", "params": {"n": 60}},
+    {"action": "box_select", "params": {"rect": "full_screen"}},
+    {"action": "wait_frames", "params": {"n": 2}},
+    {"action": "right_click", "params": {"target": "map_center"}},
+    {"action": "wait_frames", "params": {"n": 1200}},
+    {"action": "box_select", "params": {"rect": "red_hq_area"}},
+    {"action": "wait_frames", "params": {"n": 5}},
+    {"action": "click_button", "params": {"label": "Worker"}},
+    {"action": "wait_frames", "params": {"n": 60}},
+    {"action": "box_select", "params": {"rect": "full_screen"}},
+    {"action": "wait_frames", "params": {"n": 2}},
+    {"action": "right_click", "params": {"target": "blue_spawn"}}
+  ]
+}

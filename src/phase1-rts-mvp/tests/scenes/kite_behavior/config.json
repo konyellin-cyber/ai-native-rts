@@ -1,0 +1,11 @@
+{
+  "name": "kite_behavior",
+  "map": { "width": 500, "height": 500 },
+  "units": [
+    { "type": "archer",  "team": "red",  "x": 200, "z": 250 },
+    { "type": "fighter", "team": "blue", "x": 300, "z": 250 }
+  ],
+  "assertions": ["archer_kite"],
+  "physics": { "fps": 60, "total_frames": 7200 },
+  "comment": "弓箭手与战士近距离放置，让弓箭手迅速进入 kite 后退状态"
+}

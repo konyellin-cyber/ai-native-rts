@@ -1,0 +1,10 @@
+{
+  "name": "archer_vs_fighter",
+  "map": { "width": 500, "height": 500 },
+  "units": [
+    { "type": "archer",  "team": "red",  "x": 150, "z": 250 },
+    { "type": "fighter", "team": "blue", "x": 350, "z": 250 }
+  ],
+  "assertions": ["battle_resolution"],
+  "physics": { "fps": 60, "total_frames": 7200 }
+}

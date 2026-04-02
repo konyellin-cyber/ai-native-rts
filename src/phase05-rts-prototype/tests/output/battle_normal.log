@@ -1,0 +1,74 @@
+Godot Engine v4.6.1.stable.official.14d19694e - https://godotengine.org
+
+[BOOT] Created 5 obstacles
+[BOOT] Navigation mesh baked
+[BOOT] Spawned 50 units (25 red + 25 blue)
+[BOOT] Headless mode: 1800 frames
+[TICK 60] 50 alive (25R / 25B) kills=0 total=(25R/25B)
+[TICK 120] 50 alive (25R / 25B) kills=0 total=(25R/25B)
+[TICK 180] 50 alive (25R / 25B) kills=0 total=(25R/25B)
+[TICK 240] 50 alive (25R / 25B) kills=0 total=(25R/25B)
+[TICK 300] 50 alive (25R / 25B) kills=0 total=(25R/25B)
+[TICK 360] 50 alive (25R / 25B) kills=0 total=(25R/25B)
+[TICK 420] 50 alive (25R / 25B) kills=0 total=(25R/25B)
+[DEATH] Unit_2 (team=red) red=24 blue=25
+[DEATH] Unit_41 (team=blue) red=24 blue=24
+[DEATH] Unit_38 (team=blue) red=24 blue=23
+[DEATH] Unit_23 (team=red) red=23 blue=23
+[DEATH] Unit_35 (team=blue) red=23 blue=22
+[DEATH] Unit_22 (team=red) red=22 blue=22
+[DEATH] Unit_15 (team=red) red=21 blue=22
+[DEATH] Unit_29 (team=blue) red=21 blue=21
+[TICK 480] 42 alive (21R / 21B) kills=8 total=(21R/21B)
+[DEATH] Unit_5 (team=red) red=20 blue=21
+[DEATH] Unit_44 (team=blue) red=20 blue=20
+[DEATH] Unit_18 (team=red) red=19 blue=20
+[DEATH] Unit_25 (team=blue) red=19 blue=19
+[DEATH] Unit_31 (team=blue) red=19 blue=18
+[DEATH] Unit_42 (team=blue) red=19 blue=17
+[TICK 540] 36 alive (19R / 17B) kills=14 total=(19R/17B)
+[DEATH] Unit_39 (team=blue) red=19 blue=16
+[DEATH] Unit_27 (team=blue) red=19 blue=15
+[DEATH] Unit_17 (team=red) red=18 blue=15
+[DEATH] Unit_43 (team=blue) red=18 blue=14
+[DEATH] Unit_34 (team=blue) red=18 blue=13
+[TICK 600] 31 alive (18R / 13B) kills=19 total=(18R/13B)
+[DEATH] Unit_40 (team=blue) red=18 blue=12
+[DEATH] Unit_28 (team=blue) red=18 blue=11
+[DEATH] Unit_11 (team=red) red=17 blue=11
+[DEATH] Unit_33 (team=blue) red=17 blue=10
+[DEATH] Unit_36 (team=blue) red=17 blue=9
+[TICK 660] 26 alive (17R / 9B) kills=24 total=(17R/9B)
+[DEATH] Unit_1 (team=red) red=16 blue=9
+[TICK 720] 25 alive (16R / 9B) kills=25 total=(16R/9B)
+[DEATH] Unit_32 (team=blue) red=16 blue=8
+[DEATH] Unit_24 (team=red) red=15 blue=8
+[TICK 780] 23 alive (15R / 8B) kills=27 total=(15R/8B)
+[DEATH] Unit_49 (team=blue) red=15 blue=7
+[DEATH] Unit_3 (team=red) red=14 blue=7
+[DEATH] Unit_47 (team=blue) red=14 blue=6
+[TICK 840] 20 alive (14R / 6B) kills=30 total=(14R/6B)
+[DEATH] Unit_30 (team=blue) red=14 blue=5
+[DEATH] Unit_46 (team=blue) red=14 blue=4
+[TICK 900] 18 alive (14R / 4B) kills=32 total=(14R/4B)
+[TICK 960] 18 alive (14R / 4B) kills=32 total=(14R/4B)
+[TICK 1020] 18 alive (14R / 4B) kills=32 total=(14R/4B)
+[DEATH] Unit_26 (team=blue) red=14 blue=3
+[TICK 1080] 17 alive (14R / 3B) kills=33 total=(14R/3B)
+[TICK 1140] 17 alive (14R / 3B) kills=33 total=(14R/3B)
+[DEATH] Unit_37 (team=blue) red=14 blue=2
+[DEATH] Unit_45 (team=blue) red=14 blue=1
+[TICK 1200] 15 alive (14R / 1B) kills=35 total=(14R/1B)
+[TICK 1260] 15 alive (14R / 1B) kills=35 total=(14R/1B)
+[DEATH] Unit_48 (team=blue) red=14 blue=0
+[BATTLE] Over! Red: 14 / Blue: 0
+[CALIBRATE] ═══════════════════════════════════════
+[CALIBRATE] [PASS] team_groups
+[CALIBRATE] [PASS] formatter_output
+[CALIBRATE] [PASS] renderer_combat_data
+[CALIBRATE] [PASS] chase_convergence
+[CALIBRATE] [PASS] battle_resolution
+[CALIBRATE] [PASS] combat_kills
+[CALIBRATE] ═══════════════════════════════════════
+[CALIBRATE] RESULT: 6 passed, 0 failed
+[PERF] frames=1264 units=14 elapsed_ms=21020 avg_fps=60.1

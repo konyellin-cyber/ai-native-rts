@@ -1,0 +1,4 @@
+frames/
+screenshots/
+.godot/
+*.import

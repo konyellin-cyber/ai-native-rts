@@ -1,0 +1,81 @@
+{
+  "bounds": {
+    "width": 800,
+    "height": 600
+  },
+  "physics": {
+    "fps": 60,
+    "total_frames": 300
+  },
+  "balls": [
+    {
+      "id": 1,
+      "pos": [
+        100,
+        200
+      ],
+      "vel": [
+        150,
+        100
+      ],
+      "radius": 20
+    },
+    {
+      "id": 2,
+      "pos": [
+        500,
+        300
+      ],
+      "vel": [
+        -120,
+        80
+      ],
+      "radius": 20
+    },
+    {
+      "id": 3,
+      "pos": [
+        200,
+        500
+      ],
+      "vel": [
+        80,
+        -130
+      ],
+      "radius": 20
+    },
+    {
+      "id": 4,
+      "pos": [
+        600,
+        100
+      ],
+      "vel": [
+        -90,
+        110
+      ],
+      "radius": 20
+    },
+    {
+      "id": 5,
+      "pos": [
+        400,
+        400
+      ],
+      "vel": [
+        110,
+        -90
+      ],
+      "radius": 20
+    }
+  ],
+  "export": {
+    "enabled": true,
+    "interval_frames": 1,
+    "output_dir": "res://frames/"
+  },
+  "screenshots": {
+    "at_frames": [100, 200, 300],
+    "output_dir": "res://screenshots/"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "smoke_test",
+  "description": "2 Fighter 互殴，验证战斗框架基础链路：单位生成、攻击、击杀、early exit",
+  "map": { "width": 500, "height": 500 },
+  "units": [
+    { "type": "fighter", "team": "red", "x": 100, "z": 250 },
+    { "type": "fighter", "team": "blue", "x": 400, "z": 250 }
+  ],
+  "assertions": ["battle_resolution"],
+  "physics": { "fps": 60, "total_frames": 7200 }
+}

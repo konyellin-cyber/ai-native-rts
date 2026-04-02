@@ -1,0 +1,76 @@
+Godot Engine v4.6.1.stable.official.14d19694e - https://godotengine.org
+
+[BOOT] Created 5 obstacles
+[BOOT] Navigation mesh baked
+[BOOT] Spawned 50 units (25 red + 25 blue)
+[BOOT] Headless mode: 1800 frames
+[TICK 60] 50 alive (25R / 25B) kills=0 total=(25R/25B)
+  states: wander:50
+[TICK 120] 50 alive (25R / 25B) kills=0 total=(25R/25B)
+  states: wander:50
+[TICK 180] 50 alive (25R / 25B) kills=0 total=(25R/25B)
+  states: wander:50
+[TICK 240] 50 alive (25R / 25B) kills=0 total=(25R/25B)
+  states: wander:50
+[TICK 300] 50 alive (25R / 25B) kills=0 total=(25R/25B)
+  states: wander:50
+[TICK 360] 50 alive (25R / 25B) kills=0 total=(25R/25B)
+  states: wander:50
+[TICK 420] 50 alive (25R / 25B) kills=0 total=(25R/25B)
+  states: attack:7 chase:42 wander:1
+[TICK 480] 50 alive (25R / 25B) kills=0 total=(25R/25B)
+  states: attack:49 wander:1
+[TICK 540] 50 alive (25R / 25B) kills=0 total=(25R/25B)
+  states: attack:49 wander:1
+[TICK 600] 50 alive (25R / 25B) kills=0 total=(25R/25B)
+  states: attack:49 wander:1
+[TICK 660] 50 alive (25R / 25B) kills=0 total=(25R/25B)
+  states: attack:49 wander:1
+[TICK 720] 50 alive (25R / 25B) kills=0 total=(25R/25B)
+  states: attack:49 wander:1
+[TICK 780] 50 alive (25R / 25B) kills=0 total=(25R/25B)
+  states: attack:49 wander:1
+[TICK 840] 50 alive (25R / 25B) kills=0 total=(25R/25B)
+  states: attack:49 wander:1
+[TICK 900] 50 alive (25R / 25B) kills=0 total=(25R/25B)
+  states: attack:49 wander:1
+[TICK 960] 50 alive (25R / 25B) kills=0 total=(25R/25B)
+  states: attack:49 wander:1
+[TICK 1020] 50 alive (25R / 25B) kills=0 total=(25R/25B)
+  states: attack:49 wander:1
+[TICK 1080] 50 alive (25R / 25B) kills=0 total=(25R/25B)
+  states: attack:49 wander:1
+[TICK 1140] 50 alive (25R / 25B) kills=0 total=(25R/25B)
+  states: attack:49 wander:1
+[TICK 1200] 50 alive (25R / 25B) kills=0 total=(25R/25B)
+  states: attack:49 wander:1
+[TICK 1260] 50 alive (25R / 25B) kills=0 total=(25R/25B)
+  states: attack:49 wander:1
+[TICK 1320] 50 alive (25R / 25B) kills=0 total=(25R/25B)
+  states: attack:49 wander:1
+[TICK 1380] 50 alive (25R / 25B) kills=0 total=(25R/25B)
+  states: attack:49 wander:1
+[TICK 1440] 50 alive (25R / 25B) kills=0 total=(25R/25B)
+  states: attack:49 wander:1
+[TICK 1500] 50 alive (25R / 25B) kills=0 total=(25R/25B)
+  states: attack:49 wander:1
+[TICK 1560] 50 alive (25R / 25B) kills=0 total=(25R/25B)
+  states: attack:49 wander:1
+[TICK 1620] 50 alive (25R / 25B) kills=0 total=(25R/25B)
+  states: attack:49 wander:1
+[TICK 1680] 50 alive (25R / 25B) kills=0 total=(25R/25B)
+  states: attack:49 wander:1
+[TICK 1740] 50 alive (25R / 25B) kills=0 total=(25R/25B)
+  states: attack:49 wander:1
+[TICK 1800] 50 alive (25R / 25B) kills=0 total=(25R/25B)
+  states: attack:49 wander:1
+[CALIBRATE] ═══════════════════════════════════════
+[CALIBRATE] [PASS] team_groups
+[CALIBRATE] [PASS] formatter_output
+[CALIBRATE] [PASS] renderer_combat_data
+[CALIBRATE] [PASS] chase_convergence
+[CALIBRATE] [FAIL] combat_kills: 0 kills after 600 frames
+[CALIBRATE] [FAIL] battle_resolution: assertion never completed
+[CALIBRATE] ═══════════════════════════════════════
+[CALIBRATE] RESULT: 4 passed, 2 failed
+[PERF] frames=1800 units=50 elapsed_ms=29954 avg_fps=60.1

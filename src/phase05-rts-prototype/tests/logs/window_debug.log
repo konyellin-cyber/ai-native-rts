@@ -1,0 +1,65 @@
+# AI Renderer log — 2026-03-27T21:12:27
+[TICK 1] 50 alive (25R / 25B) kills=0 total=(25R/25B)
+  states: wander:50
+  interaction: select=0 invalid=0 move=0 errors=0
+  lifecycle: ok (SelectionManager:0/0)
+[TICK 60] 50 alive (25R / 25B) kills=0 total=(25R/25B)
+  states: wander:50
+  interaction: select=50 invalid=0 move=0 errors=0
+  lifecycle: ok (SelectionManager:0/50)
+[TICK 120] 50 alive (25R / 25B) kills=0 total=(25R/25B)
+  states: wander:50
+  interaction: select=50 invalid=0 move=50 errors=0
+  lifecycle: ok (SelectionManager:0/50)
+[TICK 180] 50 alive (25R / 25B) kills=0 total=(25R/25B)
+  states: wander:48 chase:2
+  interaction: select=50 invalid=0 move=50 errors=0
+  lifecycle: ok (SelectionManager:0/50)
+[TICK 240] 48 alive (24R / 24B) kills=2 total=(24R/24B)
+  states: chase:16 attack:20 wander:12
+  interaction: select=50 invalid=0 move=50 errors=0
+  lifecycle: WARNING invalid=2 holders=[SelectionManager:2/50]
+[TICK 300] 39 alive (22R / 17B) kills=11 total=(22R/17B)
+  states: attack:27 wander:12
+  interaction: select=39 invalid=11 move=50 errors=0
+  lifecycle: ok (SelectionManager:0/39)
+[TICK 360] 34 alive (22R / 12B) kills=16 total=(22R/12B)
+  states: wander:34
+  interaction: select=39 invalid=11 move=39 errors=0
+  lifecycle: WARNING invalid=5 holders=[SelectionManager:5/39]
+[TICK 420] 34 alive (22R / 12B) kills=16 total=(22R/12B)
+  states: wander:32 chase:2
+  interaction: select=39 invalid=11 move=39 errors=0
+  lifecycle: WARNING invalid=5 holders=[SelectionManager:5/39]
+[TICK 480] 34 alive (22R / 12B) kills=16 total=(22R/12B)
+  states: chase:13 wander:15 attack:6
+  interaction: select=39 invalid=11 move=39 errors=0
+  lifecycle: WARNING invalid=5 holders=[SelectionManager:5/39]
+[TICK 540] 32 alive (21R / 11B) kills=18 total=(21R/11B)
+  states: chase:13 wander:14 attack:5
+  interaction: select=39 invalid=11 move=39 errors=0
+  lifecycle: WARNING invalid=7 holders=[SelectionManager:7/39]
+[TICK 600] 29 alive (19R / 10B) kills=21 total=(19R/10B)
+  states: chase:15 wander:14
+  interaction: select=39 invalid=11 move=39 errors=0
+  lifecycle: WARNING invalid=10 holders=[SelectionManager:10/39]
+[TICK 660] 29 alive (19R / 10B) kills=21 total=(19R/10B)
+  states: chase:14 attack:3 wander:12
+  interaction: select=39 invalid=11 move=39 errors=0
+  lifecycle: WARNING invalid=10 holders=[SelectionManager:10/39]
+[TICK 720] 27 alive (18R / 9B) kills=23 total=(18R/9B)
+  states: attack:14 wander:9 chase:4
+  interaction: select=39 invalid=11 move=39 errors=0
+  lifecycle: WARNING invalid=12 holders=[SelectionManager:12/39]
+[TICK 780] 23 alive (16R / 7B) kills=27 total=(16R/7B)
+  states: attack:13 wander:8 chase:2
+  interaction: select=39 invalid=11 move=39 errors=0
+  lifecycle: WARNING invalid=16 holders=[SelectionManager:16/39]
+[TICK 840] 18 alive (15R / 3B) kills=32 total=(15R/3B)
+  states: attack:9 wander:7 chase:2
+  interaction: select=39 invalid=11 move=39 errors=0
+  lifecycle: WARNING invalid=21 holders=[SelectionManager:21/39]
+[TICK 900] 16 alive (14R / 2B) kills=34 total=(14R/2B)
+  states: attack:8 wander:6 chase:2
+  interaction: select=39 invalid=11 move=39 errors=0
+  lifecycle: WARNING invalid=23 holders=[SelectionManager:23/39]
