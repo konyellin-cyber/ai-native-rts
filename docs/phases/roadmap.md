@@ -22,7 +22,10 @@
 | 8 | AI 感知完整化 | 验证层完整化 + 感知层重新设计 | ✅ 完成 | [checklist](phase8/checklist.md) |
 | 9 | 等距视角镜头 | 从俯视 90° 切换到 45° 等距正交视角 | ✅ 完成 | [checklist](phase9/checklist.md) |
 | 10 | 弓箭手 + 独立测试场景 | Archer 兵种（真实弹道 + kite）+ 测试架构重构 | ✅ 完成 | [checklist](phase10/checklist.md) |
-| 11 | 弓箭手接入主游戏 | 玩家 HQ 生产面板支持生产 Archer | ⏳ 进行中 | [checklist](phase11/checklist.md) |
+| 11 | 弓箭手接入主游戏 | 玩家 HQ 生产面板支持生产 Archer | ✅ 完成 | [checklist](phase11/checklist.md) |
+| 12 | 窗口测试自动化 | `Input.parse_input_event()` 注入真实鼠标事件，断言验证框选/点选等鼠标交互 | ✅ 完成 | [checklist](phase12/checklist.md) |
+| 13 | 测试体系重构 | 统一测试单元规范（.tscn + JSON 成对）、迁移并删除 JSON 注入模式、建立场景登记表约束 | ⏳ 未开始 | [checklist](phase13/checklist.md) |
+| 14 | 测试提速 | 事件驱动提前退出（断言全 PASS 即退出，不跑完全部帧数），缩短全量回归耗时 | ⏳ 未开始 | - |
 
 ---
 
@@ -42,6 +45,9 @@ Phase 8   → AI 感知完整化（验证层 + 感知层）
 Phase 9   → 等距视角镜头（45° isometric）
 Phase 10  → 弓箭手兵种 + 独立测试场景
 Phase 11  → 弓箭手接入主游戏（HQ 生产面板）
+Phase 12  → 窗口测试自动化（真实鼠标事件注入）
+Phase 13  → 测试体系重构（统一规范 + 清除历史债务）
+Phase 14  → 测试提速（事件驱动提前退出，缩短全量回归耗时）
 ```
 
 ---
@@ -53,8 +59,11 @@ Phase 11  → 弓箭手接入主游戏（HQ 生产面板）
 | [design/game/mvp.md](../design/game/mvp.md) | Phase 1+ | 玩法机制设计 |
 | [design/ui/INDEX.md](../design/ui/INDEX.md) | Phase 1+ | UI 组件设计规范与交互定义（断言以此为准） |
 | [design/tech/ai-renderer.md](../design/tech/ai-renderer.md) | Phase 0.5+ | AI Renderer 架构（v1-v4） |
+| [design/tech/test-architecture.md](../design/tech/test-architecture.md) | Phase 10+ | 自动化测试体系架构（测试单元规范、分类、登记表） |
 | [phases/phase5/design.md](phase5/design.md) | Phase 5 | 架构重构设计 |
 | [phases/phase6/design.md](phase6/design.md) | Phase 6 | AI Renderer 3D 适配设计 |
 | [phases/phase8/design.md](phase8/design.md) | Phase 8 | AI 感知完整化设计 |
 | [phases/phase9/design.md](phase9/design.md) | Phase 9 | 等距视角镜头设计 |
 | [phases/phase10/design.md](phase10/design.md) | Phase 10 | 弓箭手兵种 + 独立测试场景设计 |
+| [phases/phase11/checklist.md](phase11/checklist.md) | Phase 11 | 弓箭手接入主游戏 checklist |
+| [phases/phase12/design.md](phase12/design.md) | Phase 12 | 窗口测试自动化设计 |

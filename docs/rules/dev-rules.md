@@ -148,6 +148,26 @@
 
 **输出物**：checklist 新增项，格式为 `[ ] **xA.x** 问题描述（发现方式：窗口程序化 / 窗口截图）`
 
+### 6.3 测试单元规范（硬约束）
+
+**完整测试单元 = 一个 `.tscn`（世界结构）+ 一个 `scenario.json`（剧本 + 断言）**，两者必须成对，放在同一目录下。详见 [测试架构设计文档](../design/tech/test-architecture.md)。
+
+**场景登记表**：`test_runner.gd` 的 `SCENARIO_FILES` 是唯一权威登记表。
+
+```
+硬规则：
+  ✅ 新增场景 → 在 SCENARIO_FILES 中追加条目
+  ✅ 升级场景 → 新 scenario.json 声明 covers 字段后，才允许替换旧条目
+  ❌ 禁止从 SCENARIO_FILES 中删除条目（无覆盖声明时）
+  ❌ 禁止 Agent 同时删除场景文件 + 从登记表中移除条目（需用户确认）
+```
+
+**两种运行环境**：
+- Headless 场景：验证游戏逻辑（AI / 经济 / 战斗），`scenario.json` 中 `window_mode: false`
+- Window 场景：验证交互行为（框选 / 点击 / UI），`scenario.json` 中 `window_mode: true`
+
+**全量回归 = 跑登记表中当前所有场景**，随 Phase 演进动态更新，不存在"永久保留的历史场景"概念。
+
 ### 6.3 AI 执行权限边界
 
 **AI 可自行执行（无需确认）**：
