@@ -1,21 +1,12 @@
-extends CharacterBody3D
+extends "res://scripts/base_unit.gd"
 
 ## Phase 1 Fighter — 战斗单位（3D）
 ## States: idle → wander → chase → attack → dead
 ## 坐标约定：XZ 平面为地图平面，Y=0 为地面，velocity.y 恒为 0
 
-var unit_id: int = 0
-var unit_type: String = "fighter"
-var team_name: String = "red"
 var move_speed: float = 150.0
 var unit_radius: float = 8.0
-var max_hp: float = 100.0
-var hp: float = 100.0
 var collision_count: int = 0
-
-var _hit_flash_timer: float = 0.0   ## 受击白闪倒计时（秒）
-var _body_mat: StandardMaterial3D = null  ## 单位主体材质引用
-var _knockback: Vector3 = Vector3.ZERO    ## 当前击退速度
 
 # Combat params (from config)
 var attack_damage: float = 10.0
@@ -32,11 +23,6 @@ var _has_command: bool = false
 var _command_frame: int = 0
 
 # Combat state
-var _state: String = "idle":
-	set(v):
-		_state = v
-		ai_state = v
-var ai_state: String = "idle"
 var _target: Node = null
 var _attack_timer: float = 0.0
 var _enemy_group: String = ""
@@ -44,8 +30,6 @@ var _home_hq: Node = null
 var _patrol_radius: float = 150.0
 var target_position: Vector3 = Vector3.ZERO  ## Current navigation target for AI Renderer
 var has_command: bool = false  ## 镜像 _has_command，供 AI Renderer 采样
-
-signal died(unit_id: int, team: String)
 
 
 func setup(id: int, team: String, pos: Vector3, cfg: Dictionary, headless: bool, map_size: Vector2, home: Node) -> void:
@@ -85,6 +69,7 @@ func setup(id: int, team: String, pos: Vector3, cfg: Dictionary, headless: bool,
 	if not headless:
 		_add_visual()
 
+	_idle_color = Color(0.9, 0.3, 0.3) if team == "red" else Color(0.3, 0.3, 0.9)
 	_enemy_group = "team_blue" if team_name == "red" else "team_red"
 
 
@@ -105,16 +90,7 @@ func _detect_nav() -> void:
 func _physics_process(delta: float) -> void:
 	if _state == "dead":
 		return
-	## 受击白闪恢复
-	if _hit_flash_timer > 0:
-		_hit_flash_timer -= delta
-		if _hit_flash_timer <= 0 and _body_mat:
-			_body_mat.albedo_color = Color(0.9, 0.3, 0.3) if team_name == "red" else Color(0.3, 0.3, 0.9)
-	## 击退衰减
-	if _knockback.length_squared() > 1.0:
-		velocity = _knockback
-		move_and_slide()
-		_knockback = _knockback.lerp(Vector3.ZERO, 0.3)
+	if _process_combat_effects(delta):
 		return
 	if _attack_timer > 0:
 		_attack_timer -= delta
@@ -224,37 +200,6 @@ func _find_closest_enemy() -> Node:
 			closest_dist = d
 			closest = e
 	return closest
-
-
-func take_damage(amount: float) -> void:
-	if _state == "dead":
-		return
-	hp -= amount
-	## 受击白闪
-	if _body_mat:
-		_body_mat.albedo_color = Color(1.0, 1.0, 1.0)
-		_hit_flash_timer = 0.1
-	if hp <= 0:
-		hp = 0
-		_die()
-
-
-func take_damage_from(amount: float, from_pos: Vector3) -> void:
-	## 带来源方向的伤害接口，用于箭矢击退。
-	if _state == "dead":
-		return
-	var dir = (global_position - from_pos)
-	dir.y = 0.0
-	if dir.length_squared() > 0.01:
-		_knockback = dir.normalized() * 400.0
-	take_damage(amount)
-
-
-func _die() -> void:
-	_state = "dead"
-	velocity = Vector3.ZERO
-	died.emit(unit_id, team_name)
-	queue_free.call_deferred()
 
 
 func _set_agent_target(pos: Vector3) -> void:

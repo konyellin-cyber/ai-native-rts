@@ -55,6 +55,7 @@ func build() -> void:
 	_create_minerals()
 	_create_arrow_manager()
 	_spawn_initial_workers()
+	_spawn_generals()
 	_create_ai_opponent()
 	_setup_interaction()
 	if not _is_headless:
@@ -173,7 +174,81 @@ func _spawn_initial_workers() -> void:
 	print("[WORLD] Spawned 3 workers per team")
 
 
-# ─── AI Opponent ──────────────────────────────────────────────────
+# ─── Generals ─────────────────────────────────────────────────────
+
+func _spawn_generals() -> void:
+	## 15A.7/15A.8：主场景各阵营生成一名将领，与普通士兵生成逻辑分离。
+	## 15B：红方将领生成后同时生成 N 个哑兵（N 由 config.general.dummy_soldier_count 决定）。
+	## red 阵营：玩家控制的将领（可被框选/右键移动）
+	## blue 阵营：AI 静态占位将领（暂时不移动，Phase 16 补充 AI 逻辑）
+	var general_cfg = _config.get("general", null)
+	if general_cfg == null:
+		## general 配置段不存在时跳过（向后兼容旧测试场景）
+		return
+
+	var hq_config = _config.hq
+	var map_size = Vector2(float(_config.map.width), float(_config.map.height))
+	var GeneralScript = load("res://scripts/general_unit.gd")
+	var DummyScript = load("res://scripts/dummy_soldier.gd")
+	var dummy_count = int(general_cfg.get("dummy_soldier_count", 30))
+
+	for team in ["red", "blue"]:
+		var hq_pos_cfg = hq_config.spawn_red if team == "red" else hq_config.spawn_blue
+		var spawn_pos = Vector3(float(hq_pos_cfg.x), 0.0, float(hq_pos_cfg.y))
+		## 将领生成在 HQ 前方 80 单位，避免与 HQ 重叠
+		var offset = Vector3(80.0, 0.0, 0.0) if team == "red" else Vector3(-80.0, 0.0, 0.0)
+
+		var general = CharacterBody3D.new()
+		general.set_script(GeneralScript)
+		general.setup(_next_unit_id, team, spawn_pos + offset, general_cfg, _is_headless, map_size, null)
+		_next_unit_id += 1
+		units.append(general)
+		_parent.add_child(general)
+
+		_renderer.register(general.name, general, [
+			"unit_id", "team_name", "unit_type", "global_position",
+			"hp", "max_hp", "ai_state", "target_position", "has_command", "follow_mode",
+		])
+		general.died.connect(func(vid, vteam): unit_died.emit(vid, vteam))
+
+		## 15B.2：红方将领生成后，周围生成 N 个哑兵
+		if team == "red":
+			var soldiers: Array = []
+			for i in range(dummy_count):
+				var dummy = RigidBody3D.new()
+				dummy.set_script(DummyScript)
+				dummy.setup(general, i, dummy_count, general_cfg, _is_headless)
+				_parent.add_child(dummy)
+				soldiers.append(dummy)
+			general.register_dummy_soldiers(soldiers)
+			print("[WORLD] Spawned %d dummy soldiers for red general" % dummy_count)
+
+		## 15C：双方将领均启用补兵，监听 replenish_requested 信号
+		var gen_ref = general  ## 捕获引用，避免闭包问题
+		general.replenish_requested.connect(func(g: Node): _on_replenish_requested(g, DummyScript))
+
+	print("[WORLD] Generals spawned: red and blue")
+
+
+
+
+func _on_replenish_requested(general: Node, DummyScript: GDScript) -> void:
+	## 15C：收到补兵请求，为该将领生成 replenish_count 个新哑兵并注入
+	if not is_instance_valid(general):
+		return
+	var cfg: Dictionary = general.get_general_cfg()
+	var count: int = general.get_dummy_count()
+	var add_count: int = int(cfg.get("replenish_count", 3))
+	for i in range(add_count):
+		var dummy = RigidBody3D.new()
+		dummy.set_script(DummyScript)
+		dummy.setup(general, count + i, count + add_count, cfg, _is_headless)
+		_parent.add_child(dummy)
+		general.add_dummy_soldier(dummy)
+	print("[WORLD] Replenished %d soldiers for %s (total=%d)" % [
+		add_count, general.name, general.get_dummy_count()
+	])
+
 
 func _create_ai_opponent() -> void:
 	var ai_config = _config.get("ai_opponent", {})

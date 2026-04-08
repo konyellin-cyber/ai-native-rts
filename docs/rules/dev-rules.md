@@ -152,13 +152,13 @@
 
 **完整测试单元 = 一个 `.tscn`（世界结构）+ 一个 `scenario.json`（剧本 + 断言）**，两者必须成对，放在同一目录下。详见 [测试架构设计文档](../design/tech/test-architecture.md)。
 
-**场景登记表**：`test_runner.gd` 的 `SCENARIO_FILES` 是唯一权威登记表。
+**场景登记表**：`scene_registry.json` 是唯一权威场景登记表，`test_runner.gd` 在启动时从该文件读取场景列表。
 
 ```
 硬规则：
-  ✅ 新增场景 → 在 SCENARIO_FILES 中追加条目
+  ✅ 新增场景 → 在 scene_registry.json 中追加条目
   ✅ 升级场景 → 新 scenario.json 声明 covers 字段后，才允许替换旧条目
-  ❌ 禁止从 SCENARIO_FILES 中删除条目（无覆盖声明时）
+  ❌ 禁止从 scene_registry.json 中删除条目（无覆盖声明时）
   ❌ 禁止 Agent 同时删除场景文件 + 从登记表中移除条目（需用户确认）
 ```
 

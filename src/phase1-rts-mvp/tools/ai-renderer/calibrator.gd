@@ -3,9 +3,10 @@ extends RefCounted
 ## Calibrator — 校准器
 ## 注册断言函数，每帧 tick 推进状态机，最后输出结果。
 
-var _assertions: Dictionary = {}  # { name: { check: Callable } }
-var _results: Dictionary = {}     # { name: { passed: bool, detail: String } }
-var _run_only: Array = []         # 若非空，只跑此列表中的断言；空=全跑
+var _assertions: Dictionary = {}       # { name: { check: Callable } }
+var _results: Dictionary = {}          # { name: { passed: bool, detail: String } }
+var _run_only: Array = []              # 若非空，只跑此列表中的断言；空=全跑
+var _timeout_frames: Dictionary = {}   # { name: timeout_frame }  — Phase 14 超时配置
 
 
 func add_assertion(name: String, check_fn: Callable) -> void:
@@ -17,7 +18,14 @@ func set_run_only(names: Array) -> void:
 	_run_only = names
 
 
-func tick() -> bool:
+func set_assertion_timeouts(timeouts: Dictionary) -> void:
+	## 设置 per-assertion 超时帧数。scenario.json 中 assertion_timeouts 字段传入。
+	## 格式：{ "assertion_name": timeout_frame_int, ... }
+	## 某断言在 current_frame >= timeout_frame 时仍为 pending，则自动标记为 fail。
+	_timeout_frames = timeouts
+
+
+func tick(current_frame: int = 0) -> bool:
 	## 推进所有断言状态机。
 	## 返回 true 表示所有应跑的断言均已得到最终结果（pass 或 fail），可提前退出。
 	## 返回 false 表示仍有断言处于 pending，需要继续等帧。
@@ -26,6 +34,10 @@ func tick() -> bool:
 			continue  # 场景未指定此断言，跳过
 		if name in _results:
 			continue  # Already has final result
+		# 超时检查：先于 check_fn 执行，让超时优先判定
+		if name in _timeout_frames and current_frame >= _timeout_frames[name]:
+			_results[name] = {"passed": false, "detail": "assertion timed out at frame %d (limit=%d)" % [current_frame, _timeout_frames[name]]}
+			continue
 		var result = _assertions[name]["check"].call()
 		var status = result.get("status", "pending")
 		if status == "pass":

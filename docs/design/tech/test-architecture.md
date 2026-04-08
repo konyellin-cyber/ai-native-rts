@@ -54,14 +54,14 @@ tests/scenes/<场景名>/
 
 ## 3. 场景登记表
 
-`tests/test_runner.gd` 中的 `SCENARIO_FILES` 列表是**唯一权威的场景登记表**。
+`tests/scene_registry.json` 是**唯一权威的场景登记表**，由 `test_runner.gd` 在运行时读取。每个条目包含 `name`、`path`、`window_mode`、`phase`、`description`（以及可选的 `covers`）字段。
 
 ```
 约束（硬规则）：
-  ✅ 新增场景 → 在 SCENARIO_FILES 中追加条目
+  ✅ 新增场景 → 在 scene_registry.json 中追加条目
   ✅ 升级场景 → 旧条目替换为新条目（需满足覆盖声明，见 3.1）
-  ❌ 禁止从 SCENARIO_FILES 中删除条目（除非有覆盖声明）
-  ❌ 禁止场景文件存在但不在 SCENARIO_FILES 中（孤儿场景）
+  ❌ 禁止从 scene_registry.json 中删除条目（除非有覆盖声明）
+  ❌ 禁止场景文件存在但不在 scene_registry.json 中（孤儿场景）
 ```
 
 登记表缺失或场景文件不存在时，下次回归会立即报错，不会静默通过。
@@ -78,13 +78,13 @@ tests/scenes/<场景名>/
 }
 ```
 
-`covers` 声明"新场景覆盖了哪些旧场景的测试逻辑"。有此声明才允许将旧场景从 `SCENARIO_FILES` 中移除，否则两者必须同时保留。
+`covers` 声明"新场景覆盖了哪些旧场景的测试逻辑"。有此声明才允许将旧场景从 `scene_registry.json` 中移除，否则两者必须同时保留。
 
 ---
 
 ## 4. 全量回归定义
 
-**全量回归 = 跑 `SCENARIO_FILES` 中当前登记的所有场景**。
+**全量回归 = 跑 `scene_registry.json` 中当前登记的所有场景**。
 
 没有"历史场景"的特殊保护——登记表中存在的场景才被保护，已通过覆盖声明升级并移除的旧场景不再参与回归。
 
@@ -133,7 +133,7 @@ tests/scenes/<场景名>/
 2. 在 assertion_setup.gd 或 window_assertion_setup.gd 中
    注册新断言（如需要）
 
-3. 在 test_runner.gd 的 SCENARIO_FILES 中追加条目
+3. 在 `tests/scene_registry.json` 中追加条目
 
 4. 运行全量回归验证新场景通过：
    godot --headless --path . --scene res://tests/test_runner.tscn
@@ -145,7 +145,7 @@ tests/scenes/<场景名>/
 
 ## 7. 已登记场景清单
 
-> 以 `test_runner.gd` 的 `SCENARIO_FILES` 为准，此处仅作说明性索引。
+> 以 `tests/scene_registry.json` 为准，此处仅作说明性索引。
 
 | 场景名 | 类型 | 主要验证内容 | 所属 Phase |
 |-------|------|------------|-----------|

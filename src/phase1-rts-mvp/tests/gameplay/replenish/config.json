@@ -1,0 +1,27 @@
+{
+  "name": "replenish",
+  "physics": { "fps": 60, "total_frames": 800 },
+  "map": { "width": 1000, "height": 1000 },
+  "units": [
+    {
+      "type": "general",
+      "team": "red",
+      "x": 500.0,
+      "z": 500.0,
+      "spawn_dummies": true,
+      "replenish_interval": 120,
+      "replenish_count": 3,
+      "replenish_rate_growth": 0.05
+    },
+    {
+      "type": "general",
+      "team": "blue",
+      "x": 500.0,
+      "z": 300.0,
+      "spawn_dummies": true,
+      "replenish_interval": 120,
+      "replenish_count": 3,
+      "replenish_rate_growth": 0.05
+    }
+  ]
+}

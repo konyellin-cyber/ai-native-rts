@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://general_movement"]
+
+[ext_resource type="Script" path="res://tests/gameplay/general_movement/bootstrap.gd" id="1"]
+
+[node name="GeneralMovement" type="Node3D"]
+script = ExtResource("1")

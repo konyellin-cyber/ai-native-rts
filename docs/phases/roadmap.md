@@ -24,8 +24,11 @@
 | 10 | 弓箭手 + 独立测试场景 | Archer 兵种（真实弹道 + kite）+ 测试架构重构 | ✅ 完成 | [checklist](phase10/checklist.md) |
 | 11 | 弓箭手接入主游戏 | 玩家 HQ 生产面板支持生产 Archer | ✅ 完成 | [checklist](phase11/checklist.md) |
 | 12 | 窗口测试自动化 | `Input.parse_input_event()` 注入真实鼠标事件，断言验证框选/点选等鼠标交互 | ✅ 完成 | [checklist](phase12/checklist.md) |
-| 13 | 测试体系重构 | 统一测试单元规范（.tscn + JSON 成对）、迁移并删除 JSON 注入模式、建立场景登记表约束 | ⏳ 未开始 | [checklist](phase13/checklist.md) |
-| 14 | 测试提速 | 事件驱动提前退出（断言全 PASS 即退出，不跑完全部帧数），缩短全量回归耗时 | ⏳ 未开始 | - |
+| 13 | 测试体系重构 | 统一测试单元规范（.tscn + JSON 成对）、迁移并删除 JSON 注入模式、建立场景登记表约束 | ✅ 完成 | [checklist](phase13/checklist.md) |
+| 14 | 测试提速 | 事件驱动提前退出（断言全 PASS 即退出，不跑完全部帧数），缩短全量回归耗时 | ✅ 完成 | [checklist](phase14/checklist.md) |
+| 15 | 将领单位 + 兵团跟随 | 将领节点 + 哑兵阵型跟随 + 待命切换 + 自动补兵 + 目视验证场景 | ✅ 完成 | [checklist](phase15/checklist.md) |
+| 16 | 行军阵型系统 | 路径队列纵队行军 + 静止自动展开横阵 + 状态切换流畅性验证 | ✅ 完成 | [checklist](phase16/checklist.md) |
+| 17 | 单位物理碰撞 | 哑兵升级 RigidBody3D，Seek Force 驱动，真实弹性推挤，消除穿透堆叠 | ⏳ 进行中（17A 代码完成，待视觉验证） | [checklist](phase17/checklist.md) |
 
 ---
 
@@ -48,6 +51,9 @@ Phase 11  → 弓箭手接入主游戏（HQ 生产面板）
 Phase 12  → 窗口测试自动化（真实鼠标事件注入）
 Phase 13  → 测试体系重构（统一规范 + 清除历史债务）
 Phase 14  → 测试提速（事件驱动提前退出，缩短全量回归耗时）
+Phase 15  → 将领单位 + 兵团跟随（将领节点、哑兵阵型、待命切换、自动补兵）
+Phase 16  → 行军阵型系统（路径队列纵队行军、静止展开横阵、状态自动切换）
+Phase 17  → 单位物理碰撞（哑兵 RigidBody3D、Seek Force、弹性推挤）
 ```
 
 ---
@@ -57,6 +63,7 @@ Phase 14  → 测试提速（事件驱动提前退出，缩短全量回归耗时
 | 文档 | 适用 Phase | 说明 |
 |------|-----------|------|
 | [design/game/mvp.md](../design/game/mvp.md) | Phase 1+ | 玩法机制设计 |
+| [design/game/INDEX.md](../design/game/INDEX.md) | Phase 1+ | 游戏设计文档索引 |
 | [design/ui/INDEX.md](../design/ui/INDEX.md) | Phase 1+ | UI 组件设计规范与交互定义（断言以此为准） |
 | [design/tech/ai-renderer.md](../design/tech/ai-renderer.md) | Phase 0.5+ | AI Renderer 架构（v1-v4） |
 | [design/tech/test-architecture.md](../design/tech/test-architecture.md) | Phase 10+ | 自动化测试体系架构（测试单元规范、分类、登记表） |
@@ -67,3 +74,7 @@ Phase 14  → 测试提速（事件驱动提前退出，缩短全量回归耗时
 | [phases/phase10/design.md](phase10/design.md) | Phase 10 | 弓箭手兵种 + 独立测试场景设计 |
 | [phases/phase11/checklist.md](phase11/checklist.md) | Phase 11 | 弓箭手接入主游戏 checklist |
 | [phases/phase12/design.md](phase12/design.md) | Phase 12 | 窗口测试自动化设计 |
+| [design/game/gameplay-vision.md](../design/game/gameplay-vision.md) | Phase 15+ | 玩法愿景：将领视角、人海阵型、士气溃败传染、信号协作 |
+| [phases/phase15/design.md](phase15/design.md) | Phase 15 | 将领单位 + 兵团跟随设计（将领节点、哑兵阵型、补兵机制、目视验证场景） |
+| [phases/phase16/design.md](phase16/design.md) | Phase 16 | 行军阵型系统设计（路径队列、纵队行军、横阵展开、状态切换） |
+| [phases/phase17/design.md](phase17/design.md) | Phase 17 | 单位物理碰撞设计（RigidBody3D、Seek Force、碰撞层架构） |

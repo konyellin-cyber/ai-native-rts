@@ -24,16 +24,21 @@
       "to":   {"x": 1200, "y": 1600}
     }},
     {"action": "wait_frames", "params": {"n": 5}},
-    {"action": "box_select", "params": {"rect": "red_hq_area"}},
-    {"action": "wait_frames", "params": {"n": 5}},
-    {"action": "click_button", "params": {"label": "Worker"}},
-    {"action": "wait_frames", "params": {"n": 5}},
     {"action": "real_click", "params": {
       "unit_type": "worker",
       "team": "red"
     }},
     {"action": "wait_frames", "params": {"n": 5}},
+    {"action": "box_select", "params": {"rect": "red_hq_area"}},
+    {"action": "wait_frames", "params": {"n": 5}},
+    {"action": "click_button", "params": {"label": "Worker"}},
+    {"action": "wait_frames", "params": {"n": 5}},
+    {"action": "box_select", "params": {"rect": "full_screen"}},
+    {"action": "wait_frames", "params": {"n": 2}},
     {"action": "right_click", "params": {"target": "map_center"}},
-    {"action": "wait_frames", "params": {"n": 5}}
+    {"action": "wait_frames", "params": {"n": 5}},
+    {"action": "box_select", "params": {"rect": "red_hq_area"}},
+    {"action": "wait_frames", "params": {"n": 5}},
+    {"action": "click_button", "params": {"label": "Archer"}}
   ]
 }

@@ -21,6 +21,7 @@ var _sim_player: RefCounted = null
 var _fault_injector: Node = null  ## FaultInjector，仅 config.fault_injection 非空时创建
 var _window_frame_count: int = 0
 var _window_assertions: RefCounted = null  ## WindowAssertionSetup，仅窗口模式
+var _play_mode: bool = false  ## 游玩模式：关闭 SimulatedPlayer + 断言 + 帧数限制（由 -- --play 参数启用）
 
 
 func _ready() -> void:
@@ -29,6 +30,8 @@ func _ready() -> void:
 	Engine.set_physics_ticks_per_second(config.physics.fps)
 	Engine.set_max_fps(config.physics.fps)
 	is_headless = DisplayServer.get_name() == "headless"
+	# 游玩模式：检测命令行参数 -- --play（仅窗口模式有效）
+	_play_mode = not is_headless and "--play" in OS.get_cmdline_user_args()
 
 	# 窗口模式设置（headless 下跳过）
 	if not is_headless:
@@ -90,8 +93,9 @@ func _ready() -> void:
 		add_child(srv)
 		_world.input_server = srv
 
-	# 6. SimulatedPlayer 不限于 headless，窗口模式也需要自动剧本触发 hq_selected 信号
-	_setup_simulated_player()
+	# 6. SimulatedPlayer：headless 必开；窗口测试模式开；游玩模式跳过
+	if not _play_mode:
+		_setup_simulated_player()
 
 	# 7. headless 专属：FaultInjector + 断言
 	if is_headless:
@@ -99,8 +103,11 @@ func _ready() -> void:
 		print("[BOOT] Headless mode: %d frames" % total_frames)
 		_setup_fault_injector()
 		_setup_assertions()
+	elif _play_mode:
+		# 游玩模式：跳过所有断言和自动化，无 total_frames 限制
+		print("[BOOT] Play mode: SimulatedPlayer and assertions disabled")
 	else:
-		# 窗口模式：读取 scenario 的 screenshot_on_signals 传给 UXObserver
+		# 窗口测试模式：读取 scenario 的 screenshot_on_signals 传给 UXObserver
 		_setup_window_screenshot_signals()
 		_setup_window_assertions()
 
@@ -120,7 +127,7 @@ func _physics_process(_delta: float) -> void:
 
 	if not is_headless:
 		_window_frame_count += 1
-		# SimulatedPlayer 在窗口模式也需要 tick，确保剧本按帧执行（如 hq_selected 触发）
+		# SimulatedPlayer 在窗口测试模式需要 tick；游玩模式下 _sim_player 为 null，跳过
 		if _sim_player:
 			_sim_player.tick(_window_frame_count)
 		_lifecycle.tick()
@@ -128,18 +135,20 @@ func _physics_process(_delta: float) -> void:
 			_update_ui()
 		if _world.ux_observer and _world.ux_observer.is_enabled():
 			_world.ux_observer.tick(_window_frame_count, _delta)
-		if renderer and config.get("renderer", {}).get("mode", "off") != "off":
-			renderer.set_extra(_build_extra())
-			var all_done = renderer.tick()
-			# 窗口模式：所有断言完成或达到 total_frames 时自动退出（与 headless 行为一致）
-			if all_done or _window_frame_count >= total_frames:
-				renderer.print_results()
+		# 游玩模式跳过断言驱动和帧数限制，游戏无限运行直到手动关闭
+		if not _play_mode:
+			if renderer and config.get("renderer", {}).get("mode", "off") != "off":
+				renderer.set_extra(_build_extra())
+				var all_done = renderer.tick(_window_frame_count)
+				# 窗口测试模式：所有断言完成或达到 total_frames 时自动退出
+				if all_done or _window_frame_count >= total_frames:
+					renderer.print_results()
+					_perf_report()
+					_finish()
+					return
+			elif _window_frame_count >= total_frames:
 				_perf_report()
 				_finish()
-				return
-		elif _window_frame_count >= total_frames:
-			_perf_report()
-			_finish()
 	else:
 		frame_count += 1
 		if _sim_player:
@@ -148,7 +157,7 @@ func _physics_process(_delta: float) -> void:
 		if _fault_injector:
 			_fault_injector.tick(frame_count)
 		renderer.set_extra(_build_extra())
-		var all_assertions_done = renderer.tick()
+		var all_assertions_done = renderer.tick(frame_count)
 		if all_assertions_done or frame_count >= total_frames:
 			if all_assertions_done:
 				print("[BOOT] Early exit at frame %d (all assertions resolved)" % frame_count)
@@ -303,6 +312,9 @@ func _setup_assertions() -> void:
 			if scenario and scenario.has("assertions"):
 				renderer.get_calibrator().set_run_only(scenario["assertions"])
 				print("[BOOT] Calibrator run_only: %s" % str(scenario["assertions"]))
+			if scenario and scenario.has("assertion_timeouts"):
+				renderer.get_calibrator().set_assertion_timeouts(scenario["assertion_timeouts"])
+				print("[BOOT] Calibrator assertion_timeouts: %s" % str(scenario["assertion_timeouts"]))
 			if scenario and scenario.has("screenshot_on_signals"):
 				if _world.ux_observer and _world.ux_observer.is_enabled():
 					_world.ux_observer.set_screenshot_signals(scenario["screenshot_on_signals"])

@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://replenish"]
+
+[ext_resource type="Script" path="res://tests/gameplay/replenish/bootstrap.gd" id="1"]
+
+[node name="Replenish" type="Node3D"]
+script = ExtResource("1")

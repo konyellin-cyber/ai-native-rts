@@ -37,6 +37,30 @@
     "sight_range": 200.0,
     "speed": 150.0
   },
+  "general": {
+    "hp": 200.0,
+    "radius": 12.0,
+    "speed": 180.0,
+    "visual_scale": 1.5,
+    "dummy_soldier_count": 30,
+    "dummy_soldier_jitter": 8.0,
+    "standby_loose_threshold": 200.0,
+    "replenish_interval": 180,
+    "replenish_count": 3,
+    "replenish_rate_growth": 0.05,
+    "path_buffer_size": 60,
+    "path_sample_interval": 5,
+    "march_column_width": 6,
+    "deploy_trigger_frames": 30,
+    "deploy_columns": 8,
+    "deploy_row_spacing_factor": 2.2,
+    "deploy_col_spacing_factor": 1.1,
+    "dummy_mass": 1.0,
+    "dummy_linear_damp": 8.0,
+    "dummy_drive_strength": 1600.0,
+    "dummy_arrive_threshold": 15.0,
+    "dummy_collision_radius_factor": 0.25
+  },
   "hq": {
     "hp": 500.0,
     "radius": 40.0,
@@ -70,38 +94,7 @@
       "y": 800.0
     }
   ],
-  "obstacles": [
-    {
-      "h": 89.0,
-      "w": 512.0,
-      "x": 1024.0,
-      "y": 554.0
-    },
-    {
-      "h": 333.0,
-      "w": 128.0,
-      "x": 384.0,
-      "y": 998.0
-    },
-    {
-      "h": 222.0,
-      "w": 256.0,
-      "x": 1536.0,
-      "y": 777.0
-    },
-    {
-      "h": 166.0,
-      "w": 192.0,
-      "x": 768.0,
-      "y": 222.0
-    },
-    {
-      "h": 111.0,
-      "w": 384.0,
-      "x": 1792.0,
-      "y": 1110.0
-    }
-  ],
+  "obstacles": [],
   "physics": {
     "fps": 60.0,
     "total_frames": 5400.0

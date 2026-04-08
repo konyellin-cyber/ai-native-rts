@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://general_follow"]
+
+[ext_resource type="Script" path="res://tests/legacy/general_follow/bootstrap.gd" id="1"]
+
+[node name="GeneralFollow" type="Node3D"]
+script = ExtResource("1")

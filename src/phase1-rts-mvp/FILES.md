@@ -2,12 +2,21 @@
 
 ## scripts/
 
+### scripts/base_unit.gd（Phase 13 新增）
+- **职责**: Fighter / Archer 公共基类。封装受击白闪、击退冲量、伤害处理、死亡逻辑，消除两个单位类的重复代码
+- **依赖**: 被 fighter.gd / archer.gd 继承（`extends "res://scripts/base_unit.gd"`）
+- **关键接口**: `take_damage(amount)`, `take_damage_from(amount, from_pos)`, `_die()`, `_process_combat_effects(delta) -> bool`
+- **关键属性**: `unit_id`, `team_name`, `hp`, `max_hp`, `_hit_flash_timer`, `_body_mat`, `_knockback`, `_state`, `ai_state`, 信号 `died`
+- **修改频率**: 低（架构稳定后不轻易改）
+- **注意**: headless 模式下无 .godot 缓存，子类必须用路径写法 `extends "res://scripts/base_unit.gd"` 而非 `extends BaseUnit`；`_idle_color` 由子类在 `setup()` 中赋值
+
 ### bootstrap.gd
 - **职责**: 主序入口。读 config，按顺序创建子管理器（GameWorld / UnitLifecycleManager / FaultInjector / AssertionSetup），驱动每帧 tick 分发和信号路由
 - **依赖**: 被 main.tscn 加载；依赖 game_world.gd / unit_lifecycle_manager.gd / assertion_setup.gd / fault_injector.gd
 - **关键接口**: `_ready()`, `_physics_process()`
 - **修改频率**: 低（5A–5F 重构后职责收窄，新功能应进对应子模块）
 - **Phase 11 改动**: `_on_produce_requested()` 通用化（按 `unit_type+"_cost"/"_time"` 动态查 config）；`_update_ui()` 传入 `archer_cost`
+- **Phase 14 改动**: `renderer.tick()` 调用改为 `renderer.tick(frame_count)`，传当前帧号给 Calibrator；`_setup_assertions()` 读取 scenario.json 中 `assertion_timeouts` 字段并调用 `calibrator.set_assertion_timeouts()`
 - **注意**: 故障注入逻辑已迁移到 FaultInjector（5F），bootstrap 仅做条件挂载；Phase 9 起镜头为 45° 等距正交（rotation_degrees=(-45,-45,0)，position.z = map_h/2+1500，size=2000）
 
 ### game_world.gd
@@ -55,17 +64,19 @@
 
 ### fighter.gd
 - **职责**: 战士单位状态机（idle → wander → chase → attack → dead），跨队战斗
-- **依赖**: 被 bootstrap.gd / combat_bootstrap.gd spawn 创建；依赖 NavigationAgent3D
-- **关键接口**: `setup(id, team, pos, cfg, headless, map_size, home_hq)`，`take_damage(amount)`，`take_damage_from(amount, from_pos)`（含击退冲量）
+- **依赖**: 被 bootstrap.gd / combat_bootstrap.gd spawn 创建；继承 base_unit.gd；依赖 NavigationAgent3D
+- **关键接口**: `setup(id, team, pos, cfg, headless, map_size, home_hq)`（take_damage / take_damage_from 继承自 BaseUnit）
 - **修改频率**: 低
-- **注意**: 受击白闪（`_body_mat` 变白 0.1s）；击退（`_knockback` 向量每帧衰减）；`collision_mask = 2`
+- **Phase 13 改动**: 改为 `extends "res://scripts/base_unit.gd"`，删除重复的 unit_id/hp/take_damage 等定义；setup() 中按 team 设置 `_idle_color`
+- **注意**: 受击白闪（`_body_mat` 变白 0.1s）；击退（`_knockback` 向量每帧衰减）；`collision_mask = 2`；这些逻辑现在在 BaseUnit._process_combat_effects() 中
 
 ### archer.gd（Phase 10 新增）
 - **职责**: 弓箭手单位状态机（idle → wander → chase → shoot → kite → dead），纯远程攻击
-- **依赖**: 被 game_world.gd（Phase 11+）/ combat_bootstrap.gd 创建；依赖 NavigationAgent3D + ArrowManager
-- **关键接口**: `setup(id, team, pos, cfg, headless, map_size, home_hq, arrow_manager)`，`take_damage(amount)`，`take_damage_from(amount, from_pos)`
+- **依赖**: 被 game_world.gd（Phase 11+）/ combat_bootstrap.gd 创建；继承 base_unit.gd；依赖 NavigationAgent3D + ArrowManager
+- **关键接口**: `setup(id, team, pos, cfg, headless, map_size, home_hq, arrow_manager)`（take_damage / take_damage_from 继承自 BaseUnit）
 - **参数**: shoot_range=160，flee_range=80，sight_range=220，attack_cooldown=1.2，arrow_speed=600
 - **kite 逻辑**: 每帧直接设 velocity（不依赖目标点），边界处反弹 flee_dir，边跑边射
+- **Phase 13 改动**: 改为 `extends "res://scripts/base_unit.gd"`，删除重复的 unit_id/hp/take_damage 等定义；setup() 中按 team 设置 `_idle_color`
 - **注意**: kite hysteresis：进入 dist<flee_range，退出 dist>=flee_range*1.5
 
 ### arrow.gd（Phase 10 新增）
@@ -154,8 +165,9 @@
 ### ai_renderer.gd
 - **职责**: AI Renderer 入口。串联 SensorRegistry + FormatterEngine + Calibrator
 - **依赖**: 被 bootstrap.gd 实例化
-- **关键接口**: `_init(config)`, `register(entity_id, node, fields)`, `unregister()`, `register_ref_holder()`, `add_assertion()`, `tick()`, `set_extra()`, `print_results()`
+- **关键接口**: `_init(config)`, `register(entity_id, node, fields)`, `unregister()`, `register_ref_holder()`, `add_assertion()`, `tick(frame: int = 0)`, `set_extra()`, `print_results()`
 - **修改频率**: 低
+- **Phase 14 变更**: `tick()` 增加 `frame: int = 0` 参数，转发给 `calibrator.tick(frame)` 实现超时判断
 
 ### sensor_registry.gd
 - **职责**: 采集注册表。按频率采集注册实体状态
@@ -173,9 +185,10 @@
 ### calibrator.gd
 - **职责**: 校准器。注册断言函数，每帧推进状态机
 - **依赖**: 被 ai_renderer.gd 使用
-- **关键接口**: `add_assertion(name, check_fn)`, `tick()`, `print_results()`
-- **断言状态**: pass / fail / pending / done（未完成自动标 fail）
+- **关键接口**: `add_assertion(name, check_fn)`, `set_run_only(names)`, `set_assertion_timeouts(timeouts)`, `tick(current_frame: int = 0)`, `print_results()`
+- **断言状态**: pass / fail / pending；超时时自动 fail
 - **修改频率**: 低
+- **Phase 14 变更**: `tick()` 增加 `current_frame` 参数；新增 `set_assertion_timeouts()`，支持 per-assertion 超时（scenario.json 中 `assertion_timeouts` 字段）
 
 ### simulated_player.gd
 - **职责**: 剧本调度层。按帧推进 action 队列，维护 wait_frames / wait_signal 状态机
@@ -227,10 +240,17 @@
 ### test_runner.gd + test_runner.tscn
 - **职责**: 单次 Godot 启动顺序跑完所有 headless 场景，消除 N 次冷启动开销
 - **入口**: `godot --headless --path . --scene res://tests/test_runner.tscn`
-- **原理**: 挂在场景树根（name="TestRunner"），按序 instantiate 场景，等待 bootstrap 回调 `on_scenario_done()`，收集结果后 free 游戏节点，继续下一场景
+- **原理**: 挂在场景树根（name="TestRunner"），从 `scene_registry.json` 读取场景列表（仅 window_mode: false 的条目），按序 instantiate 场景，等待 bootstrap 回调 `on_scenario_done()`，收集结果后 free 游戏节点，继续下一场景，最后分组输出汇总
 - **关键接口**: `on_scenario_done(results: Dictionary)` — 由 bootstrap._finish() 调用
-- **场景列表**: `SCENARIO_FILES` 常量，支持两种格式：`.json`（注入主游戏）和 `res://…/scene.tscn`（独立场景）
-- **当前 7 个场景**: economy.json / combat.json / interaction.json / smoke_test / archer_vs_fighter / archer_vs_archer / kite_behavior
+- **场景列表来源**: `res://tests/scene_registry.json`（唯一权威登记表），运行时动态读取，不再有硬编码常量
+- **Phase 13 改动**: 删除 SCENARIO_FILES 硬编码常量和 JSON 注入加载分支（`_inject_scenario()` / `.json` 路径格式）；改为从 scene_registry.json 读取并按 window_mode 自动分组
+
+### tests/scene_registry.json（Phase 13 新增）
+- **职责**: 唯一权威场景登记表。包含所有测试场景的元信息，test_runner.gd 在启动时读取
+- **字段**: `name`（场景名）, `path`（tscn 路径）, `window_mode`（是否需要窗口）, `phase`（所属 Phase）, `description`（说明）, `covers`（可选，覆盖旧场景声明）
+- **已登记场景**: economy / combat / interaction（headless, phase 2-3）/ smoke_test / archer_vs_fighter / archer_vs_archer / kite_behavior（headless, phase 1/10）/ window_interaction（window, phase 12）/ general_movement / general_death / general_follow / general_standby / replenish（headless, phase 15）/ general_visual（window, phase 15）
+- **修改频率**: 低（新增场景时追加条目）
+- **注意**: 禁止删除条目（除非新条目声明了 covers 字段）
 
 ### tests/scenes/combat_bootstrap.gd（Phase 10 新增）
 - **职责**: 独立战斗测试场景公共基类。读 config.json → 按 units 数组生成单位 → 初始化 Calibrator → 帧驱动 → `_finish()`
@@ -238,6 +258,21 @@
 - **关键接口**: `_register_assertions()`（子类可覆盖），`_finish()`，`_abort_scenario(reason)`
 - **窗口模式**: 自动创建等距 45° 相机 + DirectionalLight3D + 地面平面（与主游戏视角一致）
 - **支持单位类型**: `fighter`（无 arrow_manager 参数），`archer`（注入 arrow_manager）
+
+### tests/scenes/economy/（Phase 13 迁移）
+- **职责**: 验证红方经济正循环：工人采矿→交付→生产（从 JSON 注入模式迁移为独立场景）
+- **文件**: `scene.tscn` + `scenario.json`（含 covers: ["economy"]）+ `bootstrap.gd`（继承主游戏 bootstrap，注入 config_overrides）
+- **断言数量**: 6 个（hq_exists / mineral_exists / worker_exists / economy_positive / production_occurred / archer_produced）
+
+### tests/scenes/combat/（Phase 13 迁移）
+- **职责**: 验证蓝方 AI 完成经济→军事→进攻循环，触发战斗击杀（从 JSON 注入模式迁移为独立场景）
+- **文件**: `scene.tscn` + `scenario.json`（含 covers: ["combat"]）+ `bootstrap.gd`
+- **断言**: `battle_resolution`（含 AI 加速参数）
+
+### tests/scenes/interaction/（Phase 13 迁移）
+- **职责**: 验证框选、移动指令、生产链路，含 Worker 和 Archer 生产验证（从 JSON 注入模式迁移为独立场景）
+- **文件**: `scene.tscn` + `scenario.json`（含 covers: ["interaction"]）+ `bootstrap.gd`
+- **断言**: `drag_selects_units` / `move_command_executed` / `production_triggered`（16 个 actions）
 
 ### tests/scenes/smoke_test/（Phase 10A）
 - 2 Fighter 互殴，断言 `battle_resolution`
@@ -251,6 +286,9 @@
 ### tests/scenes/kite_behavior/（Phase 10D）
 - 1 Archer(red,x=200) vs 1 Fighter(blue,x=300) 近距，断言 `archer_kite`
 - 子类 bootstrap 覆盖 `_register_assertions()`，新增 `_assert_archer_kite()`
+
+### tests/scenes/window_interaction/（Phase 12 新增）
+- 真实鼠标框选/点选交互验证（window_mode: true），断言 `real_drag_selects_units` / `real_drag_selects_correct_count` / `real_click_selects_unit`
 
 ### run_scenarios.sh
 - **职责**: 串行运行所有场景（每场景一次 Godot 启动），兼容性强，慢
@@ -271,3 +309,56 @@
 - **职责**: 窗口模式鼠标交互测试剧本。wait → real_drag → wait → real_click → wait 动作序列
 - **断言**: `real_drag_selects_units`, `real_drag_selects_correct_count`, `real_click_selects_unit`
 - **config_overrides**: `ai_opponent.attack_threshold=99`（防止战斗干扰），`physics.total_frames=1800`，`window_test.expected_drag_count=-1`（跳过精确计数）
+
+---
+
+## Phase 15 新增文件（将领单位 + 兵团跟随 + 自动补兵）
+
+### scripts/general_unit.gd（Phase 15A 新增）
+- **职责**: 将领单位。继承 `base_unit.gd`，含 `follow_mode` 状态、哑兵注册接口、空间键切换、头顶标签
+- **关键接口**: `setup(id, team, pos, cfg, headless, map_size, parent)`, `move_to(target)`, `toggle_follow_mode()`, `register_dummy_soldiers(soldiers)`, `get_dummy_count() -> int`, `get_anchor_position() -> Vector3`
+- **信号**: `general_died(team_name)`, `replenish_requested(general)`
+- **关键属性**: `follow_mode: bool`（默认 true），`unit_type = "general"`
+- **补兵逻辑**: 每隔 `replenish_interval` 帧发出 `replenish_requested` 信号，由 parent bootstrap 处理新兵生成
+- **待命扩散**: `follow_mode=false` 且距离超 `standby_spread_threshold` 时，哑兵半径按 `standby_spread_rate` 系数扩大
+
+### scripts/dummy_soldier.gd（Phase 15B 新增，Phase 17 重构）
+- **职责**: 哑兵节点。无 AI 无战斗，仅跟随将领阵型槽位
+- **节点类型**: ~~Node3D~~ → **RigidBody3D**（Phase 17 升级，支持真实物理碰撞）
+- **关键接口**: `setup(general, index, total, cfg, headless)`、`freeze_at_current()`
+- **移动方式**: Phase 17 起改为 Seek Force（`apply_central_force`），高阻尼（linear_damp=8）自然减速，arrive_threshold 防抖
+- **碰撞**: `collision_layer=4`（哑兵层），`collision_mask=1|2|4`（碰地形、主战、互推）
+- **待命**: `follow_mode=false` 时锁定 `linear_velocity=ZERO`，不施力
+
+### tests/gameplay/general_movement/（Phase 15A 新增）
+- **职责**: headless 断言：将领从起始点移动到目标点，验证位置变化 > 阈值
+- **文件**: `scene.tscn` + `bootstrap.gd` + `config.json`
+
+### tests/gameplay/general_death/（Phase 15A 新增）
+- **职责**: headless 断言：将领 HP 归零 → `general_died` 信号触发 → 节点移除
+- **文件**: `scene.tscn` + `bootstrap.gd` + `config.json`
+
+### tests/gameplay/general_follow/（Phase 15B 新增）
+- **职责**: headless 断言：将领移动 N 帧后，哑兵整体质心跟随将领方向移动
+- **文件**: `scene.tscn` + `bootstrap.gd` + `config.json`
+
+### tests/gameplay/general_standby/（Phase 15B 新增）
+- **职责**: headless 断言：`follow_mode=false` 后将领移动，哑兵位置保持不变（漂移量 < 阈值）
+- **文件**: `scene.tscn` + `bootstrap.gd` + `config.json`
+
+### tests/gameplay/replenish/（Phase 15C 新增）
+- **职责**: headless 断言：红蓝将领各自补兵 N 轮，验证兵力增长数量满足预期（蓝方加速补兵）
+- **断言**: red gain ≥ 12，blue gain ≥ 15（至 620/680 帧超时判 fail）
+- **文件**: `scene.tscn` + `bootstrap.gd` + `config.json`
+
+### tests/gameplay/general_visual/（Phase 15B.15 新增）
+- **职责**: 窗口模式目视演示场景。不继承 GameplayBootstrap，无断言，无自动退出
+- **操作**: 右键点击地面 → 将领带队移动；Space → 切换跟随/待命（头顶标签变色）；手动关窗口退出
+- **架构**: 直接 `extends Node3D`，独立加载将领 + 哑兵，自建相机/灯光/地面，鼠标射线投影到 y=0 平面
+- **headless guard**: `DisplayServer.get_name() == "headless"` 时直接 `get_tree().quit()`
+- **文件**: `scene.tscn` + `bootstrap.gd` + `config.json`
+
+### tests/gameplay/gameplay_bootstrap.gd（Phase 15A 新增）
+- **职责**: gameplay 测试公共基类。读 config.json → 按 units 生成将领/哑兵 → 注册断言 → 帧驱动 → `_finish()`
+- **关键接口**: `_post_spawn()`（子类覆盖，在 spawn 完成后执行）, `_register_assertions()`（子类注册断言）
+- **与 combat_bootstrap.gd 区别**: 支持 `general` / `dummy_soldier` 单位类型；支持 `spawn_dummies: true` 配置自动生成哑兵；支持 `replenish_interval` 补兵逻辑

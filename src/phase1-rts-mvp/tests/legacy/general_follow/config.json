@@ -1,0 +1,14 @@
+{
+  "name": "general_follow",
+  "physics": { "fps": 60, "total_frames": 900 },
+  "map": { "width": 1000, "height": 1000 },
+  "units": [
+    {
+      "type": "general",
+      "team": "red",
+      "x": 200.0,
+      "z": 500.0,
+      "spawn_dummies": true
+    }
+  ]
+}

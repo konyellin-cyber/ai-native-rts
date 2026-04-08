@@ -1,0 +1,14 @@
+{
+  "name": "general_visual",
+  "physics": { "fps": 60, "total_frames": 999999 },
+  "map": { "width": 1000, "height": 1000 },
+  "units": [
+    {
+      "type": "general",
+      "team": "red",
+      "x": 500.0,
+      "z": 500.0,
+      "spawn_dummies": true
+    }
+  ]
+}

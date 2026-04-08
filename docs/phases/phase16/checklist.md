@@ -1,0 +1,92 @@
+# Phase 16 Checklist — 行军阵型系统
+
+**目标**: 验证行军纵队 + 静止展开横阵的手感
+**设计文档**: [design.md](design.md)
+**上游文档**: [gameplay-vision.md](../../design/game/gameplay-vision.md)
+
+---
+
+## 前置清理（开发前完成）
+
+- [x] **16A.0a** 将 `tests/gameplay/general_follow/` 和 `tests/gameplay/general_standby/` 移入 `tests/legacy/`（圆形锚点逻辑被阵型系统取代）
+- [x] **16A.0b** headless 全回归确认迁移无副作用：全部 PASS
+
+---
+
+## 子阶段 16A：路径队列 + 行军纵队
+
+### GeneralUnit 修改
+
+- [x] **16A.1** `general_unit.gd` 新增 `_path_buffer: Array[Vector3]`（环形队列，最大 `path_buffer_size` 个点）、`_path_sample_timer: int`
+- [x] **16A.2** `_physics_process` 中：将领速度 > 0 时，每隔 `path_sample_interval` 帧将当前位置压入 `_path_buffer`，同时更新 `_march_direction`
+- [x] **16A.3** 新增 `_formation_state: String`（初始值 "marching"）和 `_deploy_timer: int`
+- [x] **16A.4** 新增方法 `get_formation_slot(index: int, total: int) -> Vector3`：
+  - MARCHING 状态：按编号分配路径点 + 横向槽位（见设计文档算法）
+  - DEPLOYED 状态：按编号分配横阵格位（16B 实现）
+  - 路径点不足时：目标 = 最远路径点
+- [x] **16A.5** `config.json` 新增 `path_buffer_size`（默认 60）、`path_sample_interval`（默认 5）、`march_column_width`（默认 3）
+
+### DummySoldier 修改
+
+- [x] **16A.6** 废弃 `_ring_offset` 预计算逻辑（注释保留说明，不删除文件）
+- [x] **16A.7** `_physics_process` 改为：每帧调用 `_general.get_formation_slot(_soldier_index, _total_count)` 获取目标点，匀速向目标移动（复用 `_move_toward`，无加速度）
+- [x] **16A.8** `follow_mode = false`（待命）时，阵型更新暂停，士兵原地不动（与 Phase 15 行为一致）
+
+### 测试
+
+- [x] **16A.9** 新增 `tests/gameplay/general_marching/`：将领从 A 移动到 B，断言：哑兵质心跟随将领方向移动、最前排哑兵与将领距离 < 路径点间距 × 3，PASS
+- [x] **16A.10** headless 全回归：全部 PASS
+
+---
+
+## 子阶段 16B：静止展开横阵
+
+### GeneralUnit 修改
+
+- [x] **16B.1** `_physics_process` 中检测静止：将领速度 ≈ 0 时 `_deploy_timer` 递增；将领移动时重置为 0
+- [x] **16B.2** `_deploy_timer >= deploy_trigger_frames` 时：`_formation_state` 切换为 "deployed"，`_march_direction` 冻结
+- [x] **16B.3** `_march_direction` 无历史（将领未移动过）时，默认朝向 `Vector3(0, 0, -1)`
+- [x] **16B.4** `get_formation_slot` 的 DEPLOYED 分支实现横阵格位计算（排 × 列，见设计文档算法）
+- [x] **16B.5** `config.json` 新增 `deploy_trigger_frames`（默认 30）、`deploy_columns`（默认 3）、`deploy_row_spacing`（默认 `radius × 2.2`）、`deploy_col_spacing`（默认 `radius × 1.1`）
+
+### 视觉验证
+
+- [ ] **16B.6** 窗口模式目视验证：将领移动后停止，30 帧内哑兵可见从纵队展开为横阵，面朝行军方向
+- [ ] **16B.7** 窗口模式目视验证：将领未移动直接静止生成时，哑兵默认朝北展开
+
+### 测试
+
+- [x] **16B.8** 新增 `tests/gameplay/general_deployed/`：将领静止 `deploy_trigger_frames` 帧后，断言 `_formation_state == "deployed"`、哑兵质心位于将领前方（沿 `_march_direction` 方向），PASS
+- [x] **16B.9** headless 全回归：全部 PASS
+
+---
+
+## 子阶段 16C：状态切换流畅性
+
+### GeneralUnit 修改
+
+- [x] **16C.1** 将领重新移动时（速度 > 0）：`_formation_state` 立即切回 "marching"，清空 `_path_buffer`，`_march_direction` 解冻
+- [x] **16C.2** 切回 MARCHING 后，`get_formation_slot` 立即返回新路径点目标（哑兵无需额外处理，自然流向新目标）
+
+### 视觉验证
+
+- [ ] **16C.3** 窗口模式目视验证：行军 → 展开 → 再行军，循环 3 次，无穿插、无闪跳、无士兵瞬移
+
+### 测试
+
+- [x] **16C.4** 新增 `tests/gameplay/formation_switch/`：
+  - 将领移动 → 停止（等待展开）→ 再次移动，循环 2 次
+  - 断言：每次停止后 `_formation_state` 变为 "deployed"；每次移动后立即变回 "marching"
+  - PASS
+- [x] **16C.5** headless 全回归：全部 PASS
+
+---
+
+## 收尾
+
+- [ ] **16D.1** `FILES.md` 更新：记录所有新增/改动文件
+- [ ] **16D.2** `roadmap.md` 更新：Phase 16 行新增并标记状态
+
+---
+
+_创建: 2026-04-04_

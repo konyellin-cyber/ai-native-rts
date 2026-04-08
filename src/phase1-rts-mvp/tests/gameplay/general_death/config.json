@@ -1,0 +1,10 @@
+{
+  "name": "general_death",
+  "description": "将领 HP 归零，断言 general_died 信号触发、节点移除 PASS",
+  "map": { "width": 500, "height": 500 },
+  "units": [
+    { "type": "general", "team": "red", "x": 100, "z": 250, "hp": 1 }
+  ],
+  "assertions": ["general_died_signal", "general_node_removed"],
+  "physics": { "fps": 60, "total_frames": 300 }
+}

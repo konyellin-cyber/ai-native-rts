@@ -5,34 +5,25 @@ extends Node
 ##
 ## 原理：
 ##   1. 以 "TestRunner" 名称挂在场景树根节点（bootstrap._finish() 会查找它）
-##   2. 按顺序加载场景，等待 bootstrap 完成回调
-##   3. 收集每轮结果后 free 掉 game 节点，加载下一个场景
-##   4. 全部跑完后打印汇总并退出
+##   2. 从 scene_registry.json 读取场景列表，仅运行 window_mode: false 的场景
+##   3. 按顺序加载场景，等待 bootstrap 完成回调
+##   4. 收集每轮结果后 free 掉 game 节点，加载下一个场景
+##   5. 全部跑完后打印分组汇总（Headless / Window）并退出
 ##
-## 场景列表支持两种格式：
-##   - "economy.json"     → 走 .json 注入模式（主游戏 main.tscn + _inject_scenario）
-##   - "res://tests/scenes/smoke_test/scene.tscn" → 走独立 .tscn 模式（直接 instantiate）
+## 场景登记表：res://tests/scene_registry.json（唯一权威登记表）
+## 新增场景时在 scene_registry.json 中追加条目，不直接修改本文件。
 ##
 ## 为什么不并行：单进程内多个物理世界会互相干扰 NavigationServer；
 ##   并行需求请用 run_scenarios_parallel.sh（多进程）。
 
-const MAIN_SCENE = "res://main.tscn"
-const SCENARIOS_DIR = "res://tests/scenarios/"
+const REGISTRY_PATH = "res://tests/scene_registry.json"
 
-## 要运行的场景列表
-## .json 文件名（相对 SCENARIOS_DIR）→ .json 注入模式
-## res:// 绝对路径（.tscn）→ 独立场景模式
-const SCENARIO_FILES: Array[String] = [
-	"economy.json",
-	"combat.json",
-	"interaction.json",
-	"res://tests/scenes/smoke_test/scene.tscn",
-	"res://tests/scenes/archer_vs_fighter/scene.tscn",
-	"res://tests/scenes/archer_vs_archer/scene.tscn",
-	"res://tests/scenes/kite_behavior/scene.tscn",
-]
+## 从 scene_registry.json 加载的场景列表（运行时填充）
+var _scenario_files: Array[String] = []
+## 所有场景的元信息（name, window_mode, phase 等）
+var _registry: Array = []
 
-var _results: Array = []   # [{ name, passed, failed, detail_lines }]
+var _results: Array = []   # [{ name, passed, failed, detail_lines, window_mode }]
 var _current_idx: int = -1
 var _game_node: Node = null
 var _start_msec: int = 0
@@ -44,9 +35,11 @@ func _ready() -> void:
 	name = "TestRunner"
 	_start_msec = Time.get_ticks_msec()
 
+	_load_registry()
+
 	print("")
 	print("[RUNNER] ════════════════════════════════════════")
-	print("[RUNNER]  TEST RUNNER — %d scenarios" % SCENARIO_FILES.size())
+	print("[RUNNER]  TEST RUNNER — %d headless scenarios" % _scenario_files.size())
 	print("[RUNNER] ════════════════════════════════════════")
 
 	## 为什么用 call_deferred：_ready 期间场景树 busy，直接 add_child 会报错。
@@ -54,53 +47,61 @@ func _ready() -> void:
 	_run_next.call_deferred()
 
 
+## 从 scene_registry.json 读取登记表，填充 _scenario_files（仅 headless 场景）
+func _load_registry() -> void:
+	var f = FileAccess.open(REGISTRY_PATH, FileAccess.READ)
+	if f == null:
+		push_error("[RUNNER] Cannot read scene_registry.json")
+		get_tree().quit(1)
+		return
+	var text = f.get_as_text()
+	f.close()
+
+	var json = JSON.new()
+	if json.parse(text) != OK:
+		push_error("[RUNNER] Invalid JSON in scene_registry.json")
+		get_tree().quit(1)
+		return
+
+	_registry = json.data
+	for entry in _registry:
+		## 仅将 window_mode: false 的场景加入本次 headless 运行列表
+		## window_mode: true 的场景需在有窗口环境中单独运行
+		if not entry.get("window_mode", false):
+			_scenario_files.append(entry["path"])
+
+
 ## 启动下一个场景（由 _ready 或 on_scenario_done 调用）
 func _run_next() -> void:
 	_current_idx += 1
 
-	if _current_idx >= SCENARIO_FILES.size():
+	if _current_idx >= _scenario_files.size():
 		_print_summary()
 		var failed_count = _results.filter(func(r): return r.failed > 0).size()
 		get_tree().quit(1 if failed_count > 0 else 0)
 		return
 
-	var entry = SCENARIO_FILES[_current_idx]
+	var entry = _scenario_files[_current_idx]
 	print("")
 	print("[RUNNER] ────────────────────────────────────────")
-	print("[RUNNER] ▶ [%d/%d] %s" % [_current_idx + 1, SCENARIO_FILES.size(), entry])
+	print("[RUNNER] ▶ [%d/%d] %s" % [_current_idx + 1, _scenario_files.size(), entry])
 
-	if entry.ends_with(".tscn"):
-		## 独立 .tscn 模式：直接 instantiate，场景自带专属 bootstrap
-		var packed = load(entry) as PackedScene
-		if packed == null:
-			push_error("[RUNNER] Cannot load .tscn: %s" % entry)
-			get_tree().quit(1)
-			return
-		_game_node = packed.instantiate()
-		get_tree().root.add_child(_game_node)
-	else:
-		## .json 注入模式：写入 config.json，加载 main.tscn
-		var scenario_file = SCENARIOS_DIR + entry
-		_inject_scenario(scenario_file)
-		var packed = load(MAIN_SCENE) as PackedScene
-		if packed == null:
-			push_error("[RUNNER] Cannot load %s" % MAIN_SCENE)
-			get_tree().quit(1)
-			return
-		_game_node = packed.instantiate()
-		get_tree().root.add_child(_game_node)
+	## 所有场景均为独立 .tscn 模式，直接 instantiate
+	var packed = load(entry) as PackedScene
+	if packed == null:
+		push_error("[RUNNER] Cannot load .tscn: %s" % entry)
+		get_tree().quit(1)
+		return
+	_game_node = packed.instantiate()
+	get_tree().root.add_child(_game_node)
 
 
 ## bootstrap 在结束时（帧超限 / 断言全通过）调用此函数代替 get_tree().quit()
 ## 参数 results：Calibrator.get_results() 返回的 Dictionary
 func on_scenario_done(results: Dictionary) -> void:
-	var entry = SCENARIO_FILES[_current_idx]
-	## 从路径末段提取场景名（兼容 .json 和 .tscn）
-	var scenario_name: String
-	if entry.ends_with(".tscn"):
-		scenario_name = entry.get_base_dir().get_file()  # "res://tests/scenes/smoke_test/scene.tscn" → "smoke_test"
-	else:
-		scenario_name = entry.replace(".json", "")
+	var entry = _scenario_files[_current_idx]
+	## 从路径末段提取场景名（取上一级目录名）
+	var scenario_name: String = entry.get_base_dir().get_file()  # "res://tests/core/smoke_test/scene.tscn" → "smoke_test"
 	var passed = 0
 	var failed = 0
 	var detail_lines: Array[String] = []
@@ -139,44 +140,26 @@ func on_scenario_done(results: Dictionary) -> void:
 	_run_next()
 
 
-## 将 scenario_file 写入 config（bootstrap._load_config 在 _ready 时读取）
-## 为什么用 FileAccess 写 res:// 而非 user://：bootstrap 硬编码了 "res://config.json"
-func _inject_scenario(scenario_path: String) -> void:
-	var f = FileAccess.open("res://config.json", FileAccess.READ)
-	if f == null:
-		push_error("[RUNNER] Cannot read res://config.json")
-		return
-	var text = f.get_as_text()
-	f.close()
-
-	var json = JSON.new()
-	if json.parse(text) != OK:
-		push_error("[RUNNER] Invalid JSON in config.json")
-		return
-	var cfg: Dictionary = json.data
-	cfg["scenario_file"] = scenario_path
-
-	var wf = FileAccess.open("res://config.json", FileAccess.WRITE)
-	if wf == null:
-		push_error("[RUNNER] Cannot write res://config.json")
-		return
-	wf.store_string(JSON.stringify(cfg, "  "))
-	wf.close()
-
-
 func _print_summary() -> void:
 	var elapsed = Time.get_ticks_msec() - _start_msec
 	var total_passed = 0
 	var total_failed_scenarios = 0
 
+	## 统计登记表中 window 场景数量（本次未运行，仅做提示）
+	var window_count = 0
+	for entry in _registry:
+		if entry.get("window_mode", false):
+			window_count += 1
+
 	print("")
 	print("[RUNNER] ════════════════════════════════════════")
 	print("[RUNNER]  FINAL SUMMARY  (elapsed: %.1fs)" % (elapsed / 1000.0))
 	print("[RUNNER] ════════════════════════════════════════")
+	print("[RUNNER]  [Headless 场景]")
 
 	for r in _results:
 		var icon = "✅" if r.failed == 0 else "❌"
-		print("[RUNNER]  %s %-20s  pass=%d  fail=%d" % [icon, r.name, r.passed, r.failed])
+		print("[RUNNER]  %s %-22s  pass=%d  fail=%d" % [icon, r.name, r.passed, r.failed])
 		if r.failed > 0:
 			for line in r.detail_lines:
 				if "❌" in line:
@@ -189,4 +172,6 @@ func _print_summary() -> void:
 	print("[RUNNER]  Scenarios: %d/%d PASS | Failed scenarios: %d" % [
 		total - total_failed_scenarios, total, total_failed_scenarios
 	])
+	if window_count > 0:
+		print("[RUNNER]  [Window 场景] %d 个，需窗口模式单独运行（见 scene_registry.json）" % window_count)
 	print("[RUNNER] ════════════════════════════════════════")

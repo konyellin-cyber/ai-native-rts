@@ -50,13 +50,24 @@ ai-native-rts/
 ## 运行项目
 
 ```bash
-# Headless 模式（自动测试）
-godot --headless --path src/phase1-rts-mvp
+# Headless 模式（自动测试，无窗口）
+godot --headless --path src/phase1-rts-mvp --scene res://tests/test_runner.tscn
 
-# 窗口模式（可玩）
+# 窗口测试模式（默认，有窗口 + 自动剧本 + 断言验证，跑完 1800 帧后自动退出）
 godot --path src/phase1-rts-mvp
+
+# 游玩模式（有窗口，关闭 SimulatedPlayer 和断言，手动操作，不自动退出）
+godot --path src/phase1-rts-mvp -- --play
 ```
+
+### 三种启动模式对比
+
+| 模式 | 命令 | SimulatedPlayer | 断言 | 帧数限制 | 用途 |
+|------|------|:-:|:-:|:-:|------|
+| Headless | `--headless` | ✅ | ✅ | ✅ | CI / 自动回归 |
+| 窗口测试 | （默认） | ✅ | ✅ | ✅ 1800帧 | 可视化断言验证 |
+| 游玩 | `-- --play` | ❌ | ❌ | ❌ | 手动游玩 |
 
 ---
 
-_创建: 2026-03-21 | 更新: 2026-03-28_
+_创建: 2026-03-21 | 更新: 2026-04-03_

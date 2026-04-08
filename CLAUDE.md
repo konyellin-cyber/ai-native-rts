@@ -55,7 +55,7 @@
 
 - **程序化验证为默认方式**：优先用 headless 自动化测试，不依赖截图
 - **每次代码变更后必须跑 headless 回归**：`godot --headless --path ./src/phase1-rts-mvp`
-- **11/11 PASS 才算完成**，有 FAIL 必须修复，不得带 FAIL 进入下一步
+- **全部 PASS 才算完成**，有 FAIL 必须修复，不得带 FAIL 进入下一步
 - **headless 自动闭环**：验证结果可判定时直接运行（无需确认）→ 分析输出 → 有 FAIL 自动修复重验（最多 3 轮）→ 全部通过后汇报
 - **窗口模式也要程序化**：窗口验证通过 SimulatedPlayer 自动走剧本 + WindowAssertionSetup 断言，输出 PASS/FAIL；不依赖手动操作
 - **截图是过渡手段**：事件驱动截图只用于"暂时无法程序化"的视觉检查，每张截图背后需标注"何时可转为断言"；能程序化就不截图
@@ -69,11 +69,13 @@
 | 并行多进程 | `bash tests/run_scenarios_parallel.sh` | CI / 场景间完全隔离时 | 快（N 进程并行） |
 | 串行兼容 | `bash tests/run_scenarios.sh` | 调试单场景 / 排查干扰 | 慢（N 次冷启动） |
 
-**日常优先用 test_runner.tscn**；只有怀疑场景间状态互相干扰时才退回串行。
+**Window 场景入口**（需有显示环境）：`godot --path . --scene res://tests/scenes/window_interaction/scene.tscn`
 
-**AI 可自行执行（无需确认）**：headless 验证、测试脚本、项目目录内文件修改、checklist/知识库更新
+**日常优先用 test_runner.tscn**（仅跑 Headless 场景）；只有怀疑场景间状态互相干扰时才退回串行。
 
-**需用户确认**：窗口模式运行、git commit/push、修改项目目录外文件、删除非临时文件、运行时间 > 60 秒的任务
+**AI 可自行执行（无需确认）**：headless 验证、测试脚本、项目目录内文件修改、checklist/知识库更新、**窗口测试自动化**（SimulatedPlayer 剧本 + WindowAssertionSetup 断言，自动退出，不依赖手动操作）
+
+**需用户确认**：git commit/push、修改项目目录外文件、删除非临时文件、运行时间 > 60 秒的任务、需要人工交互的窗口操作
 
 ---
 

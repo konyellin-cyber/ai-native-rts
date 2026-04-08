@@ -77,13 +77,13 @@ func get_calibrator() -> RefCounted:
 	return _calibrator
 
 
-func tick() -> bool:
+func tick(frame: int = 0) -> bool:
 	## 推进采样、格式化、断言。
 	## 返回 true 表示所有断言已完成（可 early exit），false 表示仍有 pending。
 	_registry.tick()
 	var all_done := false
 	if _calibrator:
-		all_done = _calibrator.tick()
+		all_done = _calibrator.tick(frame)
 	if _mode != "off":
 		var snapshot = _registry.get_snapshot()
 		if not snapshot.is_empty():

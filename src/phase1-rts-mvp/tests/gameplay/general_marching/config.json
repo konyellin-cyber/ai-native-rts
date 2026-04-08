@@ -1,0 +1,14 @@
+{
+  "name": "general_marching",
+  "physics": { "fps": 60, "total_frames": 900 },
+  "map": { "width": 1200, "height": 1200 },
+  "units": [
+    {
+      "type": "general",
+      "team": "red",
+      "x": 200.0,
+      "z": 600.0,
+      "spawn_dummies": true
+    }
+  ]
+}

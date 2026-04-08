@@ -1,0 +1,133 @@
+[
+  {
+    "name": "economy",
+    "path": "res://tests/legacy/economy/scene.tscn",
+    "window_mode": false,
+    "phase": 2,
+    "covers": ["economy"],
+    "description": "验证红方经济正循环：工人采矿→交付→生产"
+  },
+  {
+    "name": "combat",
+    "path": "res://tests/legacy/combat/scene.tscn",
+    "window_mode": false,
+    "phase": 2,
+    "covers": ["combat"],
+    "description": "验证蓝方 AI 完成经济→军事→进攻循环，触发战斗击杀"
+  },
+  {
+    "name": "interaction",
+    "path": "res://tests/legacy/interaction/scene.tscn",
+    "window_mode": false,
+    "phase": 3,
+    "covers": ["interaction"],
+    "description": "验证框选、移动指令、生产链路，含 Worker 和 Archer 生产验证"
+  },
+  {
+    "name": "smoke_test",
+    "path": "res://tests/core/smoke_test/scene.tscn",
+    "window_mode": false,
+    "phase": 1,
+    "description": "2 Fighter 基础战斗，验证战斗框架基础链路"
+  },
+  {
+    "name": "archer_vs_fighter",
+    "path": "res://tests/core/archer_vs_fighter/scene.tscn",
+    "window_mode": false,
+    "phase": 10,
+    "description": "Archer vs Fighter 战斗"
+  },
+  {
+    "name": "archer_vs_archer",
+    "path": "res://tests/core/archer_vs_archer/scene.tscn",
+    "window_mode": false,
+    "phase": 10,
+    "description": "Archer vs Archer 战斗"
+  },
+  {
+    "name": "kite_behavior",
+    "path": "res://tests/core/kite_behavior/scene.tscn",
+    "window_mode": false,
+    "phase": 10,
+    "description": "弓箭手 Kite 战术验证"
+  },
+  {
+    "name": "window_interaction",
+    "path": "res://tests/core/window_interaction/scene.tscn",
+    "window_mode": true,
+    "phase": 12,
+    "description": "真实鼠标框选/点选交互验证（需窗口模式运行）"
+  },
+  {
+    "name": "general_movement",
+    "path": "res://tests/gameplay/general_movement/scene.tscn",
+    "window_mode": false,
+    "phase": 15,
+    "covers": ["general"],
+    "description": "将领从 A 点移动到 B 点，断言位置变化 PASS"
+  },
+  {
+    "name": "general_death",
+    "path": "res://tests/gameplay/general_death/scene.tscn",
+    "window_mode": false,
+    "phase": 15,
+    "covers": ["general"],
+    "description": "将领 HP 归零，断言 general_died 信号触发、节点移除 PASS"
+  },
+  {
+    "name": "general_follow",
+    "path": "res://tests/legacy/general_follow/scene.tscn",
+    "window_mode": false,
+    "phase": 15,
+    "covers": ["general", "dummy_soldier"],
+    "description": "[LEGACY] 圆形锚点跟随测试，已被 Phase 16 阵型系统取代"
+  },
+  {
+    "name": "general_standby",
+    "path": "res://tests/legacy/general_standby/scene.tscn",
+    "window_mode": false,
+    "phase": 15,
+    "covers": ["general", "dummy_soldier"],
+    "description": "[LEGACY] 圆形锚点待命测试，已被 Phase 16 阵型系统取代"
+  },
+  {
+    "name": "replenish",
+    "path": "res://tests/gameplay/replenish/scene.tscn",
+    "window_mode": false,
+    "phase": 15,
+    "covers": ["general", "dummy_soldier", "replenish"],
+    "description": "红蓝将领自动补兵，断言 N 帧后兵力正确增长 PASS"
+  },
+  {
+    "name": "general_visual",
+    "path": "res://tests/gameplay/general_visual/scene.tscn",
+    "window_mode": true,
+    "phase": 15,
+    "covers": ["general", "dummy_soldier"],
+    "description": "将领+兵团目视演示：右键移动、Space切换跟随/待命，无断言"
+  },
+  {
+    "name": "general_marching",
+    "path": "res://tests/gameplay/general_marching/scene.tscn",
+    "window_mode": false,
+    "phase": 16,
+    "covers": ["general", "dummy_soldier", "formation"],
+    "description": "将领移动时，断言哑兵形成纵队跟随（质心跟随方向，最前排距离在合理范围内）"
+  },
+  {
+    "name": "general_deployed",
+    "path": "res://tests/gameplay/general_deployed/scene.tscn",
+    "window_mode": false,
+    "phase": 16,
+    "covers": ["general", "dummy_soldier", "formation"],
+    "description": "将领静止后，断言 formation_state 变为 deployed，哑兵质心位于将领前方"
+  },
+  {
+    "name": "formation_switch",
+    "path": "res://tests/gameplay/formation_switch/scene.tscn",
+    "window_mode": false,
+    "phase": 16,
+    "covers": ["general", "dummy_soldier", "formation"],
+    "description": "行军→展开→再行军循环，断言状态切换正确，无穿插"
+  }
+]

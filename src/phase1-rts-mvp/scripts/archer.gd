@@ -1,4 +1,4 @@
-extends CharacterBody3D
+extends "res://scripts/base_unit.gd"
 
 ## Phase 10 Archer — 纯远程单位（3D）
 ## States: idle → wander → chase → shoot → kite → dead
@@ -16,13 +16,8 @@ extends CharacterBody3D
 ##   - ArrowManager 节点（通过 setup() 传入引用）
 ##   - ArrowManager.fire(origin, direction, damage, max_range, owner_team)
 
-var unit_id: int = 0
-var unit_type: String = "archer"
-var team_name: String = "red"
 var move_speed: float = 120.0
 var unit_radius: float = 7.0
-var max_hp: float = 60.0
-var hp: float = 60.0
 
 # Ranged combat params (from config)
 var attack_damage: float = 15.0
@@ -38,23 +33,12 @@ var _map_height: float = 1500.0
 var _nav_available: bool = false
 
 ## Combat state
-var _state: String = "idle":
-	set(v):
-		_state = v
-		ai_state = v
-var ai_state: String = "idle"
 var _target: Node = null
 var _attack_timer: float = 0.0
 var _enemy_group: String = ""
 var _arrow_manager: Node = null    ## ArrowManager 引用，setup() 时注入
 
 var target_position: Vector3 = Vector3.ZERO
-
-var _hit_flash_timer: float = 0.0
-var _body_mat: StandardMaterial3D = null
-var _knockback: Vector3 = Vector3.ZERO
-
-signal died(unit_id: int, team: String)
 
 
 func setup(
@@ -105,6 +89,7 @@ func setup(
 	if not headless:
 		_add_visual()
 
+	_idle_color = Color(0.2, 0.7, 0.2) if team == "red" else Color(0.1, 0.9, 0.5)
 	_enemy_group = "team_blue" if team_name == "red" else "team_red"
 
 
@@ -123,16 +108,7 @@ func _detect_nav() -> void:
 func _physics_process(delta: float) -> void:
 	if _state == "dead":
 		return
-	## 受击白闪恢复
-	if _hit_flash_timer > 0:
-		_hit_flash_timer -= delta
-		if _hit_flash_timer <= 0 and _body_mat:
-			_body_mat.albedo_color = Color(0.2, 0.7, 0.2) if team_name == "red" else Color(0.1, 0.9, 0.5)
-	## 击退衰减
-	if _knockback.length_squared() > 1.0:
-		velocity = _knockback
-		move_and_slide()
-		_knockback = _knockback.lerp(Vector3.ZERO, 0.3)
+	if _process_combat_effects(delta):
 		return
 	if _attack_timer > 0:
 		_attack_timer -= delta
@@ -311,35 +287,6 @@ func _target_alive() -> bool:
 	if _target.has_method("get") and _target.get("_state") == "dead":
 		return false
 	return true
-
-
-func take_damage(amount: float) -> void:
-	if _state == "dead":
-		return
-	hp -= amount
-	if _body_mat:
-		_body_mat.albedo_color = Color(1.0, 1.0, 1.0)
-		_hit_flash_timer = 0.1
-	if hp <= 0:
-		hp = 0
-		_die()
-
-
-func take_damage_from(amount: float, from_pos: Vector3) -> void:
-	if _state == "dead":
-		return
-	var dir = (global_position - from_pos)
-	dir.y = 0.0
-	if dir.length_squared() > 0.01:
-		_knockback = dir.normalized() * 400.0
-	take_damage(amount)
-
-
-func _die() -> void:
-	_state = "dead"
-	velocity = Vector3.ZERO
-	died.emit(unit_id, team_name)
-	queue_free.call_deferred()
 
 
 func _set_agent_target(pos: Vector3) -> void:

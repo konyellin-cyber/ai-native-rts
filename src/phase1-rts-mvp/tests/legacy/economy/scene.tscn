@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://economy_v2"]
+
+[ext_resource type="Script" path="res://tests/legacy/economy/bootstrap.gd" id="1"]
+
+[node name="Economy" type="Node3D"]
+script = ExtResource("1")

@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://combat_v2"]
+
+[ext_resource type="Script" path="res://tests/legacy/combat/bootstrap.gd" id="1"]
+
+[node name="Combat" type="Node3D"]
+script = ExtResource("1")

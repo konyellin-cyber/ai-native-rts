@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://general_standby"]
+
+[ext_resource type="Script" path="res://tests/legacy/general_standby/bootstrap.gd" id="1"]
+
+[node name="GeneralStandby" type="Node3D"]
+script = ExtResource("1")

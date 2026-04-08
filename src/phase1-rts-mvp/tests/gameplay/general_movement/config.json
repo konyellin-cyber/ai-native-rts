@@ -1,0 +1,10 @@
+{
+  "name": "general_movement",
+  "description": "将领从 A 点移动到 B 点，断言位置变化 PASS",
+  "map": { "width": 500, "height": 500 },
+  "units": [
+    { "type": "general", "team": "red", "x": 100, "z": 250 }
+  ],
+  "assertions": ["general_moved"],
+  "physics": { "fps": 60, "total_frames": 600 }
+}

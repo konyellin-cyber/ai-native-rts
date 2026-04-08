@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://formation_debug"]
+
+[ext_resource type="Script" path="res://tests/gameplay/formation_debug/bootstrap.gd" id="1"]
+
+[node name="FormationDebug" type="Node3D"]
+script = ExtResource("1")

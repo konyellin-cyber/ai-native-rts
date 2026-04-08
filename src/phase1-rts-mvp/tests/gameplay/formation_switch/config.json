@@ -1,0 +1,14 @@
+{
+  "name": "formation_switch",
+  "physics": { "fps": 60, "total_frames": 1200 },
+  "map": { "width": 1200, "height": 1200 },
+  "units": [
+    {
+      "type": "general",
+      "team": "red",
+      "x": 300.0,
+      "z": 600.0,
+      "spawn_dummies": true
+    }
+  ]
+}
