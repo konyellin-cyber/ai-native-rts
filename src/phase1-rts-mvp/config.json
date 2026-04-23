@@ -48,18 +48,30 @@
     "replenish_interval": 180,
     "replenish_count": 3,
     "replenish_rate_growth": 0.05,
-    "path_buffer_size": 60,
-    "path_sample_interval": 5,
-    "march_column_width": 6,
-    "deploy_trigger_frames": 30,
+    "path_buffer_size": 120,
+    "path_sample_interval": 2,
+    "march_column_width": 2,
+    "march_row_path_step": 8,
+    "march_lead_offset": 3,
+    "deploy_trigger_frames": 59,
+    "deploy_ready_threshold": 53.631130659107455,
     "deploy_columns": 8,
-    "deploy_row_spacing_factor": 2.2,
-    "deploy_col_spacing_factor": 1.1,
+    "deploy_row_spacing_factor": 5.0,
+    "deploy_col_spacing_factor": 4.0,
     "dummy_mass": 1.0,
-    "dummy_linear_damp": 8.0,
-    "dummy_drive_strength": 1600.0,
-    "dummy_arrive_threshold": 15.0,
-    "dummy_collision_radius_factor": 0.25
+    "dummy_linear_damp": 11.824290472334392,
+    "dummy_drive_strength": 1865.8241131869413,
+    "dummy_arrive_threshold": 20.075545516059716,
+    "dummy_slow_radius": 76.85813883993393,
+    "dummy_nav_path_distance": 15.0,
+    "dummy_nav_target_distance": 15.0,
+    "dummy_nav_neighbor_distance": 60.0,
+    "dummy_nav_max_neighbors": 10,
+    "dummy_collision_radius_factor": 0.8,
+    "march_algorithm": "path_follow",
+    "flow_field_cell_size": 20.0,
+    "flow_field_half_width": 4,
+    "flow_field_update_interval": 10
   },
   "hq": {
     "hp": 500.0,
@@ -116,7 +128,6 @@
       "units": 10.0
     }
   },
-  "scenario_file": "res://tests/scenarios/interaction.json",
   "test_actions": [
     {
       "action": "box_select",

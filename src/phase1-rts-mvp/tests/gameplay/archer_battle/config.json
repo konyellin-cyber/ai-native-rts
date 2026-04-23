@@ -1,0 +1,5 @@
+{
+  "name": "archer_battle",
+  "physics": { "fps": 60 },
+  "map": { "width": 1500, "height": 1000 }
+}

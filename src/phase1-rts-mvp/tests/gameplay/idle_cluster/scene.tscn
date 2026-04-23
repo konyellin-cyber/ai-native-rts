@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://idle_cluster"]
+
+[ext_resource type="Script" path="res://tests/gameplay/idle_cluster/bootstrap.gd" id="1"]
+
+[node name="IdleCluster" type="Node3D"]
+script = ExtResource("1")

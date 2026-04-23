@@ -1,0 +1,106 @@
+{
+	"overall_score": 49.9,
+	"scenes": [
+		{
+			"deploy_frames": 0,
+			"deploy_score": 0.0,
+			"freeze_frames_to_full": -1,
+			"march_frames": 901,
+			"march_score": 99.3,
+			"player_result": {
+				"frames": 901,
+				"scene_id": 1,
+				"scene_name": "S1_straight_long",
+				"timeout": true
+			},
+			"scene_id": 1,
+			"scene_name": "S1_straight_long",
+			"total_frames": 901,
+			"total_score": 49.6,
+			"warn_counts": {
+				"clump": 1,
+				"incoherent": 0,
+				"lat_collapse": 0,
+				"not_frozen": 0,
+				"overshoot": 1,
+				"scatter": 0
+			}
+		},
+		{
+			"deploy_frames": 0,
+			"deploy_score": 0.0,
+			"freeze_frames_to_full": -1,
+			"march_frames": 1201,
+			"march_score": 100.0,
+			"player_result": {
+				"frames": 1201,
+				"scene_id": 2,
+				"scene_name": "S2_turn",
+				"timeout": true
+			},
+			"scene_id": 2,
+			"scene_name": "S2_turn",
+			"total_frames": 1201,
+			"total_score": 50.0,
+			"warn_counts": {
+				"clump": 0,
+				"incoherent": 0,
+				"lat_collapse": 0,
+				"not_frozen": 0,
+				"overshoot": 2,
+				"scatter": 0
+			}
+		},
+		{
+			"deploy_frames": 0,
+			"deploy_score": 0.0,
+			"freeze_frames_to_full": -1,
+			"march_frames": 601,
+			"march_score": 100.0,
+			"player_result": {
+				"frames": 601,
+				"scene_id": 3,
+				"scene_name": "S3_short",
+				"timeout": true
+			},
+			"scene_id": 3,
+			"scene_name": "S3_short",
+			"total_frames": 601,
+			"total_score": 50.0,
+			"warn_counts": {
+				"clump": 0,
+				"incoherent": 0,
+				"lat_collapse": 0,
+				"not_frozen": 0,
+				"overshoot": 2,
+				"scatter": 0
+			}
+		},
+		{
+			"deploy_frames": 0,
+			"deploy_score": 0.0,
+			"freeze_frames_to_full": -1,
+			"march_frames": 2401,
+			"march_score": 100.0,
+			"player_result": {
+				"frames": 2401,
+				"scene_id": 4,
+				"scene_name": "S4_switch",
+				"timeout": true
+			},
+			"scene_id": 4,
+			"scene_name": "S4_switch",
+			"total_frames": 2401,
+			"total_score": 50.0,
+			"warn_counts": {
+				"clump": 0,
+				"incoherent": 0,
+				"lat_collapse": 0,
+				"not_frozen": 0,
+				"overshoot": 2,
+				"scatter": 0
+			}
+		}
+	],
+	"timestamp": "20260418_200351"
+}

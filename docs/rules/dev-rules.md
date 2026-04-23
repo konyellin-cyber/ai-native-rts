@@ -106,18 +106,46 @@
 
 当实现步骤可以通过 headless 运行闭环验证时，**直接运行，不询问用户确认**。
 
-**适用条件**：
-- 验证结果是可判定的（断言 PASS/FAIL、输出匹配等）
-- 不涉及对外仓库的代码提交
-- 命令执行时间在合理范围内（< 60 秒）
+**验证命令决策树（硬约束）**：
 
-**执行方式**：
-1. 实现代码完成后，直接运行 headless 验证
-2. 分析输出结果，判断 PASS/FAIL
-3. 如有 FAIL，自动修复并重新验证（最多 3 轮）
-4. 全部通过后汇报结果
+```
+当前处于某 phase 开发中间步骤？
+  → 使用 --phase N（快速，只跑当前 phase 相关场景）
 
-**不适用**：需要 GUI 手动操作的视觉验证、涉及对外仓库的 git commit/push
+当前执行 checklist 中标注"收尾全量回归"的步骤？
+  → 使用无参数全量命令
+
+需要验证单个场景？
+  → 使用 --scene 场景名
+```
+
+**三档命令速查**（在 `src/phase1-rts-mvp` 目录下执行）：
+
+```bash
+# 开发中：只跑当前 phase（快速，~15-50s）
+godot --headless --path . --scene res://tests/test_runner.tscn -- --phase N
+
+# 单场景（最快，~5s）
+godot --headless --path . --scene res://tests/test_runner.tscn -- --scene 场景名
+
+# 收尾全量（提交前，~160s）
+godot --headless --path . --scene res://tests/test_runner.tscn
+```
+
+**窗口场景入口**（需要显示环境，从 scene_registry.json 的 window_mode:true 条目读路径）：
+
+```bash
+# 将领目视演示
+godot --path . --scene res://tests/gameplay/general_visual/scene.tscn
+
+# 窗口交互测试
+godot --path . --scene res://tests/core/window_interaction/scene.tscn
+```
+
+**AI 执行规则**：
+- 开发中间步骤默认用 `--phase N`，不主动跑全量
+- 只有 checklist 明确标注"收尾全量回归"时才用无参数全量
+- 全量回归结果是 17/17 PASS 才算完成
 
 ### 6.2 窗口验证规则
 
@@ -133,6 +161,21 @@
 - 在"靠属性检查无法覆盖"的关键时刻自动截图，供人工 review
 - 触发信号：`prod_panel_shown`、`selection_rect_drawn`、`battle_first_kill`、`game_over`
 - 截图是**临时手段**，目标是将能转化的 A 类检查（截图留证）逐步转为 B 类程序化断言
+
+**截图与日志的定位习惯（硬约束）**：
+
+每张截图必须在 `window_debug.log` 中有一条对应的锚点行，格式为：
+
+```
+  ux_screenshots:
+    #帧号 [event:信号名] → 文件名   ← 信号触发截图
+    #帧号 [auto] → 文件名           ← 定时截图
+```
+
+使用方式：
+1. **从截图找日志**：截图文件名包含帧号（如 `ux_prod_panel_shown_f423.png`），在日志中搜索 `[TICK 423]` 即可定位对应的游戏状态
+2. **从日志找截图**：看到 `ux_screenshots:` 块，直接知道哪帧保存了什么截图、原因是什么，无需猜测
+3. **每张截图都要有日志**：不允许有"没有日志对应行"的截图存在；若截图系统与日志系统解耦运行，截图写入后必须在下一帧日志中补写锚点
 
 **验证分级原则（硬约束）**：
 1. **能程序化就不截图**：凡是能读节点属性/状态得出 yes/no 的，必须写成断言，不截图了事

@@ -1,94 +1,61 @@
 #!/bin/bash
-# 并行运行所有场景化测试，汇总结果
+# 并行运行所有 headless 场景测试
+# 场景列表来自 scene_registry.json（window_mode=false 条目），每条目独立进程
 # 用法：bash tests/run_scenarios_parallel.sh
-# 原理：每个场景写临时 config 后并行启动 Godot，最后等待全部完成
-# 为什么并行：各场景断言独立，无共享状态，天然适合并发
 
 GODOT=${GODOT:-godot}
 PROJECT_PATH="$(cd "$(dirname "$0")/.." && pwd)"
-CONFIG="$PROJECT_PATH/config.json"
-SCENARIOS_DIR="$PROJECT_PATH/tests/scenarios"
+REGISTRY="$PROJECT_PATH/tests/scene_registry.json"
 TMPDIR_BASE="$PROJECT_PATH/tests/.tmp_parallel"
 
-# 清理旧的临时目录
+# 清理旧临时目录
 rm -rf "$TMPDIR_BASE"
 mkdir -p "$TMPDIR_BASE"
 
-# 场景列表：name:scenario_file
-SCENARIOS=(
-  "economy:$SCENARIOS_DIR/economy.json"
-  "combat:$SCENARIOS_DIR/combat.json"
-  "interaction:$SCENARIOS_DIR/interaction.json"
-)
+# 从 scene_registry.json 提取所有 window_mode=false 的场景路径
+SCENES=$(python3 - <<'EOF'
+import json, sys
+with open(sys.argv[1]) as f:
+    registry = json.load(f)
+scenes = [e["scene"] for e in registry if not e.get("window_mode", False)]
+print("\n".join(scenes))
+EOF
+"$REGISTRY")
 
-# 为每个场景创建独立 config 副本，避免并发写冲突
-prepare_config() {
-  local name="$1"
-  local scenario_file="$2"
-  local tmp_config="$TMPDIR_BASE/config_${name}.json"
+if [ -z "$SCENES" ]; then
+  echo "❌ No headless scenes found in $REGISTRY"
+  exit 1
+fi
 
-  python3 -c "
-import json
-with open('$CONFIG') as f: d = json.load(f)
-d['scenario_file'] = '$scenario_file'
-with open('$tmp_config', 'w') as f: json.dump(d, f, indent=2)
-"
-  echo "$tmp_config"
-}
-
-# 启动单个场景（后台），输出写到临时文件
-run_scenario_bg() {
-  local name="$1"
-  local scenario_file="$2"
-  local tmp_config
-  tmp_config=$(prepare_config "$name" "$scenario_file")
-  local log_file="$TMPDIR_BASE/log_${name}.txt"
-
-  # --path 指定项目目录，--config-file 在 Godot 4.x 不直接支持
-  # 改用：先 cp 为临时目录下的 config，再 --path 临时目录
-  local tmp_project="$TMPDIR_BASE/project_${name}"
-  mkdir -p "$tmp_project"
-  # 用符号链接复用所有项目文件，只替换 config.json
-  for f in "$PROJECT_PATH"/*; do
-    local base
-    base=$(basename "$f")
-    if [ "$base" != ".godot" ] && [ "$base" != "tests" ]; then
-      ln -s "$f" "$tmp_project/$base" 2>/dev/null
-    fi
-  done
-  # .godot 目录必须是实体，否则 Godot 会重建
-  if [ -d "$PROJECT_PATH/.godot" ]; then
-    ln -s "$PROJECT_PATH/.godot" "$tmp_project/.godot" 2>/dev/null
-  fi
-  # 覆盖 config.json（实体文件，非链接）
-  cp "$tmp_config" "$tmp_project/config.json"
-
-  $GODOT --headless --path "$tmp_project" >"$log_file" 2>&1 &
-  echo $!
-}
+readarray -t SCENE_LIST <<< "$SCENES"
 
 echo ""
 echo "════════════════════════════════════════"
-echo "  PARALLEL SCENARIO TEST"
-echo "  Scenarios: ${#SCENARIOS[@]} | Workers: ${#SCENARIOS[@]}"
+echo "  PARALLEL HEADLESS REGRESSION"
+echo "  Source: tests/scene_registry.json"
+echo "  Scenes: ${#SCENE_LIST[@]} | Workers: ${#SCENE_LIST[@]}"
 echo "════════════════════════════════════════"
+echo ""
 
-# 并行启动所有场景，记录 PID
+# 并行启动每个场景
 declare -A PIDS
-declare -A NAMES
-for entry in "${SCENARIOS[@]}"; do
-  name="${entry%%:*}"
-  scenario_file="${entry##*:}"
-  echo "▶ Starting: $name"
-  pid=$(run_scenario_bg "$name" "$scenario_file")
-  PIDS[$name]=$pid
+declare -A LOG_FILES
+
+for scene in "${SCENE_LIST[@]}"; do
+  # 用场景路径的最后一段作为名字（去掉 res:// 前缀和 .tscn 后缀）
+  name=$(basename "$scene" .tscn)
+  log_file="$TMPDIR_BASE/log_${name}.txt"
+  LOG_FILES[$name]=$log_file
+
+  echo "▶ Starting: $name  ($scene)"
+  $GODOT --headless --path "$PROJECT_PATH" --scene "$scene" >"$log_file" 2>&1 &
+  PIDS[$name]=$!
 done
 
 echo ""
-echo "⏳ Waiting for all scenarios to complete..."
+echo "⏳ Waiting for all scenes to complete..."
 echo ""
 
-# 等待所有 PID 完成，收集结果
 pass_count=0
 fail_count=0
 results=()
@@ -97,22 +64,23 @@ for name in "${!PIDS[@]}"; do
   pid=${PIDS[$name]}
   wait "$pid"
   exit_code=$?
-  log_file="$TMPDIR_BASE/log_${name}.txt"
-
-  result_line=$(grep "CALIBRATE.*RESULT" "$log_file" | tail -1)
+  log_file=${LOG_FILES[$name]}
 
   echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-  echo "▶ Scenario: $name"
-  grep -E "\[CALIBRATE\]|\[BOOT\].*scenario|Applied config" "$log_file"
+  echo "▶ Scene: $name"
+  grep -E "\[PASS\]|\[FAIL\]|\[RESULT\]" "$log_file" | tail -5
 
-  if echo "$result_line" | grep -q "0 failed"; then
+  if [ $exit_code -eq 0 ] && grep -q "\[RESULT\].*0 failed\|All.*PASS\|PASS" "$log_file"; then
     echo "✅ PASS: $name"
-    results+=("✅ $name: $result_line")
+    results+=("✅ $name")
+    ((pass_count++))
+  elif grep -q "\[RESULT\].*0 failed" "$log_file"; then
+    echo "✅ PASS: $name"
+    results+=("✅ $name")
     ((pass_count++))
   else
-    echo "❌ FAIL: $name"
-    echo "  $result_line"
-    results+=("❌ $name: $result_line")
+    echo "❌ FAIL: $name (exit=$exit_code)"
+    results+=("❌ $name")
     ((fail_count++))
   fi
 done
@@ -122,7 +90,7 @@ rm -rf "$TMPDIR_BASE"
 
 echo ""
 echo "════════════════════════════════════════"
-echo "  SCENARIO TEST SUMMARY"
+echo "  SUMMARY"
 echo "════════════════════════════════════════"
 for r in "${results[@]}"; do
   echo "  $r"

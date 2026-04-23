@@ -28,8 +28,13 @@
 | 14 | 测试提速 | 事件驱动提前退出（断言全 PASS 即退出，不跑完全部帧数），缩短全量回归耗时 | ✅ 完成 | [checklist](phase14/checklist.md) |
 | 15 | 将领单位 + 兵团跟随 | 将领节点 + 哑兵阵型跟随 + 待命切换 + 自动补兵 + 目视验证场景 | ✅ 完成 | [checklist](phase15/checklist.md) |
 | 16 | 行军阵型系统 | 路径队列纵队行军 + 静止自动展开横阵 + 状态切换流畅性验证 | ✅ 完成 | [checklist](phase16/checklist.md) |
-| 17 | 单位物理碰撞 | 哑兵升级 RigidBody3D，Seek Force 驱动，真实弹性推挤，消除穿透堆叠 | ⏳ 进行中（17A 代码完成，待视觉验证） | [checklist](phase17/checklist.md) |
-| 18 | 测试与工具链收敛 | 收敛回归入口、恢复 AI Renderer 单一来源、清理自动化/文档漂移 | ⏳ 未开始 | [checklist](phase18/checklist.md) |
+| 17 | 单位物理碰撞 | 哑兵升级 RigidBody3D，Seek Force 驱动，真实弹性推挤，消除穿透堆叠 | ✅ 完成 | [checklist](phase17/checklist.md) |
+| 18 | 测试与工具链收敛 | 收敛回归入口、恢复 AI Renderer 单一来源、清理自动化/文档漂移 | ✅ 完成 | [checklist](phase18/checklist.md) |
+| 19 | 路径跟随行军系统 | 行军纵队从整体平移改为路径跟随，蛇形队列感 + 多米诺启动 | ✅ 完成 | [checklist](phase19/checklist.md) |
+| 20 | 弓箭手对战演示 | 双方将领各带 30 弓箭手，行军跟随 + 横阵射击 | ✅ 完成 | [checklist](phase20/checklist.md) |
+| 21 | 开发期快速验证工作流 | test_runner 支持 --phase/--scene/--tag 过滤，消除开发中跑全量惯性 | ✅ 完成 | [checklist](phase21/checklist.md) |
+| 22 | 手柄输入支持 | 手柄左摇杆控制将领 + Context Steering 避障（设计完成，实现并入 Phase 23） | 📋 并入23 | [checklist](phase22/checklist.md) |
+| 23 | 多行军算法可切换 + 手柄 | path_follow / flow_field / direct_seek A/B 评估 + Phase 22 手柄实现 | 🔵 待窗口验 | [checklist](phase23/checklist.md) |
 
 ---
 
@@ -56,6 +61,11 @@ Phase 15  → 将领单位 + 兵团跟随（将领节点、哑兵阵型、待命
 Phase 16  → 行军阵型系统（路径队列纵队行军、静止展开横阵、状态自动切换）
 Phase 17  → 单位物理碰撞（哑兵 RigidBody3D、Seek Force、弹性推挤）
 Phase 18  → 测试与工具链收敛（回归入口统一、renderer 单一来源、自动化接口稳定化）
+Phase 19  → 路径跟随行军系统（蛇形队列、多米诺启动、最近邻槽位分配）
+Phase 20  → 弓箭手对战演示（双方将领 + 30 弓箭手、行军跟随、横阵射击）
+Phase 21  → 开发期快速验证工作流（test_runner --phase/--scene/--tag 过滤）
+Phase 22  → 手柄输入支持（设计完成，实现并入 Phase 23）
+Phase 23  → 多行军算法可切换（path_follow/flow_field/direct_seek A/B 评估框架）+ 手柄输入实现（23F）
 ```
 
 ---
@@ -81,3 +91,8 @@ Phase 18  → 测试与工具链收敛（回归入口统一、renderer 单一来
 | [phases/phase16/design.md](phase16/design.md) | Phase 16 | 行军阵型系统设计（路径队列、纵队行军、横阵展开、状态切换） |
 | [phases/phase17/design.md](phase17/design.md) | Phase 17 | 单位物理碰撞设计（RigidBody3D、Seek Force、碰撞层架构） |
 | [phases/phase18/design.md](phase18/design.md) | Phase 18 | 测试与工具链收敛设计（回归入口、共享工具链、自动化接口、仓库卫生） |
+| [phases/phase19/design.md](phase19/design.md) | Phase 19 | 路径跟随行军系统设计（蛇形队列、多米诺启动、Arrival Steering、NavMesh+RVO、Optuna 优化） |
+| [phases/phase20/design.md](phase20/design.md) | Phase 20 | 弓箭手对战演示设计（ArcherSoldier、箭矢弹道、双方将领对战场景） |
+| [phases/phase21/design.md](phase21/design.md) | Phase 21 | 开发期快速验证工作流设计（test_runner 过滤、三档命令、规范决策树） |
+| [phases/phase22/design.md](phase22/design.md) | Phase 22 | 手柄输入支持设计（左摇杆控制、Context Steering 避障） |
+| [phases/phase23/design.md](phase23/design.md) | Phase 23 | 多行军算法可切换设计（三种算法架构、流场生成、A/B 评估框架） |

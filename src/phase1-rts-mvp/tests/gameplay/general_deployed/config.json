@@ -1,6 +1,6 @@
 {
   "name": "general_deployed",
-  "physics": { "fps": 60, "total_frames": 600 },
+  "physics": { "fps": 60, "total_frames": 1200 },
   "map": { "width": 1200, "height": 1200 },
   "units": [
     {
@@ -8,7 +8,8 @@
       "team": "red",
       "x": 400.0,
       "z": 600.0,
-      "spawn_dummies": true
+      "spawn_dummies": true,
+      "dummy_soldier_count": 6
     }
   ]
 }

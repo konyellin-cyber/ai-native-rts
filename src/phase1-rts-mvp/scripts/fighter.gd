@@ -51,7 +51,7 @@ func setup(id: int, team: String, pos: Vector3, cfg: Dictionary, headless: bool,
 	name = "Unit_%s_%d" % [team, id]
 
 	collision_layer = 1
-	collision_mask = 2  # 与 layer=2 的墙/障碍物碰撞，不碰 layer=1 地面
+	collision_mask = 2 | 4  # layer=2 墙/障碍物，layer=4 哑兵（主战推哑兵）
 
 	var capsule = CapsuleShape3D.new()
 	capsule.radius = unit_radius

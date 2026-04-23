@@ -223,6 +223,24 @@ func _spawn_generals() -> void:
 			general.register_dummy_soldiers(soldiers)
 			print("[WORLD] Spawned %d dummy soldiers for red general" % dummy_count)
 
+		## 蓝方将领：生成哑兵 + 启动简单行军 AI（向红方 HQ 方向推进）
+		if team == "blue":
+			var soldiers: Array = []
+			for i in range(dummy_count):
+				var dummy = RigidBody3D.new()
+				dummy.set_script(DummyScript)
+				dummy.setup(general, i, dummy_count, general_cfg, _is_headless)
+				_parent.add_child(dummy)
+				soldiers.append(dummy)
+			general.register_dummy_soldiers(soldiers)
+			print("[WORLD] Spawned %d dummy soldiers for blue general" % dummy_count)
+			## 启动 AI：延迟 300 帧后开始向红方 HQ 推进（让双方先完成经济建设）
+			var red_hq_pos = Vector3(float(_config.hq.spawn_red.x), 0.0, float(_config.hq.spawn_red.y))
+			var gen_ref_blue = general
+			_parent.get_tree().create_timer(5.0).timeout.connect(
+				func(): _start_blue_general_ai(gen_ref_blue, red_hq_pos)
+			)
+
 		## 15C：双方将领均启用补兵，监听 replenish_requested 信号
 		var gen_ref = general  ## 捕获引用，避免闭包问题
 		general.replenish_requested.connect(func(g: Node): _on_replenish_requested(g, DummyScript))
@@ -232,8 +250,22 @@ func _spawn_generals() -> void:
 
 
 
-func _on_replenish_requested(general: Node, DummyScript: GDScript) -> void:
-	## 15C：收到补兵请求，为该将领生成 replenish_count 个新哑兵并注入
+func _start_blue_general_ai(general: Node, red_hq_pos: Vector3) -> void:
+	## 蓝方将领简单行军 AI：朝红方 HQ 推进，到达后在附近徘徊
+	## 每 8 秒重新发一次命令，确保将领持续压制（不会因到达目标后停在原地）
+	if not is_instance_valid(general):
+		return
+	if general.get("_state") == "dead":
+		return
+	general.move_to(red_hq_pos)
+	print("[WORLD] Blue general AI: marching to red HQ pos=%s" % str(red_hq_pos))
+	## 持续循环：8 秒后再次检查并发命令
+	_parent.get_tree().create_timer(8.0).timeout.connect(
+		func(): _start_blue_general_ai(general, red_hq_pos)
+	)
+
+
+func _on_replenish_requested(general: Node, DummyScript: GDScript) -> void:	## 15C：收到补兵请求，为该将领生成 replenish_count 个新哑兵并注入
 	if not is_instance_valid(general):
 		return
 	var cfg: Dictionary = general.get_general_cfg()

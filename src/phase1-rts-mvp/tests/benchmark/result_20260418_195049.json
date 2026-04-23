@@ -1,0 +1,110 @@
+{
+	"overall_score": 87.5,
+	"scenes": [
+		{
+			"deploy_frames": 184,
+			"deploy_score": 73.9,
+			"freeze_frames_to_full": 155,
+			"march_frames": 319,
+			"march_score": 99.6,
+			"player_result": {
+				"completed": true,
+				"frames": 503,
+				"freeze_rate": 1.0,
+				"scene_id": 1,
+				"scene_name": "S1_straight_long"
+			},
+			"scene_id": 1,
+			"scene_name": "S1_straight_long",
+			"total_frames": 503,
+			"total_score": 86.7,
+			"warn_counts": {
+				"clump": 1,
+				"incoherent": 0,
+				"lat_collapse": 132,
+				"not_frozen": 146,
+				"overshoot": 2,
+				"scatter": 0
+			}
+		},
+		{
+			"deploy_frames": 184,
+			"deploy_score": 99.6,
+			"freeze_frames_to_full": 1,
+			"march_frames": 184,
+			"march_score": 83.2,
+			"player_result": {
+				"completed": true,
+				"frames": 368,
+				"freeze_rate": 1.0,
+				"scene_id": 2,
+				"scene_name": "S2_turn"
+			},
+			"scene_id": 2,
+			"scene_name": "S2_turn",
+			"total_frames": 368,
+			"total_score": 91.4,
+			"warn_counts": {
+				"clump": 0,
+				"incoherent": 29,
+				"lat_collapse": 0,
+				"not_frozen": 85,
+				"overshoot": 2,
+				"scatter": 0
+			}
+		},
+		{
+			"deploy_frames": 179,
+			"deploy_score": 99.6,
+			"freeze_frames_to_full": 1,
+			"march_frames": 119,
+			"march_score": 72.5,
+			"player_result": {
+				"completed": true,
+				"frames": 298,
+				"freeze_rate": 1.0,
+				"scene_id": 3,
+				"scene_name": "S3_short"
+			},
+			"scene_id": 3,
+			"scene_name": "S3_short",
+			"total_frames": 298,
+			"total_score": 86.0,
+			"warn_counts": {
+				"clump": 0,
+				"incoherent": 30,
+				"lat_collapse": 0,
+				"not_frozen": 81,
+				"overshoot": 2,
+				"scatter": 0
+			}
+		},
+		{
+			"deploy_frames": 248,
+			"deploy_score": 99.6,
+			"freeze_frames_to_full": 1,
+			"march_frames": 1062,
+			"march_score": 71.8,
+			"player_result": {
+				"completed": true,
+				"frames": 1310,
+				"freeze_rate": 1.0,
+				"scene_id": 4,
+				"scene_name": "S4_switch"
+			},
+			"scene_id": 4,
+			"scene_name": "S4_switch",
+			"total_frames": 1310,
+			"total_score": 85.7,
+			"warn_counts": {
+				"clump": 0,
+				"incoherent": 237,
+				"lat_collapse": 0,
+				"not_frozen": 136,
+				"overshoot": 2,
+				"scatter": 0
+			}
+		}
+	],
+	"timestamp": "20260418_195049"
+}

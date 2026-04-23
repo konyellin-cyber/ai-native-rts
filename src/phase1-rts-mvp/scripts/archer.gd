@@ -71,7 +71,7 @@ func setup(
 	name = "Unit_%s_%d" % [team, id]
 
 	collision_layer = 1
-	collision_mask = 2
+	collision_mask = 2 | 4  # layer=2 墙/障碍物，layer=4 哑兵（主战推哑兵）
 
 	var capsule = CapsuleShape3D.new()
 	capsule.radius = unit_radius

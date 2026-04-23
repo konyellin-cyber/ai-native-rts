@@ -60,18 +60,30 @@
 - **窗口模式也要程序化**：窗口验证通过 SimulatedPlayer 自动走剧本 + WindowAssertionSetup 断言，输出 PASS/FAIL；不依赖手动操作
 - **截图是过渡手段**：事件驱动截图只用于"暂时无法程序化"的视觉检查，每张截图背后需标注"何时可转为断言"；能程序化就不截图
 - **验证分级**：能读属性得出 yes/no → 写断言；只能靠渲染结果判断 → 截图留证；最终目标是全部可程序化甚至迁移到 headless
+- **截图日志锚点（硬约束）**：每张截图必须在 `window_debug.log` 中有对应的 `ux_screenshots:` 锚点行（含帧号 + reason 标记），不允许存在无日志对应的截图。从截图找日志：用文件名帧号搜 `[TICK N]`；从日志找截图：看 `ux_screenshots:` 块
 
 ### Headless 验证三档入口
 
 | 入口 | 命令 | 适用场景 | 速度 |
 |------|------|---------|------|
-| 单次全场景（推荐） | `godot --headless --path . --scene res://tests/test_runner.tscn` | 日常回归，1 次冷启动跑全部 | 最快 |
+| 当前 phase（推荐） | `godot --headless --path . --scene res://tests/test_runner.tscn -- --phase N` | 开发中间步骤，只跑当前 phase | 快（15-50s） |
+| 单场景 | `godot --headless --path . --scene res://tests/test_runner.tscn -- --scene 场景名` | 调试单个场景 | 最快（~5s） |
+| 全量回归 | `godot --headless --path . --scene res://tests/test_runner.tscn` | 收尾确认，提交前跑一次 | 慢（~160s） |
 | 并行多进程 | `bash tests/run_scenarios_parallel.sh` | CI / 场景间完全隔离时 | 快（N 进程并行） |
-| 串行兼容 | `bash tests/run_scenarios.sh` | 调试单场景 / 排查干扰 | 慢（N 次冷启动） |
 
-**Window 场景入口**（需有显示环境）：`godot --path . --scene res://tests/scenes/window_interaction/scene.tscn`
+**决策树（AI 执行时遵守）**：
+- 开发中间步骤 → 默认 `--phase N`
+- checklist 标注"收尾全量回归" → 无参数全量
+- 只有全量 17/17 PASS 才算完成
 
-**日常优先用 test_runner.tscn**（仅跑 Headless 场景）；只有怀疑场景间状态互相干扰时才退回串行。
+**Window 场景入口**（需有显示环境，路径从 scene_registry.json 的 window_mode:true 条目读取）：
+
+```bash
+godot --path . --scene res://tests/gameplay/general_visual/scene.tscn
+godot --path . --scene res://tests/core/window_interaction/scene.tscn
+```
+
+**日常优先用 `--phase N`**；只有怀疑引入跨场景退化时才全量。
 
 **AI 可自行执行（无需确认）**：headless 验证、测试脚本、项目目录内文件修改、checklist/知识库更新、**窗口测试自动化**（SimulatedPlayer 剧本 + WindowAssertionSetup 断言，自动退出，不依赖手动操作）
 
@@ -105,3 +117,42 @@
 - **写 GDScript 前必须查阅本地知识库**：先读 `docs/knowledge-base/godot-api/` 下对应文件确认 API 签名
 - **不确认就不写**：不确定时用 web_fetch 查 Godot 官方文档
 - **遇坑即记录**：新踩的坑更新到 `docs/rules/pitfalls.md`
+
+---
+
+## 7. 验证三层一致性规则（硬约束）
+
+每个 Phase 的验证必须满足**三层对齐**原则：
+
+### 核心要求
+
+**同一功能范围，三层必须聚焦同一场景**：
+- **Headless 断言**：程序化自动验证，覆盖核心数值（位置误差、阵型收敛、状态转换）
+- **窗口断言**：SimulatedPlayer 走剧本 + WindowAssertionSetup，程序化输出 PASS/FAIL
+- **游玩体验**：`-- --play` 模式，人工/截图验证视觉效果，范围与上两层一致
+
+**三层必须验证同一个主语**：不允许 headless 验"A功能"、窗口验"B功能"、游玩验"C场景"的分裂状态。
+
+### Checklist 中的必填声明
+
+每个 Phase 的 checklist **必须在顶部明确声明**：
+
+```markdown
+## 验证范围声明
+
+**验证主语**：[用一句话描述，如"单个将领带领 N 名哑兵"]
+**核心体验**：[用一句话描述玩家/测试者应观察到什么]
+
+| 验证层 | 场景/命令 | 通过标准 |
+|--------|----------|---------|
+| Headless | `--scene xxx` | [具体数值条件] |
+| 窗口断言 | `--scene xxx` (window_mode) | [具体 PASS 条件] |
+| 游玩体验 | `-- --play` | [视觉/感受描述] |
+```
+
+### 执行规则
+
+- **新建 Phase 时**：第一步写验证范围声明，再写其他子阶段
+- **添加测试场景时**：检查是否与已声明的验证主语一致，不一致要先更新声明
+- **收尾时**：确认三层全部 PASS，且验证的是同一个主语
+- **范围变更时**：先修改声明，再修改测试代码，保持同步

@@ -1,3 +1,14 @@
 # Phase 0 运行时输出
 src/phase0-balls/frames/
 src/phase0-balls/screenshots/
+
+# Godot 编辑器缓存（所有 Phase）
+**/.godot/
+
+# Phase 1 测试运行时输出
+src/phase1-rts-mvp/tests/screenshots/
+src/phase1-rts-mvp/tests/logs/
+src/phase1-rts-mvp/tests/.tmp_parallel/
+
+# 通用运行时产物
+*.log

@@ -36,10 +36,19 @@ func init_alive_counts(red: int, blue: int) -> void:
 
 func on_unit_died(victim_id: int, victim_team: String) -> void:
 	## 由 bootstrap 连接 game_world.unit_died 信号后转发过来
-	if victim_team == "red":
-		red_alive -= 1
-	else:
-		blue_alive -= 1
+	## 只统计战斗/经济单位（fighter/worker/archer），将领和哑兵不计入 alive_count
+	## （将领/哑兵死亡不代表战场均势变化，混入会导致计数变负）
+	var victim = null
+	for u in _units:
+		if is_instance_valid(u) and u.get("unit_id") == victim_id:
+			victim = u
+			break
+	var unit_type = victim.get("unit_type") if victim != null else ""
+	if unit_type in ["fighter", "worker", "archer"]:
+		if victim_team == "red":
+			red_alive -= 1
+		else:
+			blue_alive -= 1
 	var is_first_kill = kill_log.is_empty()
 	kill_log.append({
 		"tick": _frame_count_ref.call(),
@@ -53,13 +62,15 @@ func on_unit_died(victim_id: int, victim_team: String) -> void:
 
 func on_unit_produced(unit_type: String, team: String) -> void:
 	## 由 bootstrap 连接 game_world.unit_produced 信号后转发过来
+	## 只统计战斗/经济单位（fighter/worker/archer）
 	production_occurred = true
 	if unit_type == "archer" and team == "red":
 		archer_produced = true
-	if team == "red":
-		red_alive += 1
-	else:
-		blue_alive += 1
+	if unit_type in ["fighter", "worker", "archer"]:
+		if team == "red":
+			red_alive += 1
+		else:
+			blue_alive += 1
 
 
 func tick() -> void:

@@ -29,6 +29,11 @@ var _max_signal_log: int = 20
 # Event-driven screenshot: signals that trigger a screenshot when fired
 var _screenshot_signals: Array = []
 
+# Screenshot log (ring buffer) — written back on every successful save, output via get_ux_data()
+# 截图成功后写入，下帧随 get_ux_data() 进日志，实现截图与日志的双向索引
+var _screenshot_log: Array[Dictionary] = []
+var _max_screenshot_log: int = 10
+
 
 func setup(root: Node, viewport: Viewport, camera: Camera2D, config: Dictionary = {}) -> void:
 	_root_node = root
@@ -136,6 +141,10 @@ func get_ux_data() -> Dictionary:
 	if not _signal_log.is_empty():
 		data["signal_log"] = _signal_log.duplicate(true)
 
+	# Screenshot log — written by take_screenshot(), consumed here for log anchoring
+	if not _screenshot_log.is_empty():
+		data["screenshot_log"] = _screenshot_log.duplicate(true)
+
 	return data
 
 
@@ -157,6 +166,10 @@ func take_screenshot(reason: String = "manual") -> String:
 		var abs_path = abs_dir + filename
 		img.save_png(abs_path)
 		print("[UX] 📸 Screenshot saved: %s" % filename)
+		# Write log anchor so every screenshot has a matching entry in window_debug.log
+		_screenshot_log.append({"frame": _frame_count, "filename": filename, "reason": reason})
+		if _screenshot_log.size() > _max_screenshot_log:
+			_screenshot_log.pop_front()
 		return filename
 	return ""
 

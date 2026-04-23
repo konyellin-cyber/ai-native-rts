@@ -3,12 +3,15 @@ extends Node
 ## TestRunner — 单次 Godot 启动顺序跑完所有场景
 ## 用法：godot --headless --path . --scene res://tests/test_runner.tscn
 ##
-## 原理：
-##   1. 以 "TestRunner" 名称挂在场景树根节点（bootstrap._finish() 会查找它）
-##   2. 从 scene_registry.json 读取场景列表，仅运行 window_mode: false 的场景
-##   3. 按顺序加载场景，等待 bootstrap 完成回调
-##   4. 收集每轮结果后 free 掉 game 节点，加载下一个场景
-##   5. 全部跑完后打印分组汇总（Headless / Window）并退出
+## 过滤参数（通过 -- 传入，多参数取交集）：
+##   --phase N        只跑 phase == N 的场景（开发中间步骤用，速度快）
+##   --scene 名称     只跑 name == 名称 的场景，支持逗号分隔多个
+##   --tag 标签       只跑 covers 包含该标签的场景
+##   无参数           全量运行（收尾确认用）
+##
+## 示例：
+##   godot --headless --path . --scene res://tests/test_runner.tscn -- --phase 17
+##   godot --headless --path . --scene res://tests/test_runner.tscn -- --scene general_marching
 ##
 ## 场景登记表：res://tests/scene_registry.json（唯一权威登记表）
 ## 新增场景时在 scene_registry.json 中追加条目，不直接修改本文件。
@@ -23,6 +26,11 @@ var _scenario_files: Array[String] = []
 ## 所有场景的元信息（name, window_mode, phase 等）
 var _registry: Array = []
 
+## 过滤参数（从命令行解析）
+var _filter_phase: int = -1        # --phase N，-1 表示不过滤
+var _filter_scenes: Array = []     # --scene a,b,c
+var _filter_tag: String = ""       # --tag formation
+
 var _results: Array = []   # [{ name, passed, failed, detail_lines, window_mode }]
 var _current_idx: int = -1
 var _game_node: Node = null
@@ -35,11 +43,21 @@ func _ready() -> void:
 	name = "TestRunner"
 	_start_msec = Time.get_ticks_msec()
 
+	_parse_args()
 	_load_registry()
 
+	## 过滤后无匹配时直接退出（_load_registry 已打印错误信息）
+	if _scenario_files.is_empty():
+		get_tree().quit(1)
+		return
+
+	var filter_desc = _build_filter_desc()
 	print("")
 	print("[RUNNER] ════════════════════════════════════════")
-	print("[RUNNER]  TEST RUNNER — %d headless scenarios" % _scenario_files.size())
+	if filter_desc != "":
+		print("[RUNNER]  TEST RUNNER — %d 个场景  过滤: %s" % [_scenario_files.size(), filter_desc])
+	else:
+		print("[RUNNER]  TEST RUNNER — %d headless scenarios" % _scenario_files.size())
 	print("[RUNNER] ════════════════════════════════════════")
 
 	## 为什么用 call_deferred：_ready 期间场景树 busy，直接 add_child 会报错。
@@ -47,7 +65,50 @@ func _ready() -> void:
 	_run_next.call_deferred()
 
 
-## 从 scene_registry.json 读取登记表，填充 _scenario_files（仅 headless 场景）
+## 解析 -- 之后的用户参数（OS.get_cmdline_user_args）
+func _parse_args() -> void:
+	var args = OS.get_cmdline_user_args()
+	var i = 0
+	while i < args.size():
+		var a = args[i]
+		match a:
+			"--phase":
+				if i + 1 < args.size():
+					_filter_phase = int(args[i + 1])
+					i += 2
+				else:
+					push_error("[RUNNER] --phase 需要一个数字参数")
+					get_tree().quit.call_deferred(1)
+			"--scene":
+				if i + 1 < args.size():
+					_filter_scenes = args[i + 1].split(",", false)
+					i += 2
+				else:
+					push_error("[RUNNER] --scene 需要一个场景名参数")
+					get_tree().quit.call_deferred(1)
+			"--tag":
+				if i + 1 < args.size():
+					_filter_tag = args[i + 1]
+					i += 2
+				else:
+					push_error("[RUNNER] --tag 需要一个标签参数")
+					get_tree().quit.call_deferred(1)
+			_:
+				i += 1
+
+
+func _build_filter_desc() -> String:
+	var parts: Array[String] = []
+	if _filter_phase >= 0:
+		parts.append("phase=%d" % _filter_phase)
+	if not _filter_scenes.is_empty():
+		parts.append("scene=%s" % ",".join(_filter_scenes))
+	if _filter_tag != "":
+		parts.append("tag=%s" % _filter_tag)
+	return " ".join(parts)
+
+
+## 从 scene_registry.json 读取登记表，填充 _scenario_files（仅 headless 场景 + 命令行过滤）
 func _load_registry() -> void:
 	var f = FileAccess.open(REGISTRY_PATH, FileAccess.READ)
 	if f == null:
@@ -66,9 +127,33 @@ func _load_registry() -> void:
 	_registry = json.data
 	for entry in _registry:
 		## 仅将 window_mode: false 的场景加入本次 headless 运行列表
-		## window_mode: true 的场景需在有窗口环境中单独运行
-		if not entry.get("window_mode", false):
-			_scenario_files.append(entry["path"])
+		if entry.get("window_mode", false):
+			continue
+		## 命令行过滤（多参数取交集）
+		if _filter_phase >= 0 and int(entry.get("phase", -1)) != _filter_phase:
+			continue
+		if not _filter_scenes.is_empty() and not (entry.get("name", "") in _filter_scenes):
+			continue
+		if _filter_tag != "" and not (entry.get("covers", []) as Array).has(_filter_tag):
+			continue
+		_scenario_files.append(entry["path"])
+
+	## 过滤后无匹配时报错，列出可用值帮助排查
+	if _scenario_files.is_empty():
+		var filter_desc = _build_filter_desc()
+		push_error("[RUNNER] 过滤条件 [%s] 无匹配场景，请检查参数" % filter_desc)
+		var available_phases: Array[String] = []
+		var available_names: Array[String] = []
+		for entry in _registry:
+			if entry.get("window_mode", false):
+				continue
+			var p = str(int(entry.get("phase", -1)))
+			if not (p in available_phases):
+				available_phases.append(p)
+			available_names.append(entry.get("name", "?"))
+		print("[RUNNER] 可用 phase: %s" % ", ".join(available_phases))
+		print("[RUNNER] 可用 scene: %s" % ", ".join(available_names))
+		## 不在这里 quit，由 _run_next 检查 is_empty() 后以 exit 1 退出
 
 
 ## 启动下一个场景（由 _ready 或 on_scenario_done 调用）

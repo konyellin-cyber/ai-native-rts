@@ -1,0 +1,110 @@
+{
+	"overall_score": 93.8,
+	"scenes": [
+		{
+			"deploy_frames": 128,
+			"deploy_score": 83.1,
+			"freeze_frames_to_full": 99,
+			"march_frames": 211,
+			"march_score": 99.8,
+			"player_result": {
+				"completed": true,
+				"frames": 339,
+				"freeze_rate": 1.0,
+				"scene_id": 1,
+				"scene_name": "S1_straight_long"
+			},
+			"scene_id": 1,
+			"scene_name": "S1_straight_long",
+			"total_frames": 339,
+			"total_score": 91.5,
+			"warn_counts": {
+				"clump": 1,
+				"incoherent": 0,
+				"lat_collapse": 151,
+				"not_frozen": 91,
+				"overshoot": 1,
+				"scatter": 0
+			}
+		},
+		{
+			"deploy_frames": 143,
+			"deploy_score": 99.5,
+			"freeze_frames_to_full": 1,
+			"march_frames": 88,
+			"march_score": 96.8,
+			"player_result": {
+				"completed": true,
+				"frames": 231,
+				"freeze_rate": 1.0,
+				"scene_id": 2,
+				"scene_name": "S2_turn"
+			},
+			"scene_id": 2,
+			"scene_name": "S2_turn",
+			"total_frames": 231,
+			"total_score": 98.2,
+			"warn_counts": {
+				"clump": 7,
+				"incoherent": 0,
+				"lat_collapse": 0,
+				"not_frozen": 52,
+				"overshoot": 1,
+				"scatter": 0
+			}
+		},
+		{
+			"deploy_frames": 133,
+			"deploy_score": 99.5,
+			"freeze_frames_to_full": 1,
+			"march_frames": 48,
+			"march_score": 82.5,
+			"player_result": {
+				"completed": true,
+				"frames": 181,
+				"freeze_rate": 1.0,
+				"scene_id": 3,
+				"scene_name": "S3_short"
+			},
+			"scene_id": 3,
+			"scene_name": "S3_short",
+			"total_frames": 181,
+			"total_score": 91.0,
+			"warn_counts": {
+				"clump": 21,
+				"incoherent": 0,
+				"lat_collapse": 0,
+				"not_frozen": 42,
+				"overshoot": 1,
+				"scatter": 0
+			}
+		},
+		{
+			"deploy_frames": 178,
+			"deploy_score": 99.6,
+			"freeze_frames_to_full": 1,
+			"march_frames": 176,
+			"march_score": 89.5,
+			"player_result": {
+				"completed": true,
+				"frames": 354,
+				"freeze_rate": 1.0,
+				"scene_id": 4,
+				"scene_name": "S4_switch"
+			},
+			"scene_id": 4,
+			"scene_name": "S4_switch",
+			"total_frames": 354,
+			"total_score": 94.5,
+			"warn_counts": {
+				"clump": 46,
+				"incoherent": 0,
+				"lat_collapse": 0,
+				"not_frozen": 83,
+				"overshoot": 1,
+				"scatter": 0
+			}
+		}
+	],
+	"timestamp": "20260419_075404"
+}

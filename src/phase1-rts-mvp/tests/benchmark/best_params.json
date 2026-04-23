@@ -1,0 +1,12 @@
+{
+  "score": 96.1,
+  "trial": 26,
+  "params": {
+    "dummy_drive_strength": 2448.3914038886273,
+    "dummy_linear_damp": 7.297357944321878,
+    "dummy_slow_radius": 80.14103247462003,
+    "dummy_arrive_threshold": 20.705335996880507,
+    "deploy_trigger_frames": 59,
+    "deploy_ready_threshold": 66.76195512956836
+  }
+}

@@ -1,0 +1,109 @@
+{
+	"overall_score": 97.0,
+	"scenes": [
+		{
+			"deploy_frames": 78,
+			"deploy_score": 91.2,
+			"freeze_frames_to_full": 49,
+			"march_frames": 198,
+			"march_score": 98.9,
+			"player_result": {
+				"completed": true,
+				"frames": 276,
+				"freeze_rate": 1.0,
+				"scene_id": 1,
+				"scene_name": "S1_straight_long"
+			},
+			"scene_id": 1,
+			"scene_name": "S1_straight_long",
+			"total_frames": 276,
+			"total_score": 95.0,
+			"warn_counts": {
+				"clump": 1,
+				"incoherent": 0,
+				"lat_collapse": 52,
+				"not_frozen": 29,
+				"overshoot": 2,
+				"scatter": 0
+			}
+		},
+		{
+			"deploy_frames": 60,
+			"deploy_score": 99.8,
+			"freeze_frames_to_full": 1,
+			"march_frames": 1141,
+			"march_score": 95.9,
+			"player_result": {
+				"frames": 1201,
+				"scene_id": 2,
+				"scene_name": "S2_turn",
+				"timeout": true
+			},
+			"scene_id": 2,
+			"scene_name": "S2_turn",
+			"total_frames": 1201,
+			"total_score": 97.9,
+			"warn_counts": {
+				"clump": 0,
+				"incoherent": 24,
+				"lat_collapse": 0,
+				"not_frozen": 0,
+				"overshoot": 3,
+				"scatter": 0
+			}
+		},
+		{
+			"deploy_frames": 58,
+			"deploy_score": 94.3,
+			"freeze_frames_to_full": 29,
+			"march_frames": 115,
+			"march_score": 100.0,
+			"player_result": {
+				"completed": true,
+				"frames": 173,
+				"freeze_rate": 1.0,
+				"scene_id": 3,
+				"scene_name": "S3_short"
+			},
+			"scene_id": 3,
+			"scene_name": "S3_short",
+			"total_frames": 173,
+			"total_score": 97.2,
+			"warn_counts": {
+				"clump": 0,
+				"incoherent": 0,
+				"lat_collapse": 0,
+				"not_frozen": 28,
+				"overshoot": 10,
+				"scatter": 0
+			}
+		},
+		{
+			"deploy_frames": 121,
+			"deploy_score": 99.4,
+			"freeze_frames_to_full": 1,
+			"march_frames": 1876,
+			"march_score": 96.3,
+			"player_result": {
+				"completed": true,
+				"frames": 1997,
+				"freeze_rate": 1.0,
+				"scene_id": 4,
+				"scene_name": "S4_switch"
+			},
+			"scene_id": 4,
+			"scene_name": "S4_switch",
+			"total_frames": 1997,
+			"total_score": 97.8,
+			"warn_counts": {
+				"clump": 0,
+				"incoherent": 44,
+				"lat_collapse": 0,
+				"not_frozen": 56,
+				"overshoot": 4,
+				"scatter": 0
+			}
+		}
+	],
+	"timestamp": "20260418_202701"
+}

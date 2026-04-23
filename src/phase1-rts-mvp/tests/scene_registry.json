@@ -102,32 +102,48 @@
     "name": "general_visual",
     "path": "res://tests/gameplay/general_visual/scene.tscn",
     "window_mode": true,
-    "phase": 15,
+    "phase": 19,
+    "covers": ["general", "dummy_soldier", "formation"],
+    "description": "将领+哑兵窗口断言场景（Phase 19）：--assert-deploy 自动发移动指令，断言将领停止后 formation_state 切换为 deployed；无参数时为目视演示模式（右键移动，Space切换跟随/待命）"
+  },
+  {
+    "name": "idle_cluster",
+    "path": "res://tests/gameplay/idle_cluster/scene.tscn",
+    "window_mode": false,
+    "phase": 19,
     "covers": ["general", "dummy_soldier"],
-    "description": "将领+兵团目视演示：右键移动、Space切换跟随/待命，无断言"
+    "description": "将领 idle 不发指令，断言哑兵质心始终在将领附近（Phase 19：验证 RigidBody3D 初始生成不发生物理爆炸）"
+  },
+  {
+    "name": "general_idle_move",
+    "path": "res://tests/gameplay/general_idle_move/scene.tscn",
+    "window_mode": false,
+    "phase": 19,
+    "covers": ["general", "dummy_soldier"],
+    "description": "将领先 idle 60 帧再收到移动指令，断言将领移动、哑兵跟随、无散乱（Phase 19：验证路径跟随行军启动流程）"
   },
   {
     "name": "general_marching",
     "path": "res://tests/gameplay/general_marching/scene.tscn",
     "window_mode": false,
-    "phase": 16,
+    "phase": 19,
     "covers": ["general", "dummy_soldier", "formation"],
-    "description": "将领移动时，断言哑兵形成纵队跟随（质心跟随方向，最前排距离在合理范围内）"
+    "description": "将领移动时，断言哑兵形成路径跟随纵队（Phase 19：蛇形队列，质心跟随方向）"
   },
   {
     "name": "general_deployed",
     "path": "res://tests/gameplay/general_deployed/scene.tscn",
     "window_mode": false,
-    "phase": 16,
+    "phase": 19,
     "covers": ["general", "dummy_soldier", "formation"],
-    "description": "将领静止后，断言 formation_state 变为 deployed，哑兵质心位于将领前方"
+    "description": "将领静止后，断言 formation_state 变为 deployed，哑兵横阵收敛（Phase 19：锚点快照修复后验证）"
   },
   {
     "name": "formation_switch",
     "path": "res://tests/gameplay/formation_switch/scene.tscn",
     "window_mode": false,
-    "phase": 16,
+    "phase": 19,
     "covers": ["general", "dummy_soldier", "formation"],
-    "description": "行军→展开→再行军循环，断言状态切换正确，无穿插"
+    "description": "行军→展开→再行军循环，断言状态切换正确（Phase 19：路径跟随下的阵型切换）"
   }
 ]

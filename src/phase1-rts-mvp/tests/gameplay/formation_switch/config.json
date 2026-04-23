@@ -1,6 +1,6 @@
 {
   "name": "formation_switch",
-  "physics": { "fps": 60, "total_frames": 1200 },
+  "physics": { "fps": 60, "total_frames": 3600 },
   "map": { "width": 1200, "height": 1200 },
   "units": [
     {
@@ -8,7 +8,8 @@
       "team": "red",
       "x": 300.0,
       "z": 600.0,
-      "spawn_dummies": true
+      "spawn_dummies": true,
+      "dummy_soldier_count": 6
     }
   ]
 }

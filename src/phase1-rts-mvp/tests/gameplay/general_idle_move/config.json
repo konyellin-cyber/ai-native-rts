@@ -1,0 +1,14 @@
+{
+  "name": "general_idle_move",
+  "physics": { "fps": 60, "total_frames": 900 },
+  "map": { "width": 1400, "height": 1400 },
+  "units": [
+    {
+      "type": "general",
+      "team": "red",
+      "x": 200.0,
+      "z": 1100.0,
+      "spawn_dummies": true
+    }
+  ]
+}

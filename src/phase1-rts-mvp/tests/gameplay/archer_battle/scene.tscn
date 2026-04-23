@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://archer_battle"]
+
+[ext_resource type="Script" path="res://tests/gameplay/archer_battle/bootstrap.gd" id="1"]
+
+[node name="ArcherBattle" type="Node3D"]
+script = ExtResource("1")

@@ -9,7 +9,7 @@
 
 ## 目标
 
-收敛当前项目在测试入口、AI 工具链、自动化接口和仓库产物管理上的工程债，使“文档描述的做法”和“仓库实际运行的做法”重新一致。
+收敛当前项目在测试入口、AI 工具链、自动化接口和仓库产物管理上的工程债，使"文档描述的做法"和"仓库实际运行的做法"重新一致。
 
 本 Phase 的核心目标不是新增玩法，而是恢复以下四个约束：
 
@@ -24,13 +24,13 @@
 
 ### 1. 回归入口分叉
 
-当前仓库同时存在三套“看起来都能跑测试”的入口：
+当前仓库同时存在三套"看起来都能跑测试"的入口：
 
-- `tests/test_runner.gd` + `scene_registry.json`
-- `tests/run_scenarios.sh`
-- `tests/run_scenarios_parallel.sh`
+- `src/phase1-rts-mvp/tests/test_runner.gd` + `scene_registry.json`
+- `src/phase1-rts-mvp/tests/run_scenarios.sh`
+- `src/phase1-rts-mvp/tests/run_scenarios_parallel.sh`
 
-其中后两者仍依赖已删除的旧 `tests/scenarios/*.json` 路径，并且通过改写 `config.json` 驱动场景切换。这与 Phase 13 建立的“登记表唯一权威”规则冲突，也让测试脚本本身变成新的状态源。
+其中后两者仍依赖已删除的旧 `tests/scenarios/*.json` 路径，并且通过改写 `config.json` 驱动场景切换。这与 Phase 13 建立的"登记表唯一权威"规则冲突，也让测试脚本本身变成新的状态源。
 
 ### 2. AI Renderer 单一来源失效
 
@@ -42,17 +42,26 @@ Phase 5 的设计是：`src/shared/ai-renderer/` 作为 canonical 版本，phase
 - `src/phase1-rts-mvp/tools/ai-renderer/`
 - `src/phase05-rts-prototype/tools/ai-renderer/`
 
-三者均为真实目录，且 `phase1` 已经和 `shared` 漂移。结果是“修 shared 未必修到实际运行代码”，文档声明与仓库结构不一致。
+三者均为真实目录，且 `phase1` 已经和 `shared` 漂移。结果是"修 shared 未必修到实际运行代码"，文档声明与仓库结构不一致。
 
-### 3. 自动化接口契约漂移
+### 3. 自动化接口命令失效
 
-`command_router.gd` 中的 `unit_info`、`play_scenario`、`_get_game_config()` 仍按旧 Bootstrap 结构取数据，依赖：
+`command_router.gd` 中的 `unit_info`、`play_scenario` 当前**已经不工作**，而非仅仅"耦合不良"。失效原因如下：
 
-- 节点名固定为 `Bootstrap`
-- Bootstrap 暴露 `units`
-- Bootstrap 暴露 `_red_alive` / `_blue_alive`
+**`unit_info` 失效（双重原因）**
 
-而当前主场景根节点名为 `Root`，运行时状态也已收进 `_world` 和 `_lifecycle`。这意味着自动化链路没有使用稳定接口，而是在读一次又一次变化的内部字段。
+- `bootstrap.get("units")` 永远返回 `null`：`units` 不是 Bootstrap 的属性，而是住在 Bootstrap 内部的 `_world`（GameWorld）上，即 `_world.units`
+- `bootstrap.get("_red_alive")` / `bootstrap.get("_blue_alive")` 同样永远返回 `null`：这两个值住在 `_lifecycle`（UnitLifecycleManager）上，即 `_lifecycle.red_alive` / `_lifecycle.blue_alive`
+
+结果：`unit_info` 永远返回 0 个单位、0 存活数。
+
+**`play_scenario` 坐标退回硬编码默认值**
+
+`_get_game_config()` 只查找节点名 `Bootstrap`，但当前主场景（`main.tscn`）的根节点名为 `Root`，导致查找永远失败、返回空 `{}`。`_resolve_scenario_rect()` 和 `_resolve_scenario_target()` 取不到真实地图宽高，静默退回硬编码的 `width=2000, height=1500`。
+
+**根节点名查找不一致**
+
+`_do_unit_info()` 已实现双层 fallback（先找 `Root` 再找 `Bootstrap`），但 `_get_game_config()` 只找 `Bootstrap`。同一文件内两处逻辑不一致，是前期修补不完整的结果。
 
 ### 4. 仓库卫生退化
 
@@ -62,7 +71,7 @@ Phase 5 的设计是：`src/shared/ai-renderer/` 作为 canonical 版本，phase
 - `tests/logs/`
 - 其他临时输出
 
-这违反了项目规范里“运行时输出永远不提交”的原则，也会拖慢仓库操作和 review。
+这违反了项目规范里"运行时输出永远不提交"的原则，也会拖慢仓库操作和 review。
 
 ---
 
@@ -124,7 +133,9 @@ src/phase1-rts-mvp/tools/ai-renderer/     symlink -> ../../shared/ai-renderer
 src/phase05-rts-prototype/tools/ai-renderer/ symlink -> ../../shared/ai-renderer
 ```
 
-若某一运行环境对 symlink 有硬限制，再退而求其次使用“生成镜像 + 一致性检查”，但必须把一致性检查脚本纳入仓库，不能回到人工复制。
+若某一运行环境对 symlink 有硬限制，再退而求其次使用"生成镜像 + 一致性检查"，但必须把一致性检查脚本纳入仓库，不能回到人工复制。
+
+**判定 symlink 是否可用的方法**：在完成 18B.3 后，立即运行 phase1 headless 回归（`godot --headless --path src/phase1-rts-mvp --scene res://tests/test_runner.tscn`）。若所有场景 PASS 则 symlink 可用；若出现 `null` 脚本或加载失败错误，则切换为镜像方案。
 
 ### 合并顺序
 
@@ -135,31 +146,47 @@ src/phase05-rts-prototype/tools/ai-renderer/ symlink -> ../../shared/ai-renderer
 
 ---
 
-### 18C：自动化接口稳定化
+### 18C：自动化接口修复与稳定化
+
+> **注意**：本节修复的是当前已失效的命令（见问题分析第 3 节），不是单纯重构。
 
 ### 目标状态
 
-自动化层不直接读取 Bootstrap 私有字段，而是只走稳定公开接口。
+`unit_info` 和 `play_scenario` 恢复可用，且自动化层只依赖 Bootstrap 的稳定公开接口。
+
+### 当前架构说明
+
+`bootstrap.gd` 自身的字段：
+
+- `config: Dictionary` — 已公开，可直接读
+- `_world: RefCounted`（GameWorld）— 私有，`units` 住在这里：`_world.units`
+- `_lifecycle: RefCounted`（UnitLifecycleManager）— 私有，存活数住在这里：`_lifecycle.red_alive` / `_lifecycle.blue_alive`
 
 ### 方案
 
-由 `bootstrap.gd` 暴露稳定 getter，例如：
+在 `bootstrap.gd` 暴露以下稳定 getter：
 
-- `get_config()`
-- `get_world()`
-- `get_lifecycle()`
-- `get_units_for_debug()`
+| getter | 返回类型 | 数据来源 |
+|--------|---------|---------|
+| `get_config() -> Dictionary` | Dictionary | `config`（已有，补显式方法即可） |
+| `get_units_for_debug() -> Array` | Array[Node] | `_world.units` |
+| `get_red_alive() -> int` | int | `_lifecycle.red_alive` |
+| `get_blue_alive() -> int` | int | `_lifecycle.blue_alive` |
 
-`command_router.gd` 改为：
+`command_router.gd` 改动：
 
-- 先定位 `Root` 或 `Bootstrap`
-- 再通过 getter 取配置、单位列表和统计信息
-- `play_scenario` 使用真实地图宽高，不再静默退回过时默认值
+- `_get_game_config()`：补充查找 `Root` 节点，与 `_do_unit_info()` 保持一致（先 `Root` 后 `Bootstrap`）
+- `_do_unit_info()`：将 `bootstrap.get("units")` 替换为 `bootstrap.get_units_for_debug()`；将 `bootstrap.get("_red_alive/blue_alive")` 替换为 `bootstrap.get_red_alive() / get_blue_alive()`
+- `_resolve_scenario_rect()` / `_resolve_scenario_target()`：地图宽高从 `_get_game_config()` 的修复结果中读取，不再静默退回 `2000×1500`
+
+### 执行顺序
+
+18C **依赖 18B 完成后**再执行，因为 `command_router.gd` 住在 `ai-renderer/` 目录中。若 18B 切换 symlink 或合并内容后文件位置变动，18C 的修改应在新位置进行，不要在旧位置修改后再合并。
 
 ### 原则
 
-- CommandRouter 只能依赖“接口名”，不能依赖 `_world`、`_lifecycle`、`_red_alive` 这类内部字段名
-- 文档中承诺可用的命令，必须能在当前主场景结构下工作
+- CommandRouter 只能依赖 Bootstrap 的公开方法，不能直接读 `_world`、`_lifecycle` 等私有字段
+- 文档中承诺可用的命令，必须能在当前主场景结构下实测通过
 
 ---
 
@@ -176,7 +203,7 @@ src/phase05-rts-prototype/tools/ai-renderer/ symlink -> ../../shared/ai-renderer
 - 扩充 `.gitignore`
 - 清理当前仓库中的运行时产物，若确需保留样例则迁移到专门样例目录
 - 更新 README、FILES、roadmap、相关 design 文档
-- 修正“symlink 已恢复”“旧脚本仍可用”“默认 scenario 仍有效”等失真描述
+- 修正"symlink 已恢复""旧脚本仍可用""默认 scenario 仍有效"等失真描述
 
 ---
 

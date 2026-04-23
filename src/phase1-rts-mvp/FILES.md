@@ -13,10 +13,11 @@
 ### bootstrap.gd
 - **职责**: 主序入口。读 config，按顺序创建子管理器（GameWorld / UnitLifecycleManager / FaultInjector / AssertionSetup），驱动每帧 tick 分发和信号路由
 - **依赖**: 被 main.tscn 加载；依赖 game_world.gd / unit_lifecycle_manager.gd / assertion_setup.gd / fault_injector.gd
-- **关键接口**: `_ready()`, `_physics_process()`
+- **关键接口**: `_ready()`, `_physics_process()`, `get_config() -> Dictionary`, `get_units_for_debug() -> Array`, `get_red_alive() -> int`, `get_blue_alive() -> int`
 - **修改频率**: 低（5A–5F 重构后职责收窄，新功能应进对应子模块）
 - **Phase 11 改动**: `_on_produce_requested()` 通用化（按 `unit_type+"_cost"/"_time"` 动态查 config）；`_update_ui()` 传入 `archer_cost`
 - **Phase 14 改动**: `renderer.tick()` 调用改为 `renderer.tick(frame_count)`，传当前帧号给 Calibrator；`_setup_assertions()` 读取 scenario.json 中 `assertion_timeouts` 字段并调用 `calibrator.set_assertion_timeouts()`
+- **Phase 18 改动**: 新增 4 个公开 getter（`get_config` / `get_units_for_debug` / `get_red_alive` / `get_blue_alive`），供 command_router 稳定访问，不再依赖私有字段名
 - **注意**: 故障注入逻辑已迁移到 FaultInjector（5F），bootstrap 仅做条件挂载；Phase 9 起镜头为 45° 等距正交（rotation_degrees=(-45,-45,0)，position.z = map_h/2+1500，size=2000）
 
 ### game_world.gd
@@ -291,18 +292,20 @@
 - 真实鼠标框选/点选交互验证（window_mode: true），断言 `real_drag_selects_units` / `real_drag_selects_correct_count` / `real_click_selects_unit`
 
 ### run_scenarios.sh
-- **职责**: 串行运行所有场景（每场景一次 Godot 启动），兼容性强，慢
+- **职责**: Headless 全量回归包装层，唯一入口转发到 `test_runner.tscn`
 - **用法**: `bash tests/run_scenarios.sh`
+- **Phase 18 改动**: 重写为 `test_runner.tscn` 包装层，不再硬编码场景列表，不再改写 config.json
 
 ### run_scenarios_parallel.sh
-- **职责**: 并行运行所有场景（每场景一次 Godot 启动，并发），比串行快 ~N 倍
+- **职责**: 并行运行所有 headless 场景（每场景独立 Godot 进程，并发），比串行快 ~N 倍
 - **用法**: `bash tests/run_scenarios_parallel.sh`
-- **原理**: 为每个场景创建临时项目目录（符号链接 + 独立 config），并行启动多个 Godot 进程
-- **注意**: 需要足够内存（每个 Godot 进程约 200MB）
+- **场景来源**: 从 `tests/scene_registry.json` 动态读取 `window_mode=false` 的条目
+- **Phase 18 改动**: 重写为从 scene_registry.json 读取场景列表，不再硬编码 economy/combat/interaction，不再改写 config.json
 
 ## config.json
 - **职责**: 所有游戏参数（地图、单位、物理、渲染器、测试剧本）
-- **Phase 12 改动**: 新增 `window_scenario_file`（`"res://tests/scenarios/window_interaction.json"`），窗口模式用此 scenario，headless 继续用 `scenario_file`
+- **Phase 12 改动**: 新增 `window_scenario_file`（`"res://tests/scenarios/window_interaction.json"`），窗口模式用此 scenario
+- **Phase 18 改动**: 移除失效的 `scenario_file`（原指向已删除的 `res://tests/scenarios/interaction.json`），headless 回归入口已改为 `test_runner.tscn + scene_registry.json`
 - **修改频率**: 中（调参时）
 
 ## tests/scenarios/window_interaction.json（Phase 12 新增）
@@ -321,14 +324,24 @@
 - **关键属性**: `follow_mode: bool`（默认 true），`unit_type = "general"`
 - **补兵逻辑**: 每隔 `replenish_interval` 帧发出 `replenish_requested` 信号，由 parent bootstrap 处理新兵生成
 - **待命扩散**: `follow_mode=false` 且距离超 `standby_spread_threshold` 时，哑兵半径按 `standby_spread_rate` 系数扩大
+- **Phase 23 改动**: 新增流场生成/查询接口：
+  - `_flow_field: Dictionary`（局部流场缓存，key=Vector2i 网格坐标）
+  - `_update_flow_field()`：每 `flow_field_update_interval` 帧从 path_buffer 生成局部方向场
+  - `get_flow_direction(pos) -> Vector3`：查询世界坐标对应流场方向，无数据退回 `_march_direction`
+  - `get_formation_summary()` 新增指标：`stuck_nudge_total`、`convergence_frames`、`direction_change_rate`
 
-### scripts/dummy_soldier.gd（Phase 15B 新增，Phase 17 重构）
+### scripts/dummy_soldier.gd（Phase 15B 新增，Phase 17 重构，Phase 23 升级）
 - **职责**: 哑兵节点。无 AI 无战斗，仅跟随将领阵型槽位
 - **节点类型**: ~~Node3D~~ → **RigidBody3D**（Phase 17 升级，支持真实物理碰撞）
 - **关键接口**: `setup(general, index, total, cfg, headless)`、`freeze_at_current()`
 - **移动方式**: Phase 17 起改为 Seek Force（`apply_central_force`），高阻尼（linear_damp=8）自然减速，arrive_threshold 防抖
 - **碰撞**: `collision_layer=4`（哑兵层），`collision_mask=1|2|4`（碰地形、主战、互推）
 - **待命**: `follow_mode=false` 时锁定 `linear_velocity=ZERO`，不施力
+- **Phase 23 改动**: 新增 `_march_algorithm` 字段（从 config 读取），marching 分支拆为三个方法：
+  - `_march_path_follow()`：原 Phase 19 逻辑（NavAgent + RVO + Context Steering）
+  - `_march_direct_seek()`：每帧直追当前槽位，最简基线
+  - `_march_flow_field()`：查将领流场方向 + 槽位混合，将领停止时退回直线追槽位
+  - 新增 `_stuck_nudge_count: int`（累计卡死扰动次数，供评估指标使用）
 
 ### tests/gameplay/general_movement/（Phase 15A 新增）
 - **职责**: headless 断言：将领从起始点移动到目标点，验证位置变化 > 阈值
@@ -362,3 +375,24 @@
 - **职责**: gameplay 测试公共基类。读 config.json → 按 units 生成将领/哑兵 → 注册断言 → 帧驱动 → `_finish()`
 - **关键接口**: `_post_spawn()`（子类覆盖，在 spawn 完成后执行）, `_register_assertions()`（子类注册断言）
 - **与 combat_bootstrap.gd 区别**: 支持 `general` / `dummy_soldier` 单位类型；支持 `spawn_dummies: true` 配置自动生成哑兵；支持 `replenish_interval` 补兵逻辑
+
+---
+
+## Phase 23 新增文件（多行军算法可切换架构 + 手柄输入）
+
+### tests/gameplay/gamepad_test/（Phase 23F 新增）
+- **职责**: 窗口模式手柄验证场景。复用 general_visual 全部逻辑，额外加手柄输入处理
+- **操作**: 左摇杆 → 将领移动；右键 → 将领移动（与手柄并存）；Space → 切换跟随/待命
+- **手柄输入**: 死区 0.15，每 20 帧持续推杆发一次 `move_to`，等距摄像机方向转换
+- **文件**: `scene.tscn` + `bootstrap.gd` + `config.json`
+
+### tests/benchmark/compare_algorithms.py（Phase 23D 新增）
+- **职责**: 三种行军算法（path_follow / flow_field / direct_seek）A/B 对比评估脚本
+- **流程**: 遍历算法 → 修改 config.json → 启动 Godot benchmark → 读 result.json → 聚合指标 → 恢复 config
+- **输出**: `compare_result_{timestamp}.json`（原始数据）+ `compare_report.md`（对比表 + 排名）
+- **用法**: `cd src/phase1-rts-mvp && python tests/benchmark/compare_algorithms.py`
+- **参数**: `--trials N`（重复次数，默认 3）, `--algo name`（只跑单种算法）
+
+### config.json（Phase 23 改动）
+- 新增 `general.march_algorithm`（默认 `"path_follow"`），可切换 `"flow_field"` / `"direct_seek"`
+- 新增 `general.flow_field_cell_size`（20.0）、`general.flow_field_half_width`（4）、`general.flow_field_update_interval`（10）

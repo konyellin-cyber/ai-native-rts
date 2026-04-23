@@ -11,8 +11,8 @@ var _dummy_soldiers: Array = []
 
 ## 将领向 +x 行军，建立行进方向
 const _MOVE_TARGET = Vector3(700.0, 0.0, 600.0)
-## 触发展开（30帧）+ 哑兵移动到位（约 200 帧，Phase 17 物理加速）= 检测时机
-const _CHECK_FRAME = 360
+## 触发展开需等全员到位（去掉 headless 绕过），CHECK_FRAME 调大确保足够时间
+const _CHECK_FRAME = 800
 var _move_issued: bool = false
 
 
@@ -69,12 +69,12 @@ func _assert_deployed() -> Dictionary:
 	var centroid = sum / float(count)
 	var gen_pos = _general.global_position
 	var diff_x = centroid.x - gen_pos.x
-	## 横阵第一排在将领前方 deploy_row_spacing（约 26 单位），质心应 > 将领 x
-	if diff_x > 0.0:
-		return {"status": "pass", "detail": "deployed ✓ centroid_x=%.1f > general_x=%.1f (+%.1f)" % [
+	## 将领向 +x 行军，横阵展开在将领后方（-x 方向），质心应 < 将领 x
+	if diff_x < 0.0:
+		return {"status": "pass", "detail": "deployed ✓ centroid_x=%.1f < general_x=%.1f (%.1f)" % [
 			centroid.x, gen_pos.x, diff_x
 		]}
 
-	return {"status": "fail", "detail": "centroid NOT in front: centroid.x=%.1f, general.x=%.1f (diff=%.1f)" % [
+	return {"status": "fail", "detail": "centroid NOT behind: centroid.x=%.1f, general.x=%.1f (diff=%.1f)" % [
 		centroid.x, gen_pos.x, diff_x
 	]}

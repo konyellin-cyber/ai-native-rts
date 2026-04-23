@@ -421,4 +421,16 @@ func _format_ux(ux_data: Dictionary) -> Array[String]:
 			var args_str = ", ".join(args.map(func(a): return str(a)))
 			lines.append("  #%d %s(%s)" % [frame, sig_name, args_str])
 
+	# Screenshot log — anchor line for every saved screenshot (Phase 20)
+	# Format: #帧号 [event:信号名] → 文件名  or  #帧号 [auto] → 文件名
+	var screenshot_log = ux_data.get("screenshot_log", [])
+	if not screenshot_log.is_empty():
+		lines.append("ux_screenshots:")
+		for entry in screenshot_log:
+			var frame = entry.get("frame", 0)
+			var filename = entry.get("filename", "?")
+			var reason = entry.get("reason", "?")
+			var reason_tag = "[auto]" if reason == "auto" else "[event:%s]" % reason
+			lines.append("  #%d %s → %s" % [frame, reason_tag, filename])
+
 	return lines

@@ -267,7 +267,7 @@ func _do_unit_info(cmd: Dictionary, frame: int) -> String:
 	if not bootstrap:
 		return JSON.stringify({"ok": false, "error": "Bootstrap node not found"})
 
-	var units_array: Array = bootstrap.get("units") if bootstrap.get("units") != null else []
+	var units_array: Array = bootstrap.get_units_for_debug() if bootstrap.has_method("get_units_for_debug") else []
 	var units_info: Array = []
 	for u in units_array:
 		if not is_instance_valid(u):
@@ -294,8 +294,8 @@ func _do_unit_info(cmd: Dictionary, frame: int) -> String:
 			units_info.append({"error": "invalid state", "type": str(typeof(state))})
 
 	var summary: Dictionary = {"total": units_info.size()}
-	var red_alive = bootstrap.get("_red_alive")
-	var blue_alive = bootstrap.get("_blue_alive")
+	var red_alive: Variant = bootstrap.get_red_alive() if bootstrap.has_method("get_red_alive") else null
+	var blue_alive: Variant = bootstrap.get_blue_alive() if bootstrap.has_method("get_blue_alive") else null
 	if red_alive != null:
 		summary["red_alive"] = int(red_alive)
 	if blue_alive != null:
@@ -305,8 +305,9 @@ func _do_unit_info(cmd: Dictionary, frame: int) -> String:
 
 func _resolve_scenario_rect(rect_param: Variant) -> Rect2:
 	var config = _get_game_config()
-	var map_w = config.get("width", 2000)
-	var map_h = config.get("height", 1500)
+	var map_cfg = config.get("map", {})
+	var map_w = map_cfg.get("width", config.get("width", 2000))
+	var map_h = map_cfg.get("height", config.get("height", 1500))
 	if rect_param is String:
 		match rect_param:
 			"full_screen":  return Rect2(Vector2.ZERO, Vector2(map_w, map_h))
@@ -324,8 +325,9 @@ func _resolve_scenario_rect(rect_param: Variant) -> Rect2:
 
 func _resolve_scenario_target(target_param: Variant) -> Vector2:
 	var config = _get_game_config()
-	var map_w = config.get("width", 2000)
-	var map_h = config.get("height", 1500)
+	var map_cfg = config.get("map", {})
+	var map_w = map_cfg.get("width", config.get("width", 2000))
+	var map_h = map_cfg.get("height", config.get("height", 1500))
 	if target_param is String:
 		match target_param:
 			"map_center": return Vector2(map_w / 2.0, map_h / 2.0)
@@ -339,7 +341,9 @@ func _resolve_scenario_target(target_param: Variant) -> Vector2:
 func _get_game_config() -> Dictionary:
 	var root = _ui.get_root()
 	if root:
-		var bootstrap = root.get_node_or_null("Bootstrap")
+		var bootstrap = root.get_node_or_null("Root")
+		if not bootstrap:
+			bootstrap = root.get_node_or_null("Bootstrap")
 		if bootstrap and bootstrap.has_method("get_config"):
 			return bootstrap.get_config()
 	return {}
