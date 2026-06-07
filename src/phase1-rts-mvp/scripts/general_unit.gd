@@ -29,6 +29,9 @@ var _follow_toggle_key: String = "Space"  ## 切换键，可通过 config 覆盖
 
 ## UI：待命/跟随状态文字标签（窗口模式下显示）
 var _status_label: Label3D = null
+var _model_node: Node3D = null        ## GLB 模型根节点（用于朝向更新）
+var _anim_player: AnimationPlayer = null
+var _current_anim: String = ""
 
 ## 15C：补兵计时
 var _replenish_interval: int = 180    ## 每隔多少帧补一批
@@ -274,6 +277,21 @@ func _physics_process(delta: float) -> void:
 		_replenish_cycle += 1
 		replenish_requested.emit(self)
 
+	## 模型朝向：每帧更新（移动和停止都执行）
+	if _model_node != null:
+		var vel_xz = Vector3(velocity.x, 0.0, velocity.z)
+		if vel_xz.length_squared() > 100.0:
+			_model_node.look_at(_model_node.global_position + vel_xz, Vector3.UP)
+			_model_node.rotate_y(PI)
+
+	## 动画状态机：每帧判断，停止时正确切回 idle
+	if _anim_player != null:
+		var speed = Vector3(velocity.x, 0.0, velocity.z).length()
+		var target_anim: String = "idle" if speed < 10.0 else ("walk" if speed < move_speed * 0.6 else "sprint")
+		if target_anim != _current_anim:
+			_anim_player.play(target_anim)
+			_current_anim = target_anim
+
 	_prev_position = global_position
 	_current_frame += 1
 
@@ -299,6 +317,19 @@ func move_to(target_pos: Vector3) -> void:
 	_deploy_timer = 0
 	_static_frames = 0
 	_deploy_anchor = Vector3.ZERO
+
+
+## 手柄/外部取消命令：立刻停止将领移动，清除目标点
+## 用于松开摇杆时保证将领不会继续走完上一次 move_to 的目标
+func stop_movement() -> void:
+	_has_command = false
+	has_command = false
+	_command_frame = 0
+	_state = "idle"
+	velocity = Vector3.ZERO
+	target_position = global_position  ## 把目标点拉到脚下，防止 NavAgent 继续导航
+	if _agent != null:
+		_agent.target_position = global_position
 
 
 func get_unit_state() -> Dictionary:
@@ -558,6 +589,11 @@ func get_formation_state() -> String:
 	return _formation_state
 
 
+## Phase 24：供 FlowFieldManager 读取将领历史轨迹（只读引用）
+func get_path_buffer() -> Array:
+	return _path_buffer
+
+
 ## 19B：阵型整齐度摘要，供 AI Renderer SensorRegistry 采集
 ## 计算每个哑兵实际位置与理想槽位的误差，输出 avg/max/waiting 统计
 ## 19C：新增体验质量指标：pos_std_dev / lateral_spread / velocity_coherence / overshoot_count / freeze_rate
@@ -734,8 +770,10 @@ func _update_flow_field() -> void:
 	if n < 2:
 		return
 
+	## 只用最近 30 个点（将领当前附近的轨迹），避免旧轨迹方向反向污染队尾士兵
+	var use_n = min(n, 30)
 	var cell = _flow_field_cell_size
-	for i in range(n - 1):
+	for i in range(use_n - 1):
 		var p0: Vector3 = _path_buffer[i]       ## 较新点（索引小 = 更近将领）
 		var p1: Vector3 = _path_buffer[i + 1]   ## 较旧点
 		## 前进方向 = 从旧到新（士兵跟随方向）
@@ -936,23 +974,65 @@ func _move_along_path() -> void:
 
 
 func _add_visual() -> void:
-	var mesh_inst = MeshInstance3D.new()
-	var cylinder = CylinderMesh.new()
-	## 将领视觉：半径 1.5 倍于配置值，高度 2 倍，使其明显高于士兵
-	var vis_radius = unit_radius * visual_scale
-	cylinder.top_radius = vis_radius
-	cylinder.bottom_radius = vis_radius
-	cylinder.height = vis_radius * 3.0
-	var mat = StandardMaterial3D.new()
-	## 红方将领：金色；蓝方将领：银色
-	mat.albedo_color = Color(1.0, 0.8, 0.0) if team_name == "red" else Color(0.8, 0.8, 0.8)
-	cylinder.material = mat
-	mesh_inst.mesh = cylinder
-	mesh_inst.position = Vector3(0.0, vis_radius * 1.5, 0.0)
-	_body_mat = mat
-	add_child(mesh_inst)
+	var vis_radius = max(unit_radius * visual_scale, unit_radius * 0.5)  ## 最小为 unit_radius 的 0.5 倍，防止 visual_scale=0
 
-	## 顶部标记：小球体作为将领旗帜标识
+	## 尝试加载 GLB 模型
+	var model_path = "res://assets/characters/soldier_b.glb" if team_name == "red" else "res://assets/characters/soldier.glb"
+	var scene = ResourceLoader.load(model_path, "", ResourceLoader.CACHE_MODE_REUSE)
+	if scene != null:
+		var model = scene.instantiate()
+		## 将领模型放大 5 倍（相对士兵的 dummy_model_scale=3.0，更大更突出）
+		var model_native_h = 0.671
+		var target_h = vis_radius * 2.5
+		var scale_f = (target_h / model_native_h) * 2.0
+		model.scale = Vector3(scale_f, scale_f, scale_f)
+		## 胶囊半高 = unit_radius（height = unit_radius * 2.0），脚底在中心 - 半高
+		var capsule_half_h = unit_radius
+		model.position = Vector3(0.0, -capsule_half_h, 0.0)
+		add_child(model)
+		_model_node = model
+		_anim_player = model.find_child("AnimationPlayer", true, false) as AnimationPlayer
+		if _anim_player:
+			for anim_name in _anim_player.get_animation_list():
+				var anim_res = _anim_player.get_animation(anim_name)
+				if anim_res:
+					anim_res.loop_mode = Animation.LOOP_LINEAR
+			_anim_player.play("idle")
+			_current_anim = "idle"
+
+		## 脚下圆环（比士兵圆环更大，颜色更亮）
+		var ring_inst = MeshInstance3D.new()
+		var ring_mesh = TorusMesh.new()
+		ring_mesh.inner_radius = vis_radius * 0.7
+		ring_mesh.outer_radius = vis_radius * 1.1
+		ring_mesh.rings = 8
+		ring_mesh.ring_segments = 16
+		var ring_mat = StandardMaterial3D.new()
+		ring_mat.albedo_color = Color(1.0, 0.8, 0.0) if team_name == "red" else Color(0.8, 0.8, 1.0)
+		ring_mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+		ring_mesh.material = ring_mat
+		ring_inst.mesh = ring_mesh
+		ring_inst.position = Vector3(0.0, -capsule_half_h + 1.0, 0.0)
+		add_child(ring_inst)
+
+		## _body_mat 指向圆环材质（供 HP 变色时修改）
+		_body_mat = ring_mat
+	else:
+		## 回退圆柱
+		var mesh_inst = MeshInstance3D.new()
+		var cylinder = CylinderMesh.new()
+		cylinder.top_radius = vis_radius
+		cylinder.bottom_radius = vis_radius
+		cylinder.height = vis_radius * 3.0
+		var mat = StandardMaterial3D.new()
+		mat.albedo_color = Color(1.0, 0.8, 0.0) if team_name == "red" else Color(0.8, 0.8, 0.8)
+		cylinder.material = mat
+		mesh_inst.mesh = cylinder
+		mesh_inst.position = Vector3(0.0, vis_radius * 1.5, 0.0)
+		_body_mat = mat
+		add_child(mesh_inst)
+
+	## 顶部标记球（保留，作为将领醒目标识）
 	var marker_inst = MeshInstance3D.new()
 	var sphere = SphereMesh.new()
 	sphere.radius = vis_radius * 0.5

@@ -30,18 +30,31 @@ var _frame: int = 0
 var _debug_lines: Array = []
 var _debug_waiting: Array = []
 var _debug_path_dots: Array = []
+var _fps_label: Label = null
 
 ## 手柄输入状态
 const _GAMEPAD_DEADZONE: float = 0.15       ## 摇杆死区
-const _GAMEPAD_MOVE_INTERVAL: int = 20      ## 持续推杆时每 N 帧发一次 move_to
-const _GAMEPAD_MOVE_DIST: float = 200.0     ## 每次 move_to 的前进距离
+const _GAMEPAD_MOVE_INTERVAL: int = 4       ## 持续推杆时每 N 帧发一次 move_to（约 67ms）
+const _GAMEPAD_MOVE_DIST: float = 300.0     ## 每次 move_to 的前进距离
+const _DEPLOY_FORWARD_DIST: float = 120.0   ## deploy_forward 横阵锚点距将领的距离
 var _gamepad_timer: int = 0                 ## 距上次发出 move_to 的帧数
 var _gamepad_active: bool = false           ## 上帧是否有推杆输入
+var _last_world_dir: Vector3 = Vector3(0, 0, -1)  ## 上次推杆的世界方向（供 RT 使用）
+var _rt_was_pressed: bool = false           ## RT 上帧是否已按下（防抖）
 
 ## deployed 收敛追踪
 var _deployed_since_frame: int = -1
 var _last_deploy_screenshot_frame: int = -1
 const _DEPLOY_SCREENSHOT_INTERVAL: int = 60
+
+## flow_field 异常事件追踪
+var _prev_avg_err: float = 0.0
+var _prev_coh: float = 1.0
+const _ERR_SPIKE_THRESHOLD: float = 80.0   ## avg_slot_error 单帧涨幅超此值触发截图
+const _COH_DROP_THRESHOLD: float = 0.3     ## velocity_coherence 单帧跌幅超此值触发截图
+
+## 行军中自动截图帧列表（move_to 后 60/120 帧各截一张）
+var _march_screenshot_frames: Array = []
 
 
 func _ready() -> void:
@@ -101,9 +114,60 @@ func _ready() -> void:
 		count, general_cfg.get("march_algorithm", "path_follow")
 	])
 
+	## FPS 显示
+	var canvas = CanvasLayer.new()
+	add_child(canvas)
+	_fps_label = Label.new()
+	_fps_label.position = Vector2(12, 8)
+	_fps_label.add_theme_font_size_override("font_size", 18)
+	_fps_label.add_theme_color_override("font_color", Color(1, 1, 0))
+	_fps_label.add_theme_color_override("font_shadow_color", Color(0, 0, 0, 0.8))
+	_fps_label.add_theme_constant_override("shadow_offset_x", 1)
+	_fps_label.add_theme_constant_override("shadow_offset_y", 1)
+	canvas.add_child(_fps_label)
+
 
 func _physics_process(_delta: float) -> void:
 	_frame += 1
+
+	## 第 3 帧：截图验证模型加载 + 诊断
+	if _frame == 3:
+		if is_instance_valid(_general) and _general.get("_dummy_soldiers") != null:
+			var soldiers = _general.get("_dummy_soldiers")
+			if soldiers.size() > 0 and is_instance_valid(soldiers[0]):
+				var s0 = soldiers[0]
+				var child_types = []
+				for c in s0.get_children():
+					child_types.append(c.get_class())
+				print("[MODEL-CHECK] soldier_0 children=%d types=%s" % [s0.get_child_count(), str(child_types)])
+		if _ux_observer:
+			_ux_observer.take_screenshot("model_load_check_f3")
+
+	if _fps_label:
+		var algo = "?"
+		var soldiers = _general.get("_dummy_soldiers") if is_instance_valid(_general) and _general.get("_dummy_soldiers") != null else []
+		if soldiers.size() > 0 and is_instance_valid(soldiers[0]):
+			var a = soldiers[0].get("_march_algorithm")
+			if a != null:
+				algo = a
+		_fps_label.text = "FPS: %d  |  士兵: %d  |  算法: %s" % [
+			Engine.get_frames_per_second(),
+			soldiers.size(),
+			algo
+		]
+	## 行军中自动截图
+	if _march_screenshot_frames.size() > 0 and _frame >= _march_screenshot_frames[0]:
+		if _ux_observer:
+			_ux_observer.take_screenshot("marching_f%d" % _frame)
+		_march_screenshot_frames.remove_at(0)
+
+	## 自动演示：180 帧后向右下方移动，触发行军截图
+	if _frame == 180 and is_instance_valid(_general):
+		var demo_target = _general.global_position + Vector3(300, 0, 200)
+		_general.move_to(demo_target)
+		_march_screenshot_frames = [_frame + 40, _frame + 90]
+		print("[AUTO] 自动移动指令触发，目标=(%.0f,%.0f)" % [demo_target.x, demo_target.z])
+
 	_process_gamepad()
 
 	if _renderer and is_instance_valid(_general) and _general.has_method("get_formation_summary"):
@@ -134,20 +198,76 @@ func _physics_process(_delta: float) -> void:
 			var waiting = summary.get("waiting_count", -1)
 			var coh = summary.get("velocity_coherence", -1)
 			var freeze_r = summary.get("freeze_rate", 0.0)
-			print("[DBG f=%d] state=%s avg_err=%.1f waiting=%d coh=%.2f freeze=%.0f%% gamepad=%s" % [
-				_frame, cur_state, avg_err, waiting, coh, freeze_r * 100.0,
-				str(_gamepad_active)
+			var nudge = summary.get("stuck_nudge_total", 0)
+
+			## flow_field 专属：采样第 0 号士兵的诊断变量（代表性样本）
+			var ff_dist: float = 0.0
+			var ff_sf: float = 0.0
+			var ff_dot: float = 0.0
+			var max_ff_dist: float = 0.0
+			var min_ff_dot: float = 1.0
+			var soldiers = _general.get("_dummy_soldiers") if _general.get("_dummy_soldiers") != null else []
+			for s in soldiers:
+				if not is_instance_valid(s):
+					continue
+				var d = s.get("dbg_flow_dist")
+				var sf = s.get("dbg_flow_speed_factor")
+				var dot = s.get("dbg_flow_dir_dot")
+				if d != null:
+					ff_dist += d
+					if d > max_ff_dist:
+						max_ff_dist = d
+				if sf != null:
+					ff_sf += sf
+				if dot != null and dot < min_ff_dot:
+					min_ff_dot = dot
+			var n = max(soldiers.size(), 1)
+			ff_dist /= n
+			ff_sf /= n
+
+			print("[DBG f=%d] state=%s avg_err=%.1f waiting=%d coh=%.2f freeze=%.0f%% nudge=%d gamepad=%s" % [
+				_frame, cur_state, avg_err, waiting, coh, freeze_r * 100.0, nudge, str(_gamepad_active)
 			])
+			if cur_state == "marching" and _gamepad_active:
+				print("  [FF] avg_dist=%.1f max_dist=%.1f avg_sf=%.2f min_dot=%.2f" % [
+					ff_dist, max_ff_dist, ff_sf, min_ff_dot
+				])
+
+			## 异常事件检测 + 截图
+			var err_spike = avg_err - _prev_avg_err > _ERR_SPIKE_THRESHOLD and _prev_avg_err > 0
+			var coh_drop = _prev_coh - coh > _COH_DROP_THRESHOLD and _prev_coh > 0
+			if (err_spike or coh_drop) and _ux_observer:
+				var reason = "err_spike" if err_spike else "coh_drop"
+				_ux_observer.take_screenshot("ff_anomaly_%s_f%d" % [reason, _frame])
+				print("[FF-ANOMALY] %s at f=%d: avg_err=%.1f(+%.1f) coh=%.2f(-%.2f) max_dist=%.1f min_dot=%.2f" % [
+					reason, _frame,
+					avg_err, avg_err - _prev_avg_err,
+					coh, _prev_coh - coh,
+					max_ff_dist, min_ff_dot
+				])
+			_prev_avg_err = avg_err
+			_prev_coh = coh
 
 		_renderer.tick(_frame)
 
-	_update_debug_visuals()
+	## _update_debug_visuals()  ## 暂时关闭 debug 线条，优先验证模型视觉
 
 
 ## 手柄输入处理：每帧读取左摇杆，超过死区且到达间隔时发出 move_to
 func _process_gamepad() -> void:
 	if not is_instance_valid(_general):
 		return
+
+	## RT（右扳机）/ RB（右肩键）：边沿触发（按下瞬间触发一次，松开前不重复）
+	var rt_pressed := false
+	for pad_id in Input.get_connected_joypads():
+		if Input.is_joy_button_pressed(pad_id, JOY_BUTTON_RIGHT_SHOULDER) or \
+		   Input.get_joy_axis(pad_id, JOY_AXIS_TRIGGER_RIGHT) > 0.5:
+			rt_pressed = true
+			break
+	if rt_pressed and not _rt_was_pressed:
+		_trigger_deploy_forward()
+	_rt_was_pressed = rt_pressed
 
 	## 读取所有已连接手柄的左摇杆（取第一个有效输入）
 	var axis_x: float = 0.0
@@ -162,9 +282,11 @@ func _process_gamepad() -> void:
 
 	var magnitude = sqrt(axis_x * axis_x + axis_y * axis_y)
 	if magnitude < _GAMEPAD_DEADZONE:
-		## 死区内：停止发新指令，将领自然停止
+		## 死区内：立刻停止将领（不再走完上次 move_to 的目标）
+		if _gamepad_active and is_instance_valid(_general) and _general.has_method("stop_movement"):
+			_general.stop_movement()
 		_gamepad_active = false
-		_gamepad_timer = _GAMEPAD_MOVE_INTERVAL  ## 重置计时器，松开后再推杆立即响应
+		_gamepad_timer = 0  ## 松开后再推杆立即响应
 		return
 
 	_gamepad_active = true
@@ -181,12 +303,33 @@ func _process_gamepad() -> void:
 	var world_z = axis_x * sin(cam_yaw_rad) + axis_y * cos(cam_yaw_rad)
 	var world_dir = Vector3(world_x, 0.0, world_z).normalized()
 
+	_last_world_dir = world_dir
+
 	var target = _general.global_position + world_dir * _GAMEPAD_MOVE_DIST
 	target.y = 0.0
 	_general.move_to(target)
 
 
+func _trigger_deploy_forward() -> void:
+	if not is_instance_valid(_general):
+		return
+	if not _general.has_method("deploy_forward"):
+		return
+	var anchor = _general.global_position + _last_world_dir * _DEPLOY_FORWARD_DIST
+	anchor.y = 0.0
+	_general.deploy_forward(anchor, _last_world_dir)
+	print("[GAMEPAD] RT deploy_forward anchor=(%.0f,%.0f)" % [anchor.x, anchor.z])
+	if _ux_observer:
+		_ux_observer.take_screenshot("deploy_fwd_f%d" % _frame)
+
+
 func _unhandled_input(event: InputEvent) -> void:
+	## 键盘 F 键：前方横阵展开（供无手柄时测试）
+	if event is InputEventKey and event.pressed and not event.echo \
+	   and event.keycode == KEY_F:
+		_trigger_deploy_forward()
+		get_viewport().set_input_as_handled()
+
 	## 鼠标右键移动（与手柄并存）
 	if event is InputEventMouseButton \
 	   and event.button_index == MOUSE_BUTTON_RIGHT \
@@ -199,6 +342,8 @@ func _unhandled_input(event: InputEvent) -> void:
 			print("[GAMEPAD] mouse move_to (%.0f, 0, %.0f)" % [target.x, target.z])
 			if _ux_observer:
 				_ux_observer.take_screenshot("move_cmd_f%d" % _frame)
+			## 行军中截图：60帧后（蛇形队列）和 120帧后（稳定行军）
+			_march_screenshot_frames = [_frame + 60, _frame + 120]
 
 
 func _raycast_ground(screen_pos: Vector2) -> Vector3:

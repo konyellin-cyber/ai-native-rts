@@ -161,7 +161,9 @@ func take_screenshot(reason: String = "manual") -> String:
 	var full_path = _screenshot_dir + filename
 
 	# Convert res:// to absolute path for saving
-	var abs_dir = ProjectSettings.globalize_path("res://tests/screenshots/")
+	var abs_dir = ProjectSettings.globalize_path(_screenshot_dir) if _screenshot_dir.begins_with("res://") else _screenshot_dir
+	if not abs_dir.ends_with("/"):
+		abs_dir += "/"
 	if DirAccess.make_dir_recursive_absolute(abs_dir) == OK:
 		var abs_path = abs_dir + filename
 		img.save_png(abs_path)

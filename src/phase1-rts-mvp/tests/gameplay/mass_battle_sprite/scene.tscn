@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://mass_battle_sprite"]
+
+[ext_resource type="Script" path="res://tests/gameplay/mass_battle/bootstrap.gd" id="1"]
+
+[node name="MassBattleSprite" type="Node3D"]
+script = ExtResource("1")

@@ -131,8 +131,18 @@
 - [x] **23F.6** 左摇杆死区处理（阈值 0.15）：`abs(axis_value) < 0.15` 时视为零输入
 - [x] **23F.7** 摇杆方向 → 世界坐标方向转换（考虑等距摄像机朝向 -45°/-45°）：
   - 摇杆 (x, y) → 世界方向 = camera_basis × Vector3(x, 0, y)，投影到 XZ 平面
-- [x] **23F.8** 每 20 帧持续推杆时发出新的 `move_to`（target = 将领当前位置 + 方向 × 200 units）
+- [x] **23F.8** ~~每 20 帧~~**每 4 帧**持续推杆时发出新的 `move_to`（target = 将领当前位置 + 方向 × ~~200~~ **300** units）
+  - 优化记录：20帧（333ms）→ 4帧（67ms），大幅降低操控延迟感
 - [x] **23F.9** 松开摇杆（合力 < 死区）时不再发 `move_to`，将领自然停止展开横阵
+  - 优化记录：计时器从 `_GAMEPAD_MOVE_INTERVAL` 改为重置为 0，松开后再推杆立即响应
+- [x] **23F.21** 松开摇杆时调用 `general_unit.stop_movement()` 立即停止将领
+  - 问题：松开后将领仍会走完上次 `move_to` 的目标（最多 300 units），手感"漂移"
+  - 修复：在 `general_unit.gd` 新增 `stop_movement()` 接口（清除 `_has_command`、`velocity=ZERO`、目标拉到脚下）；bootstrap 死区分支调用此接口
+- [x] **23F.17** RT（右扳机）/ RB（右肩键）边沿触发 `deploy_forward()`
+  - 锚点 = 将领当前位置 + `_last_world_dir` × 120 units（将领前方展开横阵）
+  - 边沿检测：按下瞬间触发一次，松开前不重复
+  - 无推杆时使用上次记录的 `_last_world_dir` 作为展开方向
+- [x] **23F.18** 键盘 **F 键**触发 `deploy_forward()`（无手柄时的替代方案）
 
 ### 23F-C：Context Steering 避障（dummy_soldier.gd）
 
@@ -144,10 +154,12 @@
 
 ### 23F-D：验证
 
-- [ ] **23F.13** 手柄左摇杆能控制将领移动，哑兵蛇形纵队跟随
-- [ ] **23F.14** 鼠标右键和手柄可同时使用，不冲突
-- [ ] **23F.15** 松开摇杆后将领停止，哑兵自然收拢展开横阵
+- [x] **23F.13** 手柄左摇杆能控制将领移动，哑兵蛇形纵队跟随
+- [x] **23F.14** 鼠标右键和手柄可同时使用，不冲突
+- [x] **23F.15** 松开摇杆后将领停止，哑兵自然收拢展开横阵
 - [ ] **23F.16** 窗口目视：士兵密集区域有绕行行为，不卡死；行军纵队整体形状保持
+- [x] **23F.19** RT 触发 `deploy_forward`：日志确认 `[DEPLOY-ASSIGN]` 和 `formation_state → deployed` 正常输出
+- [ ] **23F.20** 窗口目视：RT 触发后士兵在将领前方正确展开横阵，方向与行进方向一致
 
 ---
 
@@ -156,6 +168,76 @@
 - [x] **23E.1** headless 全量回归 PASS（默认 march_algorithm = path_follow）— 17/17 PASS
 - [x] **23E.2** `FILES.md` 更新：记录 `_march_algorithm` 字段、flow_field 接口、gamepad_test 场景、compare_algorithms.py
 - [x] **23E.3** `roadmap.md` 更新：Phase 23 行标记"待窗口验"
+
+---
+
+## 子阶段 23G：3D 模型替换（Kenney Mini Characters）
+
+**目标**：将哑兵从程序生成的圆柱体替换为 Kenney Mini Characters GLB 模型，提升视觉密度感，验证"人海感"体验。
+
+### 23G-A：资源准备
+
+- [x] **23G.1** 从 https://kenney.nl/assets/mini-characters 下载资源包（CC0 授权）
+- [x] **23G.2** 创建 `assets/characters/` 目录，放入 `soldier.glb` / `soldier_b.glb` 及 `Textures/colormap.png`
+- [x] **23G.3** 确认 GLB 在 Godot 中可正常加载（目视验证无 ERROR 日志）
+  - 修复：`gltf/embedded_image_handling=1→0`，改为内嵌贴图模式，colormap.png 正确渲染
+
+### 23G-B：代码接入
+
+- [x] **23G.4** `dummy_soldier.gd` `_add_visual()` 改为 GLB 优先 + CylinderMesh 兜底
+- [x] **23G.5** 颜色区分：脚下 `TorusMesh` 圆环（替代 `material_overlay`，保留原始贴图色彩）
+- [x] **23G.6** `config.json` 新增 `dummy_use_model`（默认 true）、`dummy_model_path`、`dummy_model_scale`（默认 3.0）
+
+### 23G-C：验证
+
+- [x] **23G.7** 窗口目视：50 名士兵使用 GLB 模型，密度感明显优于圆柱体（截图确认）
+- [x] **23G.8** headless 回归 PASS（`dummy_use_model: false` 时不加载 GLB）—— headless 强制跳过
+- [x] **23G.9** FPS 对比：GLB 模型 55 FPS vs 圆柱体 ~90 FPS，损耗约 35%（50人时可接受）
+
+**实现说明**：
+- 模型加载需 Godot `--import` 先跑一次（GLB import → `.godot/imported/` 缓存）
+- `_add_visual()` 移至 `_ready()` 确保节点在 SceneTree 中
+- `gltf/embedded_image_handling=0` 内嵌贴图，解决 colormap.png 外部引用失败问题
+- 缩放系数基于实测 AABB 高度 0.671 units，乘以 `dummy_model_scale` 独立控制视觉大小
+
+---
+
+## 子阶段 23H：视觉优化（模型朝向 + 动画状态机 + 将领建模）
+
+**目标**：GLB 模型具备正确朝向、行走动画，将领也替换为 GLB 模型，整体视觉体验接近真实 RTS。
+
+### 23H-A：模型朝向
+
+- [x] **23H.1** `dummy_soldier.gd` `_physics_process` 末尾追加 `_update_anim_and_facing()`：速度 > 10 units/s 时调用 `look_at` + `rotate_y(PI)` 修正朝向（Kenney GLB 正面朝 +Z）
+- [x] **23H.2** `general_unit.gd` 每帧在 `_prev_position` 前更新将领模型朝向（同逻辑）
+- [x] **23H.3** `follow_mode=false`（待命）时也调用 `_update_anim_and_facing()`，避免待命后朝向/动画卡在行军状态
+
+### 23H-B：高度对齐
+
+- [x] **23H.4** 士兵模型 `position.y = -capsule_half_h`（`collision_radius × 1.25`），脚底与 RigidBody3D 胶囊底部对齐
+- [x] **23H.5** 将领模型 `position.y = -unit_radius`（`height = unit_radius × 2.0`），脚底与 CharacterBody3D 胶囊底部对齐
+- [x] **23H.6** 脚下圆环 `position.y = -capsule_half_h + 1.0`，贴地显示
+
+### 23H-C：动画状态机
+
+- [x] **23H.7** GLB 包含 32 个动画，确认 `idle` / `walk` / `sprint` / `die` 等关键动画存在
+- [x] **23H.8** `_add_visual()` 初始化时一次性把所有动画设为 `LOOP_LINEAR`（GLB 导入默认 `LOOP_NONE`）
+- [x] **23H.9** 动画状态机逻辑（速度 < 25 → `idle`，< max_speed×0.6 → `walk`，其余 → `sprint`）
+- [x] **23H.10** 提取 `_update_anim_and_facing()` 独立函数，所有提前 `return` 路径均调用，保证停止时切回 `idle`
+- [x] **23H.11** 将领动画状态机逻辑相同，移至 `_physics_process` 末尾每帧执行（从 `_move_along_path` 中移出）
+
+### 23H-D：将领建模
+
+- [x] **23H.12** `general_unit.gd` `_add_visual()` 改为 GLB 优先 + 圆柱兜底（与士兵同逻辑）
+- [x] **23H.13** 将领模型缩放 `dummy_model_scale × 2.0`（比士兵大约一倍，提升辨识度）
+- [x] **23H.14** 将领脚下圆环：金色（红方）/ 蓝白色（蓝方），比士兵圆环更大
+- [x] **23H.15** 保留将领顶部白色标记球（辨识醒目）
+
+### 23H-E：验证
+
+- [x] **23H.16** 截图确认：士兵朝向前进方向，将领更大且有模型
+- [x] **23H.17** 动画目视：行军时播放 walk/sprint 循环，停止后切回 idle 循环
+- [x] **23H.18** 脚底贴地，无明显下陷或悬空
 
 ---
 

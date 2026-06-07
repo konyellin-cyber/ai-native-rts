@@ -1,0 +1,425 @@
+[
+  {
+    "count_per_side": 100,
+    "elapsed_real_s": 19.2,
+    "winner": "red",
+    "duration_frames": 1140,
+    "red_survivors": 85,
+    "blue_survivors": 0,
+    "perf_entries": [
+      {
+        "frame": 60,
+        "fps": 0.0,
+        "alive_red": 100,
+        "alive_blue": 100
+      },
+      {
+        "frame": 120,
+        "fps": 0.0,
+        "alive_red": 100,
+        "alive_blue": 100
+      },
+      {
+        "frame": 180,
+        "fps": 0.0,
+        "alive_red": 100,
+        "alive_blue": 100
+      },
+      {
+        "frame": 240,
+        "fps": 0.0,
+        "alive_red": 100,
+        "alive_blue": 100
+      },
+      {
+        "frame": 300,
+        "fps": 0.0,
+        "alive_red": 100,
+        "alive_blue": 100
+      },
+      {
+        "frame": 360,
+        "fps": 0.0,
+        "alive_red": 100,
+        "alive_blue": 100
+      },
+      {
+        "frame": 420,
+        "fps": 0.0,
+        "alive_red": 100,
+        "alive_blue": 100
+      },
+      {
+        "frame": 480,
+        "fps": 0.0,
+        "alive_red": 100,
+        "alive_blue": 100
+      },
+      {
+        "frame": 540,
+        "fps": 0.0,
+        "alive_red": 100,
+        "alive_blue": 100
+      },
+      {
+        "frame": 600,
+        "fps": 0.0,
+        "alive_red": 100,
+        "alive_blue": 100
+      },
+      {
+        "frame": 660,
+        "fps": 0.0,
+        "alive_red": 100,
+        "alive_blue": 100
+      },
+      {
+        "frame": 720,
+        "fps": 0.0,
+        "alive_red": 100,
+        "alive_blue": 100
+      },
+      {
+        "frame": 780,
+        "fps": 0.0,
+        "alive_red": 99,
+        "alive_blue": 91
+      },
+      {
+        "frame": 840,
+        "fps": 0.0,
+        "alive_red": 96,
+        "alive_blue": 80
+      },
+      {
+        "frame": 900,
+        "fps": 0.0,
+        "alive_red": 92,
+        "alive_blue": 67
+      },
+      {
+        "frame": 960,
+        "fps": 0.0,
+        "alive_red": 89,
+        "alive_blue": 50
+      },
+      {
+        "frame": 1020,
+        "fps": 0.0,
+        "alive_red": 85,
+        "alive_blue": 25
+      },
+      {
+        "frame": 1080,
+        "fps": 0.0,
+        "alive_red": 85,
+        "alive_blue": 3
+      },
+      {
+        "frame": 1140,
+        "fps": 0.0,
+        "alive_red": 85,
+        "alive_blue": 0
+      }
+    ],
+    "fps_avg": 0.0,
+    "fps_min": 0.0,
+    "stdout_tail": "  alive_red=98  alive_blue=85\n[PERF] frame=840  fps=0.0  alive_red=96  alive_blue=80\n[MBE] frame=840  alive_red=94  alive_blue=75\n[PERF] frame=900  fps=0.0  alive_red=92  alive_blue=67\n[MBE] frame=900  alive_red=90  alive_blue=59\n[PERF] frame=960  fps=0.0  alive_red=89  alive_blue=50\n[MBE] frame=960  alive_red=86  alive_blue=42\n[PERF] frame=1020  fps=0.0  alive_red=85  alive_blue=25\n[MBE] frame=1020  alive_red=85  alive_blue=11\n[PERF] frame=1080  fps=0.0  alive_red=85  alive_blue=3\n[MBE] frame=1080  alive_red=85  alive_blue=0\n[PERF] frame=1140  fps=0.0  alive_red=85  alive_blue=0\n[MassBattle] \u6218\u6597\u7ed3\u675f\uff01winner=red  red_survivors=85  blue_survivors=0  frames=1140\n[MassBattle] battle_result.json \u5199\u5165\u5b8c\u6210: res://tests/gameplay/mass_battle/battle_result.json\n[MBE] frame=1140  alive_red=85  alive_blue=0\n"
+  },
+  {
+    "count_per_side": 250,
+    "elapsed_real_s": 21.2,
+    "winner": "red",
+    "duration_frames": 1260,
+    "red_survivors": 195,
+    "blue_survivors": 0,
+    "perf_entries": [
+      {
+        "frame": 60,
+        "fps": 0.0,
+        "alive_red": 250,
+        "alive_blue": 250
+      },
+      {
+        "frame": 120,
+        "fps": 0.0,
+        "alive_red": 250,
+        "alive_blue": 250
+      },
+      {
+        "frame": 180,
+        "fps": 0.0,
+        "alive_red": 250,
+        "alive_blue": 250
+      },
+      {
+        "frame": 240,
+        "fps": 0.0,
+        "alive_red": 250,
+        "alive_blue": 250
+      },
+      {
+        "frame": 300,
+        "fps": 0.0,
+        "alive_red": 250,
+        "alive_blue": 250
+      },
+      {
+        "frame": 360,
+        "fps": 0.0,
+        "alive_red": 250,
+        "alive_blue": 250
+      },
+      {
+        "frame": 420,
+        "fps": 0.0,
+        "alive_red": 250,
+        "alive_blue": 250
+      },
+      {
+        "frame": 480,
+        "fps": 0.0,
+        "alive_red": 250,
+        "alive_blue": 250
+      },
+      {
+        "frame": 540,
+        "fps": 0.0,
+        "alive_red": 250,
+        "alive_blue": 250
+      },
+      {
+        "frame": 600,
+        "fps": 0.0,
+        "alive_red": 250,
+        "alive_blue": 250
+      },
+      {
+        "frame": 660,
+        "fps": 0.0,
+        "alive_red": 250,
+        "alive_blue": 250
+      },
+      {
+        "frame": 720,
+        "fps": 0.0,
+        "alive_red": 250,
+        "alive_blue": 249
+      },
+      {
+        "frame": 780,
+        "fps": 0.0,
+        "alive_red": 246,
+        "alive_blue": 229
+      },
+      {
+        "frame": 840,
+        "fps": 0.0,
+        "alive_red": 237,
+        "alive_blue": 208
+      },
+      {
+        "frame": 900,
+        "fps": 0.0,
+        "alive_red": 223,
+        "alive_blue": 183
+      },
+      {
+        "frame": 960,
+        "fps": 0.0,
+        "alive_red": 210,
+        "alive_blue": 150
+      },
+      {
+        "frame": 1020,
+        "fps": 0.0,
+        "alive_red": 198,
+        "alive_blue": 117
+      },
+      {
+        "frame": 1080,
+        "fps": 0.0,
+        "alive_red": 195,
+        "alive_blue": 71
+      },
+      {
+        "frame": 1140,
+        "fps": 0.0,
+        "alive_red": 195,
+        "alive_blue": 30
+      },
+      {
+        "frame": 1200,
+        "fps": 0.0,
+        "alive_red": 195,
+        "alive_blue": 3
+      },
+      {
+        "frame": 1260,
+        "fps": 0.0,
+        "alive_red": 195,
+        "alive_blue": 0
+      }
+    ],
+    "fps_avg": 0.0,
+    "fps_min": 0.0,
+    "stdout_tail": "_blue=169\n[PERF] frame=960  fps=0.0  alive_red=210  alive_blue=150\n[MBE] frame=960  alive_red=203  alive_blue=134\n[PERF] frame=1020  fps=0.0  alive_red=198  alive_blue=117\n[MBE] frame=1020  alive_red=197  alive_blue=98\n[PERF] frame=1080  fps=0.0  alive_red=195  alive_blue=71\n[MBE] frame=1080  alive_red=195  alive_blue=51\n[PERF] frame=1140  fps=0.0  alive_red=195  alive_blue=30\n[MBE] frame=1140  alive_red=195  alive_blue=14\n[PERF] frame=1200  fps=0.0  alive_red=195  alive_blue=3\n[MBE] frame=1200  alive_red=195  alive_blue=0\n[PERF] frame=1260  fps=0.0  alive_red=195  alive_blue=0\n[MassBattle] \u6218\u6597\u7ed3\u675f\uff01winner=red  red_survivors=195  blue_survivors=0  frames=1260\n[MassBattle] battle_result.json \u5199\u5165\u5b8c\u6210: res://tests/gameplay/mass_battle/battle_result.json\n[MBE] frame=1260  alive_red=195  alive_blue=0\n"
+  },
+  {
+    "count_per_side": 500,
+    "elapsed_real_s": 26.2,
+    "winner": "red",
+    "duration_frames": 1440,
+    "red_survivors": 367,
+    "blue_survivors": 0,
+    "perf_entries": [
+      {
+        "frame": 60,
+        "fps": 0.0,
+        "alive_red": 500,
+        "alive_blue": 500
+      },
+      {
+        "frame": 120,
+        "fps": 0.0,
+        "alive_red": 500,
+        "alive_blue": 500
+      },
+      {
+        "frame": 180,
+        "fps": 0.0,
+        "alive_red": 500,
+        "alive_blue": 500
+      },
+      {
+        "frame": 240,
+        "fps": 0.0,
+        "alive_red": 500,
+        "alive_blue": 500
+      },
+      {
+        "frame": 300,
+        "fps": 0.0,
+        "alive_red": 500,
+        "alive_blue": 500
+      },
+      {
+        "frame": 360,
+        "fps": 0.0,
+        "alive_red": 500,
+        "alive_blue": 500
+      },
+      {
+        "frame": 420,
+        "fps": 0.0,
+        "alive_red": 500,
+        "alive_blue": 500
+      },
+      {
+        "frame": 480,
+        "fps": 0.0,
+        "alive_red": 500,
+        "alive_blue": 500
+      },
+      {
+        "frame": 540,
+        "fps": 0.0,
+        "alive_red": 500,
+        "alive_blue": 500
+      },
+      {
+        "frame": 600,
+        "fps": 0.0,
+        "alive_red": 500,
+        "alive_blue": 500
+      },
+      {
+        "frame": 660,
+        "fps": 0.0,
+        "alive_red": 500,
+        "alive_blue": 500
+      },
+      {
+        "frame": 720,
+        "fps": 0.0,
+        "alive_red": 500,
+        "alive_blue": 500
+      },
+      {
+        "frame": 780,
+        "fps": 0.0,
+        "alive_red": 497,
+        "alive_blue": 488
+      },
+      {
+        "frame": 840,
+        "fps": 0.0,
+        "alive_red": 489,
+        "alive_blue": 465
+      },
+      {
+        "frame": 900,
+        "fps": 0.0,
+        "alive_red": 468,
+        "alive_blue": 424
+      },
+      {
+        "frame": 960,
+        "fps": 0.0,
+        "alive_red": 449,
+        "alive_blue": 370
+      },
+      {
+        "frame": 1020,
+        "fps": 0.0,
+        "alive_red": 424,
+        "alive_blue": 309
+      },
+      {
+        "frame": 1080,
+        "fps": 0.0,
+        "alive_red": 402,
+        "alive_blue": 253
+      },
+      {
+        "frame": 1140,
+        "fps": 0.0,
+        "alive_red": 387,
+        "alive_blue": 196
+      },
+      {
+        "frame": 1200,
+        "fps": 0.0,
+        "alive_red": 373,
+        "alive_blue": 155
+      },
+      {
+        "frame": 1260,
+        "fps": 0.0,
+        "alive_red": 369,
+        "alive_blue": 107
+      },
+      {
+        "frame": 1320,
+        "fps": 0.0,
+        "alive_red": 367,
+        "alive_blue": 39
+      },
+      {
+        "frame": 1380,
+        "fps": 0.0,
+        "alive_red": 367,
+        "alive_blue": 5
+      },
+      {
+        "frame": 1440,
+        "fps": 0.0,
+        "alive_red": 367,
+        "alive_blue": 0
+      }
+    ],
+    "fps_avg": 0.0,
+    "fps_min": 0.0,
+    "stdout_tail": "e=220\n[PERF] frame=1140  fps=0.0  alive_red=387  alive_blue=196\n[MBE] frame=1140  alive_red=379  alive_blue=178\n[PERF] frame=1200  fps=0.0  alive_red=373  alive_blue=155\n[MBE] frame=1200  alive_red=370  alive_blue=133\n[PERF] frame=1260  fps=0.0  alive_red=369  alive_blue=107\n[MBE] frame=1260  alive_red=367  alive_blue=73\n[PERF] frame=1320  fps=0.0  alive_red=367  alive_blue=39\n[MBE] frame=1320  alive_red=367  alive_blue=18\n[PERF] frame=1380  fps=0.0  alive_red=367  alive_blue=5\n[MBE] frame=1380  alive_red=367  alive_blue=0\n[PERF] frame=1440  fps=0.0  alive_red=367  alive_blue=0\n[MassBattle] \u6218\u6597\u7ed3\u675f\uff01winner=red  red_survivors=367  blue_survivors=0  frames=1440\n[MassBattle] battle_result.json \u5199\u5165\u5b8c\u6210: res://tests/gameplay/mass_battle/battle_result.json\n[MBE] frame=1440  alive_red=367  alive_blue=0\n"
+  }
+]

@@ -1,0 +1,42 @@
+{
+  "name": "phase27_phase26_pikeman_atlas_lineart",
+  "status": "pipeline_rehearsal",
+  "camera": "45deg_oblique_top_down",
+  "columns": 8,
+  "rows": 4,
+  "frame_width": 256,
+  "frame_height": 256,
+  "frame_count": 32,
+  "source_atlas": "docs/phases/phase27/art-pipeline/outputs/003-phase26-pikeman-atlas-lineart-source.png",
+  "normalized_atlas": "docs/phases/phase27/art-pipeline/outputs/003-phase26-pikeman-atlas-lineart-2048x1024.png",
+  "animations": {
+    "charge_run": {
+      "row": 0,
+      "frames": [0, 1, 2, 3, 4, 5, 6, 7],
+      "fps": 12
+    },
+    "spear_thrust": {
+      "row": 1,
+      "frames": [8, 9, 10, 11, 12, 13, 14, 15],
+      "fps": 14,
+      "impact_frames": [12, 13]
+    },
+    "hit_recoil": {
+      "row": 2,
+      "frames": [16, 17, 18, 19, 20, 21, 22, 23],
+      "fps": 12
+    },
+    "death_fall": {
+      "row": 3,
+      "frames": [24, 25, 26, 27, 28, 29, 30, 31],
+      "fps": 8,
+      "hold_frames": [26, 27, 28, 29, 30, 31]
+    }
+  },
+  "notes": [
+    "Line-art rehearsal generated from Phase 27 perspective and pose-sheet prompts.",
+    "Matches the Phase 26/25 atlas frame contract: 8 columns x 4 rows, 32 frames.",
+    "Original generated output was 1536x1024; normalized copy is 2048x1024 for 256x256 frame slicing.",
+    "This is not a final runtime asset: it has a white paper background and construction guide rails."
+  ]
+}

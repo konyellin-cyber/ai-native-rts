@@ -145,5 +145,37 @@
     "phase": 19,
     "covers": ["general", "dummy_soldier", "formation"],
     "description": "行军→展开→再行军循环，断言状态切换正确（Phase 19：路径跟随下的阵型切换）"
+  },
+  {
+    "name": "mass_battle",
+    "path": "res://tests/gameplay/mass_battle/scene.tscn",
+    "window_mode": false,
+    "phase": 24,
+    "covers": ["mass_battle_engine", "crowd_simulator", "combat_resolver"],
+    "description": "双方各 250 人横排对冲，相遇即近战，一方全灭结束。输出 battle_result.json（Phase 24：MBE 人海战场引擎）"
+  },
+  {
+    "name": "mass_battle_sprite",
+    "path": "res://tests/gameplay/mass_battle_sprite/scene.tscn",
+    "window_mode": false,
+    "phase": 25,
+    "covers": ["mass_battle_engine", "battle_sprite_renderer", "combat_resolver"],
+    "description": "双方各 250 人横排对冲，使用 2.5D sprite2d MultiMesh 渲染层验证 Phase 25 人海战场表现"
+  },
+  {
+    "name": "mass_battle_p26",
+    "path": "res://tests/gameplay/mass_battle_p26/scene.tscn",
+    "window_mode": false,
+    "phase": 26,
+    "covers": ["mass_battle_engine", "battle_sprite_renderer", "formation_pressure"],
+    "description": "Phase 26 阵线力学引擎：硬碰撞不穿透、差异化驱动、阵线推墙感（500人对冲）"
+  },
+  {
+    "name": "mass_battle_p26_pressure",
+    "path": "res://tests/gameplay/mass_battle_p26_pressure/scene.tscn",
+    "window_mode": false,
+    "phase": 26,
+    "covers": ["mass_battle_engine", "formation_pressure"],
+    "description": "Phase 26 非对称压力验证：红250 vs 蓝200，验证人多方阵线推进"
   }
 ]

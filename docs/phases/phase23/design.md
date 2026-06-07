@@ -218,13 +218,46 @@ score = w1 × velocity_coherence
 
 ```
 左摇杆 (axis_x, axis_y)
-  → 死区过滤：|magnitude| < 0.15 时忽略
+  → 死区过滤：magnitude < 0.15 时忽略
   → 世界方向转换：
-      cam_basis = 摄像机的 basis（去掉 Y 分量后归一化）
-      world_dir = (cam_basis × Vector3(axis_x, 0, axis_y)).normalized()
-  → 每 20 帧：move_to(将领当前位置 + world_dir × 200)
-  → 松开（magnitude < 0.15）：停止发 move_to，将领减速停止
+      cam_yaw = -45°（等距摄像机固定偏航）
+      world_x = axis_x × cos(-45°) - axis_y × sin(-45°)
+      world_z = axis_x × sin(-45°) + axis_y × cos(-45°)
+      world_dir = Vector3(world_x, 0, world_z).normalized()
+  → 每 4 帧（约 67ms）：move_to(将领当前位置 + world_dir × 300)
+  → 松开（magnitude < 0.15）：调用 stop_movement()，将领立即停止；计时器归零
 ```
+
+> **延迟优化记录（2026-04-24）**：初始实现使用每 20 帧（333ms）发一次 `move_to`，实测延迟感明显。调整为每 4 帧（67ms），同时将单次移动距离从 200 调整为 300 units，并在松开后将计时器重置为 0（原为重置为 `_GAMEPAD_MOVE_INTERVAL`），消除松开后再推杆的等待延迟。
+
+> **松开漂移修复（2026-04-24）**：松开摇杆后将领仍会走完上次 `move_to` 的目标（最多 300 units），手感"漂移"。修复：`general_unit.gd` 新增 `stop_movement()` 接口（清除 `_has_command`、`velocity=ZERO`、目标拉到脚下），bootstrap 死区分支在推杆→松开的下降边沿调用一次。
+
+### stop_movement 接口
+
+```
+func stop_movement() -> void:
+    _has_command = false / has_command = false
+    velocity = Vector3.ZERO
+    target_position = global_position   ← 目标拉到脚下，NavAgent 不再导航
+    _agent.target_position = global_position
+```
+
+bootstrap 死区分支仅在 `_gamepad_active == true` 时调用（从推杆→松开的下降边沿），防止每帧重复调用。
+
+### RT 前方横阵展开
+
+```
+RT（右扳机，JOY_AXIS_TRIGGER_RIGHT > 0.5）
+  或 RB（右肩键，JOY_BUTTON_RIGHT_SHOULDER）
+  → 边沿检测：_rt_was_pressed 防抖，按下瞬间触发一次
+  → 锚点 = 将领当前位置 + _last_world_dir × 120 units
+  → 调用 general_unit.deploy_forward(anchor, _last_world_dir)
+  → 士兵立刻向将领前方 120 units 处展开横阵
+
+键盘 F 键：同效果，供无手柄时测试
+```
+
+`_last_world_dir` 在每次推杆时更新，静止时保留上次方向，保证 RT 在将领停下后仍能按行进方向展开。
 
 ### 摄像机朝向适配
 
@@ -247,3 +280,137 @@ score = w1 × velocity_coherence
 
 _创建: 2026-04-21_
 _更新: 2026-04-21 — 补充手柄输入章节（承接 Phase 22）_
+_更新: 2026-04-24 — 手柄延迟优化（20帧→4帧）、RT 前方横阵展开、键盘 F 键_
+_更新: 2026-04-24 — 松开漂移修复：stop_movement() 接口，松开摇杆将领立即停止_
+_更新: 2026-04-25 — 23G：Kenney Mini Characters 模型接入方案_
+_更新: 2026-04-26 — 23G 修正：贴图修复（embedded_image_handling=0）、圆环替代 material_overlay、dummy_model_scale 配置_
+_更新: 2026-04-26 — 23H：模型朝向、高度对齐、动画状态机（idle/walk/sprint）、将领建模_
+
+---
+
+## 23G：3D 模型接入设计
+
+### 目标
+
+将哑兵从程序生成圆柱体替换为 Kenney Mini Characters GLB 模型，验证"人海感"体验，同时保持 headless 回归兼容性。
+
+### 资源选择
+
+**Kenney Mini Characters**（https://kenney.nl/assets/mini-characters）
+- 授权：CC0（完全免费，商用无需署名）
+- 格式：GLB（Godot 4 原生支持）
+- 特性：含动画 rig，体型接近当前碰撞胶囊，低面数适合 RTS 大量实例
+
+### 接入架构
+
+```
+assets/
+  characters/
+    soldier.glb       ← Kenney Mini Characters 中的一个角色
+
+dummy_soldier.gd _add_visual():
+  if config.dummy_use_model and ResourceLoader.exists("res://assets/characters/soldier.glb"):
+      加载 GLB → 实例化 → 缩放匹配碰撞半径 → 设队伍颜色调制
+  else:
+      CylinderMesh（现有逻辑，headless/无模型环境兜底）
+```
+
+### 缩放计算
+
+Kenney Mini Characters 实测 AABB 高度 **0.671 units**（非文档标称 1.0），需缩放匹配碰撞半径并乘以视觉倍数：
+```
+target_height  = _collision_radius × 2.5
+scale_factor   = (target_height / 0.671) × dummy_model_scale   # dummy_model_scale 默认 3.0
+model.position.y = -capsule_half_h   # 脚底对齐胶囊底部（非模型高度的一半）
+```
+
+`dummy_model_scale` 独立控制视觉大小，不影响碰撞体，通过 `config.json` 调节。
+
+### 颜色区分（最终方案）
+
+放弃 `material_overlay`（会遮盖原始贴图），改为脚下圆环标识队伍：
+```gdscript
+var ring_mesh = TorusMesh.new()
+ring_mesh.inner_radius = _collision_radius * 0.55
+ring_mesh.outer_radius = _collision_radius * 0.85
+ring_mat.albedo_color  = Color(1.0, 0.2, 0.2) if team == "red" else Color(0.2, 0.4, 1.0)
+ring_mat.shading_mode  = SHADING_MODE_UNSHADED
+ring_inst.position.y   = -capsule_half_h + 1.0   # 贴地
+```
+
+### 贴图修复
+
+GLB 默认 `gltf/embedded_image_handling=1`（外部引用），导致 colormap.png 找不到，模型全白。
+修复：`.import` 文件改为 `gltf/embedded_image_handling=0`，重新 import 后贴图内嵌到 `.scn`。
+
+### config.json 新增字段
+
+```json
+"dummy_use_model": true,
+"dummy_model_path": "res://assets/characters/soldier.glb",
+"dummy_model_scale": 3.0
+```
+
+### 兼容性保证
+
+- `dummy_use_model = false`（默认）→ 行为与改动前完全一致
+- headless 模式强制不加载（`DisplayServer.get_name() == "headless"`）
+- 模型加载失败自动退回 CylinderMesh，不崩溃
+
+---
+
+## 23H：视觉优化设计（模型朝向 + 动画状态机 + 将领建模）
+
+### 目标
+
+在 GLB 模型接入基础上，补全以下视觉体验：
+1. 模型朝向跟随行进方向
+2. 行走/冲刺/待机动画循环切换
+3. 将领也使用 GLB 模型，视觉上更大、更突出
+
+### 模型朝向
+
+Kenney GLB 正面朝 `+Z`，而 Godot `look_at` 让 `-Z` 朝向目标，需额外 `rotate_y(PI)` 修正：
+
+```
+速度 XZ 分量 > 10 units/s 时：
+  model.look_at(model.global_position + vel_xz, Vector3.UP)
+  model.rotate_y(PI)   ← 修正 +Z 正面
+```
+
+提取为 `_update_anim_and_facing()`，在所有提前 return 路径（follow_mode=false、deployed 到位等）都调用，确保停止时朝向/动画不卡住。
+
+### 动画状态机
+
+GLB 包含 32 个动画，导入时 `loop_mode = LOOP_NONE`。在 `_add_visual()` 初始化时**一次性**设为循环：
+
+```gdscript
+for anim_name in _anim_player.get_animation_list():
+    _anim_player.get_animation(anim_name).loop_mode = Animation.LOOP_LINEAR
+```
+
+状态机转换规则：
+
+| 条件 | 动画 |
+|------|------|
+| 速度 < 25 units/s | `idle` |
+| 速度 < max_speed × 0.6 | `walk` |
+| 速度 ≥ max_speed × 0.6 | `sprint` |
+
+阈值 25（非 10）：覆盖 `RigidBody3D` + `linear_damp` 停止时的残余速度衰减，避免抖动切换。
+
+将领（CharacterBody3D）阈值仍为 10（`velocity` 停止时精确归零）。动画判断**从 `_move_along_path()` 中移出**，放到 `_physics_process` 末尾每帧执行——原位置只在移动时调用，停止后无法切回 idle。
+
+### 将领建模
+
+```
+general_unit.gd _add_visual():
+  model_path = "res://assets/characters/soldier_b.glb"（红方）
+              / "res://assets/characters/soldier.glb"（蓝方）
+  scale_f = (vis_radius × 2.5 / 0.671) × 2.0   ← 比士兵大约一倍
+  model.position.y = -unit_radius               ← 胶囊半高对齐
+  圆环：金色（红方）/ 蓝白（蓝方），outer_radius = vis_radius × 1.1
+  顶部标记球：保留（辨识醒目）
+```
+
+将领 `_anim_player` 和 `_model_node` 存为成员变量，每帧在 `_physics_process` 末尾更新（与士兵逻辑对称）。

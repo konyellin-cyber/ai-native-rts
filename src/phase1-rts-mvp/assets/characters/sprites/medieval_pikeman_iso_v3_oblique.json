@@ -1,0 +1,42 @@
+{
+  "name": "medieval_pikeman_iso_v3_oblique",
+  "status": "candidate",
+  "camera": "45deg_oblique_top_down",
+  "columns": 8,
+  "rows": 4,
+  "frame_width": 256,
+  "frame_height": 256,
+  "frame_count": 32,
+  "red_atlas": "res://assets/characters/sprites/medieval_pikeman_red_iso_v3_oblique.png",
+  "blue_atlas": "res://assets/characters/sprites/medieval_pikeman_blue_iso_v3_oblique.png",
+  "animations": {
+    "charge_run": {
+      "row": 0,
+      "frames": [0, 1, 2, 3, 4, 5, 6, 7],
+      "fps": 12
+    },
+    "spear_thrust": {
+      "row": 1,
+      "frames": [8, 9, 10, 11, 12, 13, 14, 15],
+      "fps": 14,
+      "impact_frames": [12, 13]
+    },
+    "hit_recoil": {
+      "row": 2,
+      "frames": [16, 17, 18, 19, 20, 21, 22, 23],
+      "fps": 12
+    },
+    "death_fall": {
+      "row": 3,
+      "frames": [24, 25, 26, 27, 28, 29, 30, 31],
+      "fps": 8,
+      "hold_frames": [26, 27, 28, 29, 30, 31]
+    }
+  },
+  "notes": [
+    "Oblique v3 candidate generated to emphasize 45-degree top-down RTS perspective.",
+    "This version makes helmet tops, shoulder/back mass, boot placement, and ground-plane footprint more visible than the original v3.",
+    "Generated on chroma-key green, normalized to 2048x1024, then converted to alpha PNG.",
+    "Still a 2D atlas prototype; spear thrust frames may require hand cleanup if used beyond visual iteration."
+  ]
+}

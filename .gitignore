@@ -10,5 +10,11 @@ src/phase1-rts-mvp/tests/screenshots/
 src/phase1-rts-mvp/tests/logs/
 src/phase1-rts-mvp/tests/.tmp_parallel/
 
+# macOS
+.DS_Store
+
+# Godot 编辑器自动生成
+*.uid
+
 # 通用运行时产物
 *.log

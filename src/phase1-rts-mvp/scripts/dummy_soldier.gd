@@ -7,17 +7,25 @@ class_name DummySoldier
 ## follow_mode = false 时：linear_velocity 锁定为零，不施力。
 
 var _general: Node = null          ## 跟随的将领（general_unit.gd 实例）
+var _general_cfg: Dictionary = {}  ## setup 时保存的配置（供 _add_visual 读取）
 var _soldier_index: int = 0        ## 在兵团中的编号（0-based）
 var _total_count: int = 30         ## 兵团总兵力
 var _collision_radius: float = 7.0 ## 碰撞胶囊半径
 
 var _is_headless: bool = false
 var _standby_pos: Vector3 = Vector3.ZERO
+var _model_node: Node3D = null        ## 模型根节点引用（用于朝向更新）
+var _anim_player: AnimationPlayer = null  ## 动画播放器
+var _current_anim: String = ""        ## 当前播放动画名（避免重复 play）
 
 ## Phase 17 物理参数（从 config 读取）
 var _drive_strength: float = 400.0
 var _arrive_threshold: float = 8.0
 var _slow_radius: float = 120.0
+
+## 方向 B：速度直接赋值参数（消除滑冰感）
+var _max_speed: float = 160.0          ## 最大行军速度（units/s）
+var _accel_factor: float = 12.0        ## 速度插值系数（越大起步越快）
 
 ## Phase 23 行军算法选择
 var _march_algorithm: String = "path_follow"
@@ -40,6 +48,11 @@ const _STUCK_THRESHOLD_FRAMES: int = 20  ## 连续多少帧不动才算卡住
 const _STUCK_MIN_MOVE: float = 2.0       ## 每帧最小期望位移（units）
 const _STUCK_NUDGE_STRENGTH: float = 0.6 ## 侧向扰动力系数（相对 drive_strength）
 
+## 23C 诊断：flow_field 专属，供 bootstrap 日志采样
+var dbg_flow_dist: float = 0.0           ## 上帧到槽位距离
+var dbg_flow_speed_factor: float = 0.0   ## 上帧 speed_factor
+var dbg_flow_dir_dot: float = 0.0        ## 流场方向与槽位方向的 dot（< 0 说明方向相反）
+
 ## Phase 19 寻路（窗口模式）
 var _agent: NavigationAgent3D = null
 var _rvo_velocity: Vector3 = Vector3.ZERO
@@ -52,19 +65,22 @@ var _cs_sense_radius: float = 40.0           ## 感知半径（setup 时计算�
 
 func setup(general: Node, index: int, total: int, cfg: Dictionary, headless: bool) -> void:
 	_general = general
+	_general_cfg = cfg
 	_soldier_index = index
 	_total_count = total
 	_collision_radius = float(cfg.get("radius", 12.0)) * float(cfg.get("dummy_collision_radius_factor", 0.55))
 	_drive_strength = float(cfg.get("dummy_drive_strength", 400.0))
 	_arrive_threshold = float(cfg.get("dummy_arrive_threshold", 8.0))
 	_slow_radius = float(cfg.get("dummy_slow_radius", 120.0))
+	_max_speed = float(cfg.get("dummy_max_speed", 160.0))
+	_accel_factor = float(cfg.get("dummy_accel_factor", 12.0))
 	_is_headless = headless
 	name = "Dummy_%d" % index
 	_march_algorithm = String(cfg.get("march_algorithm", "path_follow"))
 	_cs_sense_radius = _collision_radius * 4.0  ## 感知半径 = 碰撞半径 × 4
 
 	mass = float(cfg.get("dummy_mass", 1.0))
-	linear_damp = float(cfg.get("dummy_linear_damp", 8.0))
+	linear_damp = float(cfg.get("dummy_linear_damp", 30.0))  ## 高阻尼，配合速度赋值消除惯性
 
 	axis_lock_angular_x = true
 	axis_lock_angular_y = true
@@ -100,10 +116,12 @@ func setup(general: Node, index: int, total: int, cfg: Dictionary, headless: boo
 		position = _general.get_anchor_position()
 
 	if not headless:
-		_add_visual()
+		pass  ## 视觉在 _ready() 里加载，确保节点已进入 SceneTree
 
 
 func _ready() -> void:
+	if not _is_headless:
+		_add_visual()
 	## 初始冻结：_waiting=true 时彻底锁定物理体，防止胶囊体重叠产生接触冲量弹飞。
 	## FREEZE_MODE_STATIC：冻结期间不产生任何碰撞响应（包括静力推开），完全透明。
 	## 解除冻结（_waiting=false）时，士兵已离开密集初始区域，不会再发生重叠冲击。
@@ -127,6 +145,7 @@ func _physics_process(_delta: float) -> void:
 
 	if not follow_mode:
 		linear_velocity = Vector3.ZERO
+		_update_anim_and_facing()
 		return
 
 	if not _general.has_method("get_formation_slot"):
@@ -237,6 +256,31 @@ func _physics_process(_delta: float) -> void:
 		_:
 			_march_path_follow()
 
+	_update_anim_and_facing()
+
+
+func _update_anim_and_facing() -> void:
+	## 模型朝向：跟随速度方向（XZ 平面），速度很小时保持上帧朝向
+	if _model_node != null:
+		var vel_xz = Vector3(linear_velocity.x, 0.0, linear_velocity.z)
+		if vel_xz.length_squared() > 100.0:  ## 速度 >10 units/s 才转向
+			_model_node.look_at(_model_node.global_position + vel_xz, Vector3.UP)
+			_model_node.rotate_y(PI)  ## Kenney GLB 正面朝 +Z，修正 180°
+
+	## 动画状态机：根据速度切 idle / walk / sprint
+	if _anim_player != null:
+		var speed = Vector3(linear_velocity.x, 0.0, linear_velocity.z).length()
+		var target_anim: String
+		if speed < 25.0:
+			target_anim = "idle"
+		elif speed < _max_speed * 0.6:
+			target_anim = "walk"
+		else:
+			target_anim = "sprint"
+		if target_anim != _current_anim:
+			_anim_player.play(target_anim)
+			_current_anim = target_anim
+
 
 ## Phase 23: path_follow 行军 — 原 Phase 19 逻辑（锁定目标点 + NavAgent + RVO + CS）
 func _march_path_follow() -> void:
@@ -269,7 +313,11 @@ func _march_path_follow() -> void:
 
 	if force_dir.length_squared() > 0.001:
 		var speed_factor = clamp(dist / _slow_radius, 0.0, 1.0)
-		apply_central_force(force_dir.normalized() * _drive_strength * speed_factor)
+		var desired_vel = force_dir.normalized() * _max_speed * speed_factor
+		desired_vel.y = 0.0
+		var cur_xz = Vector3(linear_velocity.x, 0.0, linear_velocity.z)
+		var new_xz = cur_xz.lerp(desired_vel, clamp(_accel_factor * get_physics_process_delta_time(), 0.0, 1.0))
+		linear_velocity = Vector3(new_xz.x, linear_velocity.y, new_xz.z)
 
 	_stuck_detect(dist)
 
@@ -284,7 +332,10 @@ func _march_direct_seek() -> void:
 		return
 	if fd.length_squared() > 0.001:
 		var speed_factor = clamp(dist / _slow_radius, 0.0, 1.0)
-		apply_central_force(fd.normalized() * _drive_strength * speed_factor)
+		var desired_vel = fd.normalized() * _max_speed * speed_factor
+		var cur_xz = Vector3(linear_velocity.x, 0.0, linear_velocity.z)
+		var new_xz = cur_xz.lerp(desired_vel, clamp(_accel_factor * get_physics_process_delta_time(), 0.0, 1.0))
+		linear_velocity = Vector3(new_xz.x, linear_velocity.y, new_xz.z)
 
 	_stuck_detect(dist)
 
@@ -304,7 +355,10 @@ func _march_flow_field() -> void:
 	if not general_moving:
 		var speed_factor = clamp(dist / _slow_radius, 0.0, 1.0)
 		if to_slot.length_squared() > 0.001:
-			apply_central_force(to_slot.normalized() * _drive_strength * speed_factor)
+			var desired_vel = to_slot.normalized() * _max_speed * speed_factor
+			var cur_xz = Vector3(linear_velocity.x, 0.0, linear_velocity.z)
+			var new_xz = cur_xz.lerp(desired_vel, clamp(_accel_factor * get_physics_process_delta_time(), 0.0, 1.0))
+			linear_velocity = Vector3(new_xz.x, linear_velocity.y, new_xz.z)
 		_stuck_detect(dist)
 		return
 
@@ -317,6 +371,30 @@ func _march_flow_field() -> void:
 		_march_direct_seek()
 		return
 
+	## 修复 1：dist 超过 slow_radius×3 时退回 direct_seek（队尾追赶模式，不受流场干扰）
+	if dist > _slow_radius * 3.0:
+		dbg_flow_dist = dist
+		dbg_flow_speed_factor = 1.0
+		dbg_flow_dir_dot = 0.0
+		_march_direct_seek()
+		return
+
+	## 修复 2：flow_dir 与槽位方向 dot < -0.3（反向）时忽略流场，退回直线追槽位
+	var to_slot_dir = to_slot.normalized() if to_slot.length_squared() > 0.001 else Vector3.ZERO
+	var dot_val = flow_dir.normalized().dot(to_slot_dir) if to_slot_dir.length_squared() > 0.001 else 1.0
+	if dot_val < -0.3:
+		dbg_flow_dist = dist
+		dbg_flow_speed_factor = clamp(dist / _slow_radius, 0.0, 1.0)
+		dbg_flow_dir_dot = dot_val
+		var speed_factor2 = clamp(dist / _slow_radius, 0.0, 1.0)
+		if to_slot_dir.length_squared() > 0.001:
+			var desired_vel2 = to_slot_dir * _max_speed * speed_factor2
+			var cur_xz2 = Vector3(linear_velocity.x, 0.0, linear_velocity.z)
+			var new_xz2 = cur_xz2.lerp(desired_vel2, clamp(_accel_factor * get_physics_process_delta_time(), 0.0, 1.0))
+			linear_velocity = Vector3(new_xz2.x, linear_velocity.y, new_xz2.z)
+		_stuck_detect(dist)
+		return
+
 	## 计算编队横向偏移（供后续扩展，当前混合方向已覆盖）
 	var march_cw: int = _general.get("_march_column_width") if _general.get("_march_column_width") != null else 2
 	var actual_col = _soldier_index % march_cw
@@ -324,13 +402,22 @@ func _march_flow_field() -> void:
 
 	## 混合方向：70% 流场方向 + 30% 直线朝槽位（保证最终收敛）
 	var blended_dir: Vector3
-	if to_slot.length_squared() > 0.001:
-		blended_dir = (flow_dir.normalized() * 0.7 + to_slot.normalized() * 0.3).normalized()
+	if to_slot_dir.length_squared() > 0.001:
+		blended_dir = (flow_dir.normalized() * 0.7 + to_slot_dir * 0.3).normalized()
 	else:
 		blended_dir = flow_dir.normalized()
 
 	var speed_factor = clamp(dist / _slow_radius, 0.0, 1.0)
-	apply_central_force(blended_dir * _drive_strength * speed_factor)
+
+	## 写入诊断变量
+	dbg_flow_dist = dist
+	dbg_flow_speed_factor = speed_factor
+	dbg_flow_dir_dot = dot_val
+
+	var desired_vel3 = blended_dir * _max_speed * speed_factor
+	var cur_xz3 = Vector3(linear_velocity.x, 0.0, linear_velocity.z)
+	var new_xz3 = cur_xz3.lerp(desired_vel3, clamp(_accel_factor * get_physics_process_delta_time(), 0.0, 1.0))
+	linear_velocity = Vector3(new_xz3.x, linear_velocity.y, new_xz3.z)
 
 	_stuck_detect(dist)
 
@@ -358,6 +445,70 @@ func freeze_at_current() -> void:
 
 
 func _add_visual() -> void:
+	var team = _general.get("team_name") if is_instance_valid(_general) and _general.get("team_name") != null else "red"
+	var use_model: bool = _general_cfg.get("dummy_use_model", false) if _general_cfg else false
+	var model_path: String = _general_cfg.get("dummy_model_path", "res://assets/characters/soldier.glb") if _general_cfg else ""
+
+	## headless 模式强制不加载模型
+	if DisplayServer.get_name() == "headless":
+		use_model = false
+
+	if _soldier_index == 0:
+		print("[MODEL] use_model=%s path=%s headless=%s" % [
+			str(use_model), model_path, str(DisplayServer.get_name() == "headless")
+		])
+
+	if use_model and model_path != "":
+		var scene = ResourceLoader.load(model_path, "", ResourceLoader.CACHE_MODE_REUSE)
+		if _soldier_index == 0:
+			print("[MODEL-LOAD] scene=%s" % str(scene))
+		if scene != null:
+			var model = scene.instantiate()
+			if _soldier_index == 0:
+				print("[MODEL-INST] model=%s class=%s" % [str(model), model.get_class() if model != null else "null"])
+			## 缩放：Kenney Mini 实测 AABB 高度约 0.671 units，目标高度 = collision_radius × 2.5
+			var target_h = _collision_radius * 2.5
+			var model_native_h = 0.671
+			var model_visual_scale = float(_general_cfg.get("dummy_model_scale", 3.0)) if _general_cfg else 3.0
+			var scale_f = (target_h / model_native_h) * model_visual_scale
+			model.scale = Vector3(scale_f, scale_f, scale_f)
+			var model_h = 0.671 * scale_f
+			## 胶囊高度 = radius * 2.5，半高 = radius * 1.25
+			## RigidBody3D position 是胶囊中心，脚底 = 中心 - 半高
+			## 模型原点在脚底，所以 model.position.y = -胶囊半高
+			var capsule_half_h = _collision_radius * 1.25
+			model.position = Vector3(0.0, -capsule_half_h, 0.0)
+			add_child(model)
+			_model_node = model
+			## 找 AnimationPlayer（GLB 导入后名字固定为 AnimationPlayer）
+			_anim_player = model.find_child("AnimationPlayer", true, false) as AnimationPlayer
+			if _anim_player and _soldier_index == 0:
+				print("[ANIM] found: %s  list=%s" % [_anim_player.name, str(_anim_player.get_animation_list())])
+			if _anim_player:
+				## 一次性把所有动画设为循环（GLB 导入默认 LOOP_NONE）
+				for anim_name in _anim_player.get_animation_list():
+					var anim_res = _anim_player.get_animation(anim_name)
+					if anim_res:
+						anim_res.loop_mode = Animation.LOOP_LINEAR
+				_anim_player.play("idle")
+				_current_anim = "idle"
+			## 队伍颜色：脚下圆环，保留模型原始贴图
+			var ring_inst = MeshInstance3D.new()
+			var ring_mesh = TorusMesh.new()
+			ring_mesh.inner_radius = _collision_radius * 0.55
+			ring_mesh.outer_radius = _collision_radius * 0.85
+			ring_mesh.rings = 8
+			ring_mesh.ring_segments = 16
+			var ring_mat = StandardMaterial3D.new()
+			ring_mat.albedo_color = Color(1.0, 0.2, 0.2) if team == "red" else Color(0.2, 0.4, 1.0)
+			ring_mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+			ring_mesh.material = ring_mat
+			ring_inst.mesh = ring_mesh
+			ring_inst.position = Vector3(0.0, -capsule_half_h + 1.0, 0.0)
+			add_child(ring_inst)
+			return
+
+	## 退回 CylinderMesh（无模型 / headless / 加载失败）
 	var mesh_inst = MeshInstance3D.new()
 	var cylinder = CylinderMesh.new()
 	var vis_r = _collision_radius * 0.9
@@ -365,15 +516,33 @@ func _add_visual() -> void:
 	cylinder.bottom_radius = vis_r
 	cylinder.height = vis_r * 2.5
 	var mat = StandardMaterial3D.new()
-	if is_instance_valid(_general):
-		var team = _general.get("team_name") if _general.get("team_name") != null else "red"
-		mat.albedo_color = Color(0.7, 0.1, 0.1) if team == "red" else Color(0.1, 0.2, 0.7)
-	else:
-		mat.albedo_color = Color(0.5, 0.5, 0.5)
+	mat.albedo_color = Color(0.7, 0.1, 0.1) if team == "red" else Color(0.1, 0.2, 0.7)
 	cylinder.material = mat
 	mesh_inst.mesh = cylinder
 	mesh_inst.position = Vector3(0.0, vis_r * 1.25, 0.0)
 	add_child(mesh_inst)
+
+
+## 递归找 node 下所有 MeshInstance3D，用于颜色覆盖
+func _find_mesh_instances(node: Node) -> Array:
+	var result: Array = []
+	if node is MeshInstance3D:
+		result.append(node)
+	for child in node.get_children():
+		result.append_array(_find_mesh_instances(child))
+	return result
+
+
+func _print_node_tree(node: Node, depth: int) -> void:
+	var indent = "  ".repeat(depth)
+	var extra = ""
+	if node is MeshInstance3D:
+		extra = " mesh=%s surf=%d" % [str(node.mesh), node.get_surface_override_material_count()]
+	elif node is Skeleton3D:
+		extra = " bones=%d" % node.get_bone_count()
+	print("[TREE] %s%s (%s)%s" % [indent, node.name, node.get_class(), extra])
+	for child in node.get_children():
+		_print_node_tree(child, depth + 1)
 
 
 ## Phase 22 Context Steering

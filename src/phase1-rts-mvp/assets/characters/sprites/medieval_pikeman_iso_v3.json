@@ -1,0 +1,42 @@
+{
+  "name": "medieval_pikeman_iso_v3",
+  "status": "candidate",
+  "camera": "45deg_orthographic_isometric",
+  "columns": 8,
+  "rows": 4,
+  "frame_width": 256,
+  "frame_height": 256,
+  "frame_count": 32,
+  "red_atlas": "res://assets/characters/sprites/medieval_pikeman_red_iso_v3.png",
+  "blue_atlas": "res://assets/characters/sprites/medieval_pikeman_blue_iso_v3.png",
+  "animations": {
+    "charge_run": {
+      "row": 0,
+      "frames": [0, 1, 2, 3, 4, 5, 6, 7],
+      "fps": 12
+    },
+    "spear_thrust": {
+      "row": 1,
+      "frames": [8, 9, 10, 11, 12, 13, 14, 15],
+      "fps": 14,
+      "impact_frames": [12, 13]
+    },
+    "hit_recoil": {
+      "row": 2,
+      "frames": [16, 17, 18, 19, 20, 21, 22, 23],
+      "fps": 12
+    },
+    "death_fall": {
+      "row": 3,
+      "frames": [24, 25, 26, 27, 28, 29, 30, 31],
+      "fps": 8,
+      "hold_frames": [26, 27, 28, 29, 30, 31]
+    }
+  },
+  "notes": [
+    "Phase 25G candidate atlas with 8 columns x 4 rows.",
+    "Generated on chroma-key green, normalized to 2048x1024, then converted to alpha PNG.",
+    "Use for visual iteration first; hand cleanup may still be needed before final production art.",
+    "Death hold should use a seed-derived frame pool instead of always selecting the flattest last frame."
+  ]
+}

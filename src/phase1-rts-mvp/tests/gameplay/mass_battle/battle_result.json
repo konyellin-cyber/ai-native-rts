@@ -1,0 +1,176 @@
+{
+	"blue_survivors": 0,
+	"duration_frames": 1680,
+	"perf_log": [
+		{
+			"alive_blue": 250,
+			"alive_red": 250,
+			"fps": 13.0,
+			"frame": 60
+		},
+		{
+			"alive_blue": 250,
+			"alive_red": 250,
+			"fps": 60.0,
+			"frame": 120
+		},
+		{
+			"alive_blue": 250,
+			"alive_red": 250,
+			"fps": 60.0,
+			"frame": 180
+		},
+		{
+			"alive_blue": 250,
+			"alive_red": 250,
+			"fps": 56.0,
+			"frame": 240
+		},
+		{
+			"alive_blue": 250,
+			"alive_red": 250,
+			"fps": 60.0,
+			"frame": 300
+		},
+		{
+			"alive_blue": 250,
+			"alive_red": 250,
+			"fps": 60.0,
+			"frame": 360
+		},
+		{
+			"alive_blue": 250,
+			"alive_red": 250,
+			"fps": 60.0,
+			"frame": 420
+		},
+		{
+			"alive_blue": 250,
+			"alive_red": 250,
+			"fps": 55.0,
+			"frame": 480
+		},
+		{
+			"alive_blue": 250,
+			"alive_red": 250,
+			"fps": 60.0,
+			"frame": 540
+		},
+		{
+			"alive_blue": 248,
+			"alive_red": 247,
+			"fps": 52.0,
+			"frame": 600
+		},
+		{
+			"alive_blue": 241,
+			"alive_red": 239,
+			"fps": 51.0,
+			"frame": 660
+		},
+		{
+			"alive_blue": 224,
+			"alive_red": 226,
+			"fps": 60.0,
+			"frame": 720
+		},
+		{
+			"alive_blue": 203,
+			"alive_red": 203,
+			"fps": 60.0,
+			"frame": 780
+		},
+		{
+			"alive_blue": 178,
+			"alive_red": 183,
+			"fps": 56.0,
+			"frame": 840
+		},
+		{
+			"alive_blue": 159,
+			"alive_red": 161,
+			"fps": 60.0,
+			"frame": 900
+		},
+		{
+			"alive_blue": 139,
+			"alive_red": 141,
+			"fps": 56.0,
+			"frame": 960
+		},
+		{
+			"alive_blue": 122,
+			"alive_red": 124,
+			"fps": 60.0,
+			"frame": 1020
+		},
+		{
+			"alive_blue": 104,
+			"alive_red": 105,
+			"fps": 60.0,
+			"frame": 1080
+		},
+		{
+			"alive_blue": 86,
+			"alive_red": 83,
+			"fps": 57.0,
+			"frame": 1140
+		},
+		{
+			"alive_blue": 70,
+			"alive_red": 68,
+			"fps": 60.0,
+			"frame": 1200
+		},
+		{
+			"alive_blue": 54,
+			"alive_red": 51,
+			"fps": 60.0,
+			"frame": 1260
+		},
+		{
+			"alive_blue": 36,
+			"alive_red": 42,
+			"fps": 57.0,
+			"frame": 1320
+		},
+		{
+			"alive_blue": 28,
+			"alive_red": 33,
+			"fps": 60.0,
+			"frame": 1380
+		},
+		{
+			"alive_blue": 19,
+			"alive_red": 23,
+			"fps": 60.0,
+			"frame": 1440
+		},
+		{
+			"alive_blue": 10,
+			"alive_red": 18,
+			"fps": 58.0,
+			"frame": 1500
+		},
+		{
+			"alive_blue": 6,
+			"alive_red": 12,
+			"fps": 59.0,
+			"frame": 1560
+		},
+		{
+			"alive_blue": 1,
+			"alive_red": 10,
+			"fps": 60.0,
+			"frame": 1620
+		},
+		{
+			"alive_blue": 0,
+			"alive_red": 10,
+			"fps": 60.0,
+			"frame": 1680
+		}
+	],
+	"red_survivors": 10,
+	"winner": "red"
+}

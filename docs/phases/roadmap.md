@@ -35,6 +35,11 @@
 | 21 | 开发期快速验证工作流 | test_runner 支持 --phase/--scene/--tag 过滤，消除开发中跑全量惯性 | ✅ 完成 | [checklist](phase21/checklist.md) |
 | 22 | 手柄输入支持 | 手柄左摇杆控制将领 + Context Steering 避障（设计完成，实现并入 Phase 23） | 📋 并入23 | [checklist](phase22/checklist.md) |
 | 23 | 多行军算法可切换 + 手柄 | path_follow / flow_field / direct_seek A/B 评估 + Phase 22 手柄实现 | 🔵 待窗口验 | [checklist](phase23/checklist.md) |
+| 24 | 人海战场引擎（MBE） | 专用 Mass Battle Engine：500 人规模、Crowd Pressure 推挤感、近战击退、双将领固定对冲演示 | ✅ 完成 | [checklist](phase24/checklist.md) |
+| 25 | 2.5D 人海战场渲染层 | 3D 引擎 + 2D 精灵/动画：保留 MBE 500 人规模，强化中世纪人群冲锋与打击感 | 🚧 进行中 | [checklist](phase25/checklist.md) |
+| 26 | 阵线力学引擎 | MBE 力学重写：硬碰撞不穿透、差异化驱动、阵线推墙感 | 🚧 进行中 | [checklist](phase26/checklist.md) |
+| 27 | Phase 26 美术流水线演练 | 人体 45 度线稿基准、姿态表、装备轮廓、色块测试、atlas/prompt 记录规范 | 📋 设计中 | [checklist](phase27/checklist.md) |
+| 28 | Blender 枪兵低多边形建模 | Blender 5.1 CLI 自动化：低多边形 mesh + 骨骼 + 4 组动作 + 等距渲染验证 | 🚧 进行中 | [checklist](phase28/checklist.md) |
 
 ---
 
@@ -66,6 +71,10 @@ Phase 20  → 弓箭手对战演示（双方将领 + 30 弓箭手、行军跟随
 Phase 21  → 开发期快速验证工作流（test_runner --phase/--scene/--tag 过滤）
 Phase 22  → 手柄输入支持（设计完成，实现并入 Phase 23）
 Phase 23  → 多行军算法可切换（path_follow/flow_field/direct_seek A/B 评估框架）+ 手柄输入实现（23F）
+Phase 24  → 人海战场引擎 MBE（Mass Battle Engine）：500 人规模、Crowd Pressure 推挤感、近战击退打击感、双将领固定脚本对冲
+Phase 25  → 2.5D 人海战场渲染层：3D 引擎中使用 2D 精灵/动画，保留 MBE 批量模拟并强化中世纪冲锋打击感
+Phase 26  → 阵线力学引擎：MBE 力学重写（硬碰撞分离、差异化驱动、阵线约束），解决前排穿透和密度问题
+Phase 27  → Phase 26 美术流水线演练：人体 45 度线稿基准、姿态表、装备轮廓、色块测试、atlas/prompt 记录规范
 ```
 
 ---
@@ -95,4 +104,7 @@ Phase 23  → 多行军算法可切换（path_follow/flow_field/direct_seek A/B 
 | [phases/phase20/design.md](phase20/design.md) | Phase 20 | 弓箭手对战演示设计（ArcherSoldier、箭矢弹道、双方将领对战场景） |
 | [phases/phase21/design.md](phase21/design.md) | Phase 21 | 开发期快速验证工作流设计（test_runner 过滤、三档命令、规范决策树） |
 | [phases/phase22/design.md](phase22/design.md) | Phase 22 | 手柄输入支持设计（左摇杆控制、Context Steering 避障） |
-| [phases/phase23/design.md](phase23/design.md) | Phase 23 | 多行军算法可切换设计（三种算法架构、流场生成、A/B 评估框架） |
+| [phases/phase24/design.md](phase24/design.md) | Phase 24 | 人海战场引擎设计（MBE：SpatialHash、CrowdSimulator、CombatResolver、MultiMesh 渲染） |
+| [phases/phase25/design.md](phase25/design.md) | Phase 25 | 2.5D 人海战场渲染层设计（QuadMesh MultiMesh、2D 精灵动画、冲锋打击感） |
+| [phases/phase26/design.md](phase26/design.md) | Phase 26 | 阵线力学引擎设计（硬碰撞分离、差异化驱动、Front Line Constraint） |
+| [phases/phase27/design.md](phase27/design.md) | Phase 27 | Phase 26 美术流水线演练（人体透视线稿、姿态表、装备轮廓、色块测试、atlas 和 prompt 记录） |
